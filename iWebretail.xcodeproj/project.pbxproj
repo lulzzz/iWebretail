@@ -7,9 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		561C43F81EA15C2100BC072B /* AddMovementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561C43F71EA15C2100BC072B /* AddMovementViewController.swift */; };
+		562BDAED1EA0C1EF00B8C7D6 /* MovementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562BDAEC1EA0C1EF00B8C7D6 /* MovementsViewController.swift */; };
+		562BDAF31EA0CC7B00B8C7D6 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */; };
+		562BDAF61EA0CC9D00B8C7D6 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */; };
 		56FE39971E9EB60C007FE7F5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FE39961E9EB60C007FE7F5 /* AppDelegate.swift */; };
-		56FE39991E9EB60C007FE7F5 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FE39981E9EB60C007FE7F5 /* FirstViewController.swift */; };
-		56FE399B1E9EB60C007FE7F5 /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FE399A1E9EB60C007FE7F5 /* SecondViewController.swift */; };
+		56FE39991E9EB60C007FE7F5 /* MovementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FE39981E9EB60C007FE7F5 /* MovementViewController.swift */; };
+		56FE399B1E9EB60C007FE7F5 /* BarcodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FE399A1E9EB60C007FE7F5 /* BarcodeViewController.swift */; };
 		56FE399E1E9EB60C007FE7F5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56FE399C1E9EB60C007FE7F5 /* Main.storyboard */; };
 		56FE39A01E9EB60C007FE7F5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 56FE399F1E9EB60C007FE7F5 /* Assets.xcassets */; };
 		56FE39A31E9EB60C007FE7F5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 56FE39A11E9EB60C007FE7F5 /* LaunchScreen.storyboard */; };
@@ -17,10 +21,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		561C43F71EA15C2100BC072B /* AddMovementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddMovementViewController.swift; sourceTree = "<group>"; };
+		562BDAEC1EA0C1EF00B8C7D6 /* MovementsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovementsViewController.swift; sourceTree = "<group>"; };
+		562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		562BDAF51EA0CC9D00B8C7D6 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		56FE39931E9EB60C007FE7F5 /* iWebretail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iWebretail.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		56FE39961E9EB60C007FE7F5 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		56FE39981E9EB60C007FE7F5 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
-		56FE399A1E9EB60C007FE7F5 /* SecondViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondViewController.swift; sourceTree = "<group>"; };
+		56FE39981E9EB60C007FE7F5 /* MovementViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementViewController.swift; sourceTree = "<group>"; };
+		56FE399A1E9EB60C007FE7F5 /* BarcodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeViewController.swift; sourceTree = "<group>"; };
 		56FE399D1E9EB60C007FE7F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		56FE399F1E9EB60C007FE7F5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		56FE39A21E9EB60C007FE7F5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -33,17 +41,27 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				562BDAF31EA0CC7B00B8C7D6 /* CoreData.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		562BDAF11EA0CC7B00B8C7D6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		56FE398A1E9EB60C007FE7F5 = {
 			isa = PBXGroup;
 			children = (
 				56FE39951E9EB60C007FE7F5 /* iWebretail */,
 				56FE39941E9EB60C007FE7F5 /* Products */,
+				562BDAF11EA0CC7B00B8C7D6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -59,13 +77,16 @@
 			isa = PBXGroup;
 			children = (
 				56FE39961E9EB60C007FE7F5 /* AppDelegate.swift */,
-				56FE39981E9EB60C007FE7F5 /* FirstViewController.swift */,
-				56FE399A1E9EB60C007FE7F5 /* SecondViewController.swift */,
+				561C43F71EA15C2100BC072B /* AddMovementViewController.swift */,
+				562BDAEC1EA0C1EF00B8C7D6 /* MovementsViewController.swift */,
+				56FE39981E9EB60C007FE7F5 /* MovementViewController.swift */,
+				56FE399A1E9EB60C007FE7F5 /* BarcodeViewController.swift */,
 				56FE399C1E9EB60C007FE7F5 /* Main.storyboard */,
 				56FE399F1E9EB60C007FE7F5 /* Assets.xcassets */,
 				56FE39A11E9EB60C007FE7F5 /* LaunchScreen.storyboard */,
 				56FE39A41E9EB60C007FE7F5 /* Info.plist */,
 				56FE39AA1E9EE3C9007FE7F5 /* Shared.swift */,
+				562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */,
 			);
 			path = iWebretail;
 			sourceTree = "<group>";
@@ -143,10 +164,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				56FE399B1E9EB60C007FE7F5 /* SecondViewController.swift in Sources */,
+				562BDAED1EA0C1EF00B8C7D6 /* MovementsViewController.swift in Sources */,
+				56FE399B1E9EB60C007FE7F5 /* BarcodeViewController.swift in Sources */,
 				56FE39971E9EB60C007FE7F5 /* AppDelegate.swift in Sources */,
 				56FE39AB1E9EE3C9007FE7F5 /* Shared.swift in Sources */,
-				56FE39991E9EB60C007FE7F5 /* FirstViewController.swift in Sources */,
+				56FE39991E9EB60C007FE7F5 /* MovementViewController.swift in Sources */,
+				562BDAF61EA0CC9D00B8C7D6 /* Model.xcdatamodeld in Sources */,
+				561C43F81EA15C2100BC072B /* AddMovementViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -312,8 +336,22 @@
 				56FE39A91E9EB60C007FE7F5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				562BDAF51EA0CC9D00B8C7D6 /* Model.xcdatamodel */,
+			);
+			currentVersion = 562BDAF51EA0CC9D00B8C7D6 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 56FE398B1E9EB60C007FE7F5 /* Project object */;
 }

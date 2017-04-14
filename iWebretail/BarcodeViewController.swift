@@ -9,7 +9,7 @@
 import AVFoundation
 import UIKit
 
-class SecondViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+class BarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 	var captureSession: AVCaptureSession!
 	var previewLayer: AVCaptureVideoPreviewLayer!
 	

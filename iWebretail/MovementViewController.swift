@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FirstViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class MovementViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 	
 	@IBOutlet weak var tableView: UITableView!
 	
