@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		561C43F81EA15C2100BC072B /* AddMovementViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561C43F71EA15C2100BC072B /* AddMovementViewController.swift */; };
+		561C43F81EA15C2100BC072B /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 561C43F71EA15C2100BC072B /* RegisterViewController.swift */; };
 		562BDAED1EA0C1EF00B8C7D6 /* MovementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562BDAEC1EA0C1EF00B8C7D6 /* MovementsViewController.swift */; };
 		562BDAF31EA0CC7B00B8C7D6 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */; };
 		562BDAF61EA0CC9D00B8C7D6 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */; };
@@ -21,7 +21,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		561C43F71EA15C2100BC072B /* AddMovementViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddMovementViewController.swift; sourceTree = "<group>"; };
+		561C43F71EA15C2100BC072B /* RegisterViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterViewController.swift; sourceTree = "<group>"; };
 		562BDAEC1EA0C1EF00B8C7D6 /* MovementsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovementsViewController.swift; sourceTree = "<group>"; };
 		562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		562BDAF51EA0CC9D00B8C7D6 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
@@ -77,7 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				56FE39961E9EB60C007FE7F5 /* AppDelegate.swift */,
-				561C43F71EA15C2100BC072B /* AddMovementViewController.swift */,
+				561C43F71EA15C2100BC072B /* RegisterViewController.swift */,
 				562BDAEC1EA0C1EF00B8C7D6 /* MovementsViewController.swift */,
 				56FE39981E9EB60C007FE7F5 /* MovementViewController.swift */,
 				56FE399A1E9EB60C007FE7F5 /* BarcodeViewController.swift */,
@@ -170,7 +170,7 @@
 				56FE39AB1E9EE3C9007FE7F5 /* Shared.swift in Sources */,
 				56FE39991E9EB60C007FE7F5 /* MovementViewController.swift in Sources */,
 				562BDAF61EA0CC9D00B8C7D6 /* Model.xcdatamodeld in Sources */,
-				561C43F81EA15C2100BC072B /* AddMovementViewController.swift in Sources */,
+				561C43F81EA15C2100BC072B /* RegisterViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -11,6 +11,8 @@ import CoreData
 final class Shared {
 	static let shared = Shared()
 
+	var movement: Movement = Movement()
+
 	var barcodes: [String] = [String]()
 
 	// MARK: - Core Data stack

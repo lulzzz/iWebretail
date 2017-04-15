@@ -22,7 +22,6 @@ class MovementsViewController: UITableViewController {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
 
 	override func viewDidAppear(_ animated: Bool) {
@@ -41,16 +40,14 @@ class MovementsViewController: UITableViewController {
 			return [Movement]()
 		}
 	}
-
+	
 	// MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return self.movements.count
     }
 
@@ -62,46 +59,102 @@ class MovementsViewController: UITableViewController {
         return cell
     }
 	
-    // Override to support conditional editing of the table view.
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
         return true
     }
 	
-    // Override to support editing the table view.
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-			deleteMovement(id: self.movements[indexPath.row].movementNumber)
+			deleteMovement(id: self.movements[indexPath.row].movementId)
 			self.movements.remove(at: indexPath.row)
-			// Delete the row from the data source
             tableView.deleteRows(at: [indexPath], with: .fade)
-        //} else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
     }
 
-	/*
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+		let indexPath = self.tableView?.indexPathForSelectedRow
+		if (indexPath == nil) {
+			Shared.shared.movement = self.addMovement()
+		} else {
+			Shared.shared.movement = self.movements[indexPath!.row]
+		}
+		let viewController: MovementViewController = segue.destination as! MovementViewController
+		viewController.title = String(Shared.shared.movement.movementNumber)
+	}
+	
+	func newId() -> Int64 {
+		var newId: Int64 = 1;
 
-	func deleteMovement(id: Int32) {
+		let fetchRequest = NSFetchRequest<Movement>(entityName: "Movement")
+		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "movementId", ascending: false)
+		fetchRequest.sortDescriptors = [idDescriptor]
+		fetchRequest.fetchLimit = 1
+		do {
+			let results = try Shared.shared.getContext().fetch(fetchRequest)
+			if(results.count == 1) {
+				newId = results.first!.movementId + 1
+			}
+		} catch {
+			print("Error on new id: \(error)")
+		}
+		
+		return newId
+	}
+
+	func makeDayPredicate(date: Date) -> NSPredicate {
+		let calendar = Calendar.current
+		var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+		components.hour = 00
+		components.minute = 00
+		components.second = 00
+		let startDate = calendar.date(from: components)
+		components.hour = 23
+		components.minute = 59
+		components.second = 59
+		let endDate = calendar.date(from: components)
+		return NSPredicate(format: "movementDate >= %@ AND movementDate =< %@", argumentArray: [startDate!, endDate!])
+	}
+
+	func addMovement() -> Movement {
 		let context = Shared.shared.getContext()
-
+		
+		let date = Date()
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
-		fetchRequest.predicate = NSPredicate.init(format: "movementNumber==\(id)")
+		fetchRequest.predicate = self.makeDayPredicate(date: date)
+		let items = try! context.fetch(fetchRequest)
+		let max = items.max { $0.movementNumber < $1.movementNumber }
+		
+		//let movement = NSEntityDescription.insertNewObject(forEntityName: "Movement", into: context) as! Movement
+		let entity =  NSEntityDescription.entity(forEntityName: "Movement", in: context)
+		let movement = Movement(entity: entity!, insertInto: context)
+		movement.movementId = self.newId()
+		movement.movementNumber = max == nil ? 1 : max!.movementNumber + 1
+		movement.movementDate = date as NSDate
+		
+		do {
+			try context.save()
+		} catch {
+			print("Error on add movement: \(error)")
+		}
+		
+		return movement
+	}
+
+	func deleteMovement(id: Int64) {
+		let context = Shared.shared.getContext()
+		
+		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
+		fetchRequest.predicate = NSPredicate.init(format: "movementId==\(id)")
+		fetchRequest.fetchLimit = 1
 		let object = try! context.fetch(fetchRequest)
 		context.delete(object.first!)
 		
 		do {
 			try context.save()
 		} catch {
-			print("Error on deleteMovement: \(error)")
+			print("Error on delete movement: \(error)")
 		}
 	}
 }

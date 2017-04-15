@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AddMovementViewController: UIViewController {
+class RegisterViewController: UIViewController {
 
 	@IBOutlet weak var dateTextField: UITextField!
 	@IBOutlet weak var numberTextField: UITextField!
@@ -20,22 +20,24 @@ class AddMovementViewController: UIViewController {
 		let datePickerView:UIDatePicker = UIDatePicker()
 		datePickerView.datePickerMode = UIDatePickerMode.date
 		sender.inputView = datePickerView
-		datePickerView.addTarget(self, action: #selector(AddMovementViewController.datePickerValueChanged), for: UIControlEvents.valueChanged)
+		datePickerView.addTarget(self, action: #selector(RegisterViewController.datePickerValueChanged), for: UIControlEvents.valueChanged)
 	}
 	
 	@IBAction func buttonSave(_ sender: UIBarButtonItem) {
 		let context = Shared.shared.getContext()
 		
-		let movement = Movement(context: context)
-		movement.movementNumber = Int32(self.numberTextField.text!)!
-		movement.movementDate = self.dateFormatter.date(from: self.dateTextField.text!)! as NSDate
-		
-		context.insert(movement)
 		do {
+			Shared.shared.movement.movementNumber = Int32(self.numberTextField.text!)!
+			Shared.shared.movement.movementDate = self.dateFormatter.date(from: self.dateTextField.text!)! as NSDate
+			
 			try context.save()
 		} catch {
-			print("Error on buttonSave: \(error)")
+			let alert = UIAlertController(title: "Error", message: "\(error)", preferredStyle: UIAlertControllerStyle.alert)
+			alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+			self.present(alert, animated: true, completion: nil)
 		}
+		
+		navigationController?.popToRootViewController(animated: true)
 	}
 	
 	override func viewDidLoad() {
@@ -45,6 +47,9 @@ class AddMovementViewController: UIViewController {
 		//dateFormatter.dateFormat = "dd-mm-yyyy"
 		dateFormatter.dateStyle = .medium
 		dateFormatter.timeStyle = .none
+		
+		numberTextField.text = String(Shared.shared.movement.movementNumber)
+		dateTextField.text = dateFormatter.string(for: Shared.shared.movement.movementDate)
     }
 
     override func didReceiveMemoryWarning() {

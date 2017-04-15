@@ -16,7 +16,7 @@ class BarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		view.backgroundColor = UIColor.black
+		//view.backgroundColor = UIColor.black
 		captureSession = AVCaptureSession()
 		
 		let videoCaptureDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
@@ -99,14 +99,6 @@ class BarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
 		Shared.shared.barcodes.append(code)
 		print(code)
 		read()
-	}
-
-	override var prefersStatusBarHidden: Bool {
-		return true
-	}
-	
-	override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-		return .portrait
 	}
 	
 	/*
