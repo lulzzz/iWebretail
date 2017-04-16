@@ -11,8 +11,19 @@ import CoreData
 
 class MovementsViewController: UITableViewController {
 
-	var movements: [Movement] = []
-	let dateFormatter = DateFormatter()
+	var movements: [Movement]
+	let dateFormatter: DateFormatter
+	
+	private let repository: MovementProtocol
+	
+	required init?(coder aDecoder: NSCoder) {
+		self.movements = []
+		self.dateFormatter = DateFormatter()
+		let delegate = UIApplication.shared.delegate as! AppDelegate
+		repository = delegate.ioCContainer.resolve() as MovementProtocol
+		
+		super.init(coder: aDecoder)
+	}
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,21 +36,14 @@ class MovementsViewController: UITableViewController {
     }
 
 	override func viewDidAppear(_ animated: Bool) {
-		self.movements = getMovements()
-		self.tableView.reloadData()
+		do {
+			movements = try repository.getAll()
+			self.tableView.reloadData()
+		} catch {
+			print("Error on movement getAll: \(error)")
+		}
  	}
 	
-	func getMovements() -> [Movement] {
-		
-		let request: NSFetchRequest<Movement> = Movement.fetchRequest()
-		
-		do {
-			return try Shared.shared.getContext().fetch(request)
-		} catch {
-			print("Error with request: \(error)")
-			return [Movement]()
-		}
-	}
 	
 	// MARK: - Table view data source
 
@@ -65,96 +69,32 @@ class MovementsViewController: UITableViewController {
 	
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-			deleteMovement(id: self.movements[indexPath.row].movementId)
-			self.movements.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+			do {
+				try repository.delete(id: self.movements[indexPath.row].movementId)
+				self.movements.remove(at: indexPath.row)
+				tableView.deleteRows(at: [indexPath], with: .fade)
+			} catch {
+				print("Error on movement delete: \(error)")
+			}
         }
     }
 
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		let viewController: MovementViewController = segue.destination as! MovementViewController
+
 		let indexPath = self.tableView?.indexPathForSelectedRow
 		if (indexPath == nil) {
-			Shared.shared.movement = self.addMovement()
-		} else {
-			Shared.shared.movement = self.movements[indexPath!.row]
-		}
-		let viewController: MovementViewController = segue.destination as! MovementViewController
-		viewController.title = String(Shared.shared.movement.movementNumber)
-	}
-	
-	func newId() -> Int64 {
-		var newId: Int64 = 1;
-
-		let fetchRequest = NSFetchRequest<Movement>(entityName: "Movement")
-		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "movementId", ascending: false)
-		fetchRequest.sortDescriptors = [idDescriptor]
-		fetchRequest.fetchLimit = 1
-		do {
-			let results = try Shared.shared.getContext().fetch(fetchRequest)
-			if(results.count == 1) {
-				newId = results.first!.movementId + 1
+			do {
+				viewController.movement = try repository.add()
+			} catch {
+				print("Error on movement add: \(error)")
 			}
-		} catch {
-			print("Error on new id: \(error)")
+		} else {
+			viewController.movement = self.movements[indexPath!.row]
 		}
-		
-		return newId
-	}
 
-	func makeDayPredicate(date: Date) -> NSPredicate {
-		let calendar = Calendar.current
-		var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
-		components.hour = 00
-		components.minute = 00
-		components.second = 00
-		let startDate = calendar.date(from: components)
-		components.hour = 23
-		components.minute = 59
-		components.second = 59
-		let endDate = calendar.date(from: components)
-		return NSPredicate(format: "movementDate >= %@ AND movementDate =< %@", argumentArray: [startDate!, endDate!])
-	}
-
-	func addMovement() -> Movement {
-		let context = Shared.shared.getContext()
-		
-		let date = Date()
-		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
-		fetchRequest.predicate = self.makeDayPredicate(date: date)
-		let items = try! context.fetch(fetchRequest)
-		let max = items.max { $0.movementNumber < $1.movementNumber }
-		
-		//let movement = NSEntityDescription.insertNewObject(forEntityName: "Movement", into: context) as! Movement
-		let entity =  NSEntityDescription.entity(forEntityName: "Movement", in: context)
-		let movement = Movement(entity: entity!, insertInto: context)
-		movement.movementId = self.newId()
-		movement.movementNumber = max == nil ? 1 : max!.movementNumber + 1
-		movement.movementDate = date as NSDate
-		
-		do {
-			try context.save()
-		} catch {
-			print("Error on add movement: \(error)")
-		}
-		
-		return movement
-	}
-
-	func deleteMovement(id: Int64) {
-		let context = Shared.shared.getContext()
-		
-		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
-		fetchRequest.predicate = NSPredicate.init(format: "movementId==\(id)")
-		fetchRequest.fetchLimit = 1
-		let object = try! context.fetch(fetchRequest)
-		context.delete(object.first!)
-		
-		do {
-			try context.save()
-		} catch {
-			print("Error on delete movement: \(error)")
-		}
+		viewController.title = String(viewController.movement.movementNumber)
 	}
 }

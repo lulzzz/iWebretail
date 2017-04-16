@@ -9,10 +9,24 @@
 import UIKit
 
 class MovementViewController: UITableViewController {
+	
+	var movement: Movement!
+	var movementArticles: [MovementArticle]
+	
+	private var repository: MovementArticleProtocol
+
+	required init?(coder aDecoder: NSCoder) {
+		self.movementArticles = []
+		let delegate = UIApplication.shared.delegate as! AppDelegate
+		repository = delegate.ioCContainer.resolve() as MovementArticleProtocol
 		
+		super.init(coder: aDecoder)
+	}
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view, typically from a nib.
+		
 	}
 
 	override func didReceiveMemoryWarning() {
@@ -21,6 +35,7 @@ class MovementViewController: UITableViewController {
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
+		self.movementArticles = try! repository.getAll(id: movement.movementId)
 		tableView.reloadData()
 	}
 	
@@ -33,17 +48,21 @@ class MovementViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		// #warning Incomplete implementation, return the number of rows
-		return Shared.shared.barcodes.count
+		return movementArticles.count
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "Receipt", for: indexPath)
+		let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath) as! ArticleViewCell
 		
 		let index = (indexPath as NSIndexPath).row
-		let item = Shared.shared.barcodes[index]
+		let item = movementArticles[index]
 		
 		// Configure the cell...
-		cell.textLabel?.text = item
+		cell.labelBarcode.text = item.movementArticleBarcode
+		cell.labelName.text = "Article undefined"
+		cell.textPrice.text = String(item.movementArticlePrice)
+		cell.textQuantity.text = String(item.movementArticleQuantity)
+		cell.textAmount.text = String(item.movementArticleQuantity * item.movementArticlePrice)
 		
 		return cell
 	}
@@ -57,10 +76,25 @@ class MovementViewController: UITableViewController {
 	// Override to support editing the table view.
 	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
 		if editingStyle == .delete {
-			// Delete the row from the data source
-			tableView.deleteRows(at: [indexPath], with: .fade)
-			//} else if editingStyle == .insert {
-			// Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+			do {
+				try repository.delete(id: self.movementArticles[indexPath.row].movementArticleId)
+				self.movementArticles.remove(at: indexPath.row)
+				tableView.deleteRows(at: [indexPath], with: .fade)
+			} catch {
+				print("Error on article delete: \(error)")
+			}
+		}
+	}
+
+	// MARK: - Navigation
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if segue.identifier == "RegisterView" {
+			let viewController = segue.destination as! RegisterViewController
+			viewController.movement = self.movement
+		} else {
+			let viewController = segue.destination as! BarcodeViewController
+			viewController.movement = self.movement
 		}
 	}
 }

@@ -12,7 +12,17 @@ import UIKit
 class BarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 	var captureSession: AVCaptureSession!
 	var previewLayer: AVCaptureVideoPreviewLayer!
+	var movement: Movement!
 	
+	private var repository: MovementArticleProtocol
+	
+	required init?(coder aDecoder: NSCoder) {
+		let delegate = UIApplication.shared.delegate as! AppDelegate
+		repository = delegate.ioCContainer.resolve() as MovementArticleProtocol
+		
+		super.init(coder: aDecoder)
+	}
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -64,8 +74,8 @@ class BarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		
-		read()
+		found(code: "1234567890")
+		//read()
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -96,8 +106,13 @@ class BarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
 	}
 	
 	func found(code: String) {
-		Shared.shared.barcodes.append(code)
 		print(code)
+		do {
+			_ = try repository.add(barcode: code, movementId: movement.movementId)
+		} catch {
+			print("Error on add barcode: \(error)")
+		}
+		
 		read()
 	}
 	
