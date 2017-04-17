@@ -43,7 +43,16 @@ class Syncronizer {
 	}
 
 	func run(date: Date) {
+		let totalTaskCount = 100
 		
+		let notification = ProgressNotification()
+		notification.total   = totalTaskCount
 		
+		for processedTaskCount in 0...totalTaskCount {
+			notification.current = processedTaskCount
+			DispatchQueue.main.async {
+				NotificationCenter.default.post(name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: notification)
+			}
+		}
 	}
 }

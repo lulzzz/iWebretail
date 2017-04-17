@@ -50,5 +50,4 @@ extension UINavigationController {
 class ProgressNotification {
 	var current: Int = 0
 	var total:   Int = 0
-	
 }
