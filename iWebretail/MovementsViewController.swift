@@ -29,6 +29,8 @@ class MovementsViewController: UITableViewController {
         super.viewDidLoad()
 		
 		dateFormatter.dateStyle = .medium
+
+		Syncronizer.shared.run(date: Date())
    	}
 
     override func didReceiveMemoryWarning() {
@@ -37,8 +39,6 @@ class MovementsViewController: UITableViewController {
 
 	override func viewDidAppear(_ animated: Bool) {
 		do {
-			Syncronizer.shared.run(date: Date())
-			
 			movements = try repository.getAll()
 			self.tableView.reloadData()
 		} catch {

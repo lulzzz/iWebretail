@@ -16,6 +16,7 @@ extension UINavigationController {
 	open override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		/*
 		let progressView = UIProgressView(progressViewStyle: .bar)
 		progressView.tag = kProgressViewTag
 		self.view.addSubview(progressView)
@@ -26,6 +27,7 @@ extension UINavigationController {
 		
 		progressView.translatesAutoresizingMaskIntoConstraints = false
 		progressView.setProgress(0.0, animated: false)
+		*/
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(UINavigationController.didReceiveNotification(notification:)), name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: nil)
 	}
@@ -45,7 +47,6 @@ extension UINavigationController {
 		}
 	}
 }
-
 
 class ProgressNotification {
 	var current: Int = 0

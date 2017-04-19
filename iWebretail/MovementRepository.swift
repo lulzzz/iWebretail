@@ -62,6 +62,14 @@ class MovementRepository: MovementProtocol {
 	func delete(id: Int64) throws {
 		let item = try self.get(id: id)
 		context.delete(item!)
+
+		let fetchRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
+		fetchRequest.predicate = NSPredicate.init(format: "movementId==\(id)")
+		let rows = try! context.fetch(fetchRequest)
+		for row in rows {
+			context.delete(row)
+		}
+		
 		try context.save()
 	}
 

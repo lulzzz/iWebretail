@@ -87,9 +87,13 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <progressView key="tableHeaderView" opaque="NO" tag="10000" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" id="PhW-se-4YH">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="2.5"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        </progressView>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="Receipt" textLabel="lfw-YI-9zk" detailTextLabel="lDC-2b-Eiy" style="IBUITableViewCellStyleValue1" id="gcu-8R-Xd0">
-                                <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                <rect key="frame" x="0.0" y="30.5" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="gcu-8R-Xd0" id="yFf-go-GSY">
                                     <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
