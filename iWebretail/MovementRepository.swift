@@ -76,7 +76,7 @@ class MovementRepository: MovementProtocol {
 	func newId() throws -> Int64 {
 		var newId: Int64 = 1;
 		
-		let fetchRequest = NSFetchRequest<Movement>(entityName: "Movement")
+		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "movementId", ascending: false)
 		fetchRequest.sortDescriptors = [idDescriptor]
 		fetchRequest.fetchLimit = 1

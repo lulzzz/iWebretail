@@ -6,7 +6,7 @@
         <attribute name="causalIsPos" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="causalName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="causalQuantity" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="causalUpdated" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="Customer" representedClassName="Customer" syncable="YES" codeGenerationType="class">
         <attribute name="customerAddress" optional="YES" attributeType="String" syncable="YES"/>
@@ -17,9 +17,9 @@
         <attribute name="customerId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="customerName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="customerPhone" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="customerUpdated" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="customerVatNumber" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="customerZip" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="Movement" representedClassName="Movement" syncable="YES" codeGenerationType="class">
         <attribute name="movementCausal" optional="YES" attributeType="String" syncable="YES"/>
@@ -45,7 +45,7 @@
         <attribute name="productName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="productSelling" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="productUm" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="productUpdated" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="ProductArticle" representedClassName="ProductArticle" syncable="YES" codeGenerationType="class">
         <attribute name="articleAttribute" optional="YES" attributeType="String" syncable="YES"/>
@@ -62,19 +62,19 @@
         <attribute name="storeAddress" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="storeCity" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="storeCountry" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="storeId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="storeId" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="storeName" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="storeUpdated" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="storeZip" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="updatedAt" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Causal" positionX="-180" positionY="135" width="128" height="135"/>
-        <element name="Customer" positionX="-171" positionY="144" width="128" height="210"/>
-        <element name="Movement" positionX="-378" positionY="9" width="128" height="150"/>
+        <element name="Causal" positionX="-389" positionY="45" width="128" height="135"/>
+        <element name="Customer" positionX="-74" positionY="186" width="128" height="210"/>
+        <element name="Movement" positionX="-227" positionY="21" width="128" height="150"/>
         <element name="MovementArticle" positionX="-54" positionY="18" width="128" height="118"/>
-        <element name="Product" positionX="-216" positionY="54" width="128" height="165"/>
-        <element name="ProductArticle" positionX="-198" positionY="108" width="128" height="120"/>
-        <element name="ProductCategory" positionX="-207" positionY="99" width="128" height="75"/>
-        <element name="Store" positionX="-189" positionY="126" width="128" height="150"/>
+        <element name="Product" positionX="-693" positionY="90" width="128" height="163"/>
+        <element name="ProductArticle" positionX="-549" positionY="87" width="128" height="120"/>
+        <element name="ProductCategory" positionX="-549" positionY="234" width="128" height="73"/>
+        <element name="Store" positionX="-236" positionY="225" width="128" height="148"/>
     </elements>
 </model>
