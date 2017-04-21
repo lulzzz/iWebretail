@@ -98,9 +98,9 @@ extension Product {
 		self.productCode = json["productCode"] as? String ?? ""
 		self.productName = json["productName"] as? String ?? ""
 		self.productUm = json["productUm"] as? String ?? ""
-		self.productSelling = json["productSelling"] as! Double
+		self.productSelling = json["productSellingPrice"] as! Double
 		let discount = json["discount"] as? NSDictionary
-		self.productDiscount = discount?["discountPrice"] as! Double
+		self.productDiscount = discount?["discountPrice"] as? Double ?? 0
 		let brand = json["brand"] as! NSDictionary
 		self.productBrand = brand["brandName"] as? String ?? ""
 		self.updatedAt = json["updatedAt"] as! Int64
@@ -116,12 +116,19 @@ extension ProductCategory {
 }
 
 extension ProductArticle {
-	func setJSONValues(json: NSDictionary) {
-		self.productId = json["productId"] as! Int64
+	func setJSONValues(json: NSDictionary, attributes: [NSDictionary]) {
 		self.articleBarcode = json["articleBarcode"] as? String ?? ""
-		let attributes = json["attributes"] as! [NSDictionary]
+		var values = [Int:String]()
 		for attribute in attributes {
-			self.articleAttribute?.append(attribute["attributeValue"] as? String ?? "")
+			for attributeValue in attribute["attributeValues"] as! [NSDictionary] {
+				let value = attributeValue["attributeValue"] as! NSDictionary
+				values.updateValue(value["attributeValueName"] as! String, forKey: value["attributeValueId"] as! Int)
+			}
+		}
+		self.articleAttribute = ""
+		for attributeValue in json["attributeValues"] as! [NSDictionary] {
+			let value = values[attributeValue["attributeValueId"] as! Int]
+			self.articleAttribute!.append("\(value!) ")
 		}
 	}
 }

@@ -23,8 +23,11 @@ class Syncronizer {
 	
 	func makeHTTPGetRequest(url: String, onCompletion: @escaping ServiceResponse) {
 		var request =  URLRequest(url: URL(string: baseURL + url)!)
-		request.httpMethod = "GET"
+		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
+		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
 		request.addValue("Bearer token=" + token, forHTTPHeaderField: "Authorization")
+		request.httpMethod = "GET"
 		let task = URLSession.shared.dataTask(with: request, completionHandler: {
 			data, response, error -> Void in
 				onCompletion(data, error)
@@ -34,8 +37,11 @@ class Syncronizer {
 	
 	func makeHTTPPostRequest(url: String, body: [String: Any], onCompletion: @escaping ServiceResponse) {
 		var request =  URLRequest(url: URL(string: baseURL + url)!)
-		request.httpMethod = "POST"
+		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
+		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
 		request.addValue("Bearer token=" + token, forHTTPHeaderField: "Authorization")
+		request.httpMethod = "POST"
 		do {
 			request.httpBody = try JSONSerialization.data(withJSONObject: body, options: JSONSerialization.WritingOptions.init(rawValue: 0))
 		} catch let error as NSError {
@@ -101,8 +107,9 @@ class Syncronizer {
 			if let usableData = data {
 				do {
 					let items = try JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as! [NSDictionary]
+					
 					for item in items {
-						if UIDevice.current.name == String(describing: item["cashRegisterName"]) {
+						if UIDevice.current.name == item["cashRegisterName"] as! String {
 							let fetchRequest: NSFetchRequest<Store> = Store.fetchRequest()
 							fetchRequest.fetchLimit = 1
 							let objects = try! context.fetch(fetchRequest)
@@ -135,13 +142,15 @@ class Syncronizer {
 			if let usableData = data {
 				do {
 					let items = try JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as! [NSDictionary]
+					
 					for (index, item) in items.enumerated() {
 						let causal = Causal(context: context)
 						causal.setJSONValues(json: item)
 						context.insert(causal)
-						self.notify(total: items.count, current: index)
+						
+						try context.save()
+						self.notify(total: items.count, current: index + 1)
 					}
-					try context.save()
 				} catch {
 					print("Error on sync causal: \(error)")
 				}
@@ -166,13 +175,15 @@ class Syncronizer {
 			if let usableData = data {
 				do {
 					let items = try JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as! [NSDictionary]
+					
 					for (index, item) in items.enumerated() {
 						let customer = Customer(context: context)
 						customer.setJSONValues(json: item)
 						context.insert(customer)
-						self.notify(total: items.count, current: index)
+						
+						try context.save()
+						self.notify(total: items.count, current: index + 1)
 					}
-					try context.save()
 				} catch {
 					print("Error on sync customer: \(error)")
 				}
@@ -199,7 +210,6 @@ class Syncronizer {
 					let items = try JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as! [NSDictionary]
 					
 					for (index, item) in items.enumerated() {
-						
 						let product = Product(context: context)
 						product.setJSONValues(json: item)
 						context.insert(product)
@@ -212,13 +222,14 @@ class Syncronizer {
 						
 						for article in item["articles"] as! [NSDictionary] {
 							let productArticle = ProductArticle(context: context)
-							productArticle.setJSONValues(json: article)
+							productArticle.productId = product.productId
+							productArticle.setJSONValues(json: article, attributes: item["attributes"] as! [NSDictionary])
 							context.insert(productArticle)
 						}
 
-						self.notify(total: items.count, current: index)
+						try context.save()
+						self.notify(total: items.count, current: index + 1)
 					}
-					try context.save()
 				} catch {
 					print("Error on sync product: \(error)")
 				}

@@ -20,14 +20,14 @@ class MovementArticleRepository: MovementArticleProtocol {
 
 	func getAll(id: Int64) throws -> [MovementArticle] {
 		let fetchRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
-		fetchRequest.predicate = NSPredicate.init(format: "movementId==\(id)")
+		fetchRequest.predicate = NSPredicate.init(format: "movementId == \(id)")
 		
 		return try! context.fetch(fetchRequest)
 	}
 	
 	func get(id: Int64) throws -> MovementArticle? {
 		let fetchRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
-		fetchRequest.predicate = NSPredicate.init(format: "movementArticleId==\(id)")
+		fetchRequest.predicate = NSPredicate.init(format: "movementArticleId == \(id)")
 		fetchRequest.fetchLimit = 1
 		let object = try! context.fetch(fetchRequest)
 		
@@ -35,13 +35,25 @@ class MovementArticleRepository: MovementArticleProtocol {
 	}
 	
 	func add(barcode: String, movementId: Int64) throws {
+		let articleRequest: NSFetchRequest<ProductArticle> = ProductArticle.fetchRequest()
+		articleRequest.predicate = NSPredicate.init(format: "articleBarcode == %@", barcode)
+		articleRequest.fetchLimit = 1
+		let articles = try! context.fetch(articleRequest)
+		let article = articles.first!
+
+		let productRequest: NSFetchRequest<Product> = Product.fetchRequest()
+		productRequest.predicate = NSPredicate.init(format: "productId == \(article.productId)")
+		productRequest.fetchLimit = 1
+		let products = try! context.fetch(productRequest)
+
 		let entity =  NSEntityDescription.entity(forEntityName: "MovementArticle", in: context)
 		let movementArticle = MovementArticle(entity: entity!, insertInto: context)
 		movementArticle.movementId = movementId
 		movementArticle.movementArticleId = try self.newId()
 		movementArticle.movementArticleBarcode = barcode
+		movementArticle.movementProduct = article.articleAttribute
 		movementArticle.movementArticleQuantity = 1
-		movementArticle.movementArticlePrice = 50.00
+		movementArticle.movementArticlePrice = (products.first?.productSelling)!
 		try context.save()
 	}
 	

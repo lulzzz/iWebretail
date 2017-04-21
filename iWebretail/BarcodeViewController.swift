@@ -74,7 +74,7 @@ class BarcodeViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		found(code: "1234567890")
+		found(code: "1000000000002")
 		//read()
 	}
 	
