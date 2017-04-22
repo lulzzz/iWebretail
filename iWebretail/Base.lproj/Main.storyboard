@@ -50,7 +50,7 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <textInputTraits key="textInputTraits"/>
                                         <connections>
-                                            <action selector="textFieldEditing:" destination="eup-gP-P07" eventType="editingDidBegin" id="2bz-K2-BnA"/>
+                                            <action selector="dateFieldEditing:" destination="eup-gP-P07" eventType="editingDidEnd" id="tg8-7G-K8R"/>
                                         </connections>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Store" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Niv-Sx-KWK">
@@ -76,6 +76,9 @@
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <action selector="causalFieldEditing:" destination="eup-gP-P07" eventType="editingDidEnd" id="Huo-ex-Hqx"/>
+                                        </connections>
                                     </textField>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Customer" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B5k-xc-5zI">
                                         <rect key="frame" x="0.0" y="298" width="323" height="20.5"/>
@@ -117,13 +120,17 @@
                     <navigationItem key="navigationItem" title="Register" id="DK4-Tj-aKV">
                         <barButtonItem key="rightBarButtonItem" title="Save" id="20u-KA-HRB">
                             <connections>
-                                <action selector="buttonSave:" destination="eup-gP-P07" id="XmK-jy-cVg"/>
+                                <action selector="buttonSave:" destination="eup-gP-P07" id="5IZ-BU-8jg"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
-                        <outlet property="dateTextField" destination="P2T-da-Nma" id="Foc-BV-ox3"/>
-                        <outlet property="numberTextField" destination="jdm-ra-hPU" id="ElG-eH-RJb"/>
+                        <outlet property="causalTextField" destination="MHa-Xo-Rin" id="PQ0-YA-xVY"/>
+                        <outlet property="customerTextField" destination="eeW-Zh-AMz" id="cvY-xM-Nz8"/>
+                        <outlet property="dateTextField" destination="P2T-da-Nma" id="Otz-HU-Lni"/>
+                        <outlet property="noteTextView" destination="FOp-6e-4w8" id="7Nj-Xb-7V1"/>
+                        <outlet property="numberTextField" destination="jdm-ra-hPU" id="c0R-IX-CDj"/>
+                        <outlet property="storeTextField" destination="a6g-oV-MJa" id="zGP-0i-bPk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dDd-X0-8Yw" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -294,7 +301,7 @@
                         <rightBarButtonItems>
                             <barButtonItem title="Register" id="6Z5-OV-mwB">
                                 <connections>
-                                    <segue destination="eup-gP-P07" kind="show" identifier="RegisterView" id="WJm-Rz-FLD"/>
+                                    <segue destination="eup-gP-P07" kind="show" identifier="RegisterView" id="1L9-zs-6g9"/>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem title="Barcode" id="ba7-PM-5Wb">

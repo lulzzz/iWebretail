@@ -15,7 +15,7 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	@IBOutlet weak var storeTextField: UITextField!
 	@IBOutlet weak var causalTextField: UITextField!
 	@IBOutlet weak var customerTextField: UITextField!
-	@IBOutlet weak var noteTextField: UITextField!
+	@IBOutlet weak var noteTextView: UITextView!
 	
 	private let repository: MovementProtocol
 	
@@ -38,9 +38,9 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
-		numberTextField.text = String(self.movement.movementNumber)
-		dateTextField.text = self.movement.movementDate?.formatDateInput()
-		storeTextField.text = self.store.storeName
+		numberTextField.text = String(movement.movementNumber)
+		dateTextField.text = movement.movementDate?.formatDateInput()
+		storeTextField.text = store.storeName
 		causalTextField.text = causals.first?.causalName
 	}
 	
@@ -51,7 +51,7 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 
 	@IBAction func dateFieldEditing(_ sender: UITextField) {
 		
-		let datePickerView:UIDatePicker = UIDatePicker()
+		let datePickerView = UIDatePicker()
 		datePickerView.datePickerMode = UIDatePickerMode.date
 		sender.inputView = datePickerView
 		datePickerView.addTarget(self, action: #selector(RegisterViewController.datePickerValueChanged), for: UIControlEvents.valueChanged)
@@ -59,7 +59,7 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	
 	@IBAction func causalFieldEditing(_ sender: UITextField) {
 		
-		let causalPickerView:UIPickerView = UIPickerView()
+		let causalPickerView = UIPickerView()
 		causalPickerView.dataSource = self
 		causalPickerView.delegate = self
 		sender.inputView = causalPickerView
@@ -67,9 +67,9 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 
 	@IBAction func buttonSave(_ sender: UIBarButtonItem) {
 		do {
-			self.movement.movementNumber = Int32(self.numberTextField.text!)!
-			self.movement.movementDate = self.dateTextField.text!.toDateInput()
-			try repository.update(id: self.movement.movementId, item: self.movement)
+			self.movement.movementNumber = Int32(numberTextField.text!)!
+			self.movement.movementDate = dateTextField.text!.toDateInput()
+			try repository.update(id: movement.movementId, item: movement)
 		} catch {
 			let alert = UIAlertController(title: "Error", message: "\(error)", preferredStyle: UIAlertControllerStyle.alert)
 			alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
