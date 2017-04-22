@@ -12,7 +12,6 @@ let kProgressViewTag = 10000
 let kProgressUpdateNotification = "kProgressUpdateNotification"
 
 extension UINavigationController {
-	
 	open override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -50,7 +49,7 @@ extension UINavigationController {
 
 class ProgressNotification {
 	var current: Int = 0
-	var total:   Int = 0
+	var total: Int = 0
 }
 
 extension String {
@@ -60,6 +59,18 @@ extension String {
 		formatter.timeStyle = .none
 		formatter.timeZone = TimeZone(abbreviation: "UTC")
 		return formatter.date(from: self)! as NSDate
+	}
+	
+	func getJSONValues() -> NSDictionary {
+		let jsonData = self.data(using: String.Encoding.utf8)
+		return try! JSONSerialization.jsonObject(with: jsonData!, options: .mutableLeaves) as! NSDictionary
+	}
+}
+
+extension NSDictionary {
+	func getJSONString() -> String {
+		let jsonData = try! JSONSerialization.data(withJSONObject: self, options: .prettyPrinted)
+		return String(bytes: jsonData, encoding: String.Encoding.utf8)!
 	}
 }
 
@@ -71,11 +82,11 @@ extension NSDate {
 		formatter.timeZone = TimeZone(abbreviation: "UTC")
 		return formatter.string(from: self as Date)
 	}
-
+	
 	func formatDateShort() -> String {
 		return formatDate(format: "yyyy-MM-dd")
 	}
-
+	
 	func formatDate(format: String = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") -> String {
 		let formatter = DateFormatter()
 		formatter.dateFormat = format
@@ -94,6 +105,18 @@ extension Store {
 		self.storeCountry = json["storeCountry"] as? String ?? ""
 		self.updatedAt = json["updatedAt"] as! Int64
 	}
+	
+	func getJSONValues() -> NSDictionary {
+		return [
+			"storeId": self.storeId,
+			"storeName": self.storeName!,
+			"storeAddress":	self.storeAddress!,
+			"storeCity": self.storeCity!,
+			"storeCountry": self.storeCountry!,
+			"storeZip": self.storeZip!,
+			"updatedAt": self.updatedAt
+		]
+	}
 }
 
 extension Causal {
@@ -104,6 +127,17 @@ extension Causal {
 		self.causalQuantity = json["causalQuantity"] as! Int16
 		self.causalBooked = json["causalBooked"] as! Int16
 		self.updatedAt = json["updatedAt"] as! Int64
+	}
+	
+	func getJSONValues() -> NSDictionary {
+		return [
+			"causalId": self.causalId,
+			"causalName": self.causalName!,
+			"causalQuantity": self.causalQuantity,
+			"causalBooked": self.causalBooked,
+			"causalIsPos": self.causalIsPos,
+			"updatedAt": self.updatedAt
+		]
 	}
 }
 
@@ -120,6 +154,22 @@ extension Customer {
 		self.customerFiscalCode = json["customerFiscalCode"] as? String ?? ""
 		self.customerVatNumber = json["customerVatNumber"] as? String ?? ""
 		self.updatedAt = json["updatedAt"] as! Int64
+	}
+
+	func getJSONValues() -> NSDictionary {
+		return [
+			"customerId": self.customerId,
+			"customerName": self.customerName!,
+			"customerEmail": self.customerEmail!,
+			"customerPhone": self.customerPhone!,
+			"customerAddress": self.customerAddress!,
+			"customerCity": self.customerCity!,
+			"customerZip": self.customerZip!,
+			"customerCountry": self.customerCountry!,
+			"customerFiscalCode": self.customerFiscalCode!,
+			"customerVatNumber": self.customerVatNumber!,
+			"updatedAt": self.updatedAt
+		]
 	}
 }
 
@@ -165,9 +215,8 @@ extension ProductArticle {
 }
 
 extension Movement {
-	func getJSONValues(rows: [MovementArticle]) -> [String : Any] {
-		
-		var items = [[String : Any]]()
+	func getJSONValues(rows: [MovementArticle]) -> NSDictionary {
+		var items = [NSDictionary]()
 		for row in rows {
 			items.append([
 				"movementArticleBarcode": row.movementArticleBarcode!,
@@ -175,7 +224,6 @@ extension Movement {
 				"movementArticlePrice": row.movementArticlePrice
 				])
 		}
-		
 		return [
 			"movementNumber": self.movementNumber,
 			"movementDate": self.movementDate!.formatDateShort(),
@@ -190,3 +238,4 @@ extension Movement {
 		]
 	}
 }
+

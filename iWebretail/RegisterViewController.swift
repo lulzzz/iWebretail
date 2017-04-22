@@ -19,14 +19,12 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	
 	private let repository: MovementProtocol
 	
-	var movement: Movement
 	let store: Store
 	let causals: [Causal]
-	let customer: Customer? = nil
+	var customer: Customer? = nil
+	var movement: Movement = Movement()
 	
 	required init?(coder aDecoder: NSCoder) {
-		self.movement = Movement()
-		
 		let delegate = UIApplication.shared.delegate as! AppDelegate
 		repository = delegate.ioCContainer.resolve() as MovementProtocol
 		store = try! repository.getStore()
@@ -40,8 +38,25 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 		
 		numberTextField.text = String(movement.movementNumber)
 		dateTextField.text = movement.movementDate?.formatDateInput()
-		storeTextField.text = store.storeName
-		causalTextField.text = causals.first?.causalName
+		noteTextView.text = movement.movementNote
+		
+		if movement.movementStore != nil {
+			storeTextField.text = movement.movementStore?.getJSONValues()["storeName"] as? String
+		} else {
+			storeTextField.text = store.storeName
+			movement.movementStore = store.getJSONValues().getJSONString()
+		}
+		
+		if movement.movementCausal != nil {
+			causalTextField.text = movement.movementCausal?.getJSONValues()["causalName"] as? String
+		} else {
+			causalTextField.text = causals.first?.causalName
+			movement.movementCausal = causals.first?.getJSONValues().getJSONString()
+		}
+		
+		if movement.movementCustomer != nil {
+			customerTextField.text = movement.movementCustomer?.getJSONValues()["customerName"] as? String
+		}
 	}
 	
 	override func didReceiveMemoryWarning() {
@@ -50,7 +65,6 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	}
 
 	@IBAction func dateFieldEditing(_ sender: UITextField) {
-		
 		let datePickerView = UIDatePicker()
 		datePickerView.datePickerMode = UIDatePickerMode.date
 		sender.inputView = datePickerView
@@ -58,7 +72,6 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	}
 	
 	@IBAction func causalFieldEditing(_ sender: UITextField) {
-		
 		let causalPickerView = UIPickerView()
 		causalPickerView.dataSource = self
 		causalPickerView.delegate = self
@@ -67,8 +80,12 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 
 	@IBAction func buttonSave(_ sender: UIBarButtonItem) {
 		do {
-			self.movement.movementNumber = Int32(numberTextField.text!)!
-			self.movement.movementDate = dateTextField.text!.toDateInput()
+			movement.movementNumber = Int32(numberTextField.text!)!
+			movement.movementDate = dateTextField.text!.toDateInput()
+			movement.movementNote = noteTextView.text
+			movement.movementDevice = UIDevice.current.name
+			movement.completed = true
+			
 			try repository.update(id: movement.movementId, item: movement)
 		} catch {
 			let alert = UIAlertController(title: "Error", message: "\(error)", preferredStyle: UIAlertControllerStyle.alert)
@@ -97,6 +114,7 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	}
 
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+		movement.movementCausal = causals[row].getJSONValues().getJSONString()
 		causalTextField.text = causals[row].causalName
 	}
 }

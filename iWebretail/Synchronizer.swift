@@ -35,7 +35,7 @@ class Synchronizer {
 		task.resume()
 	}
 	
-	func makeHTTPPostRequest(url: String, body: [String: Any], onCompletion: @escaping ServiceResponse) {
+	func makeHTTPPostRequest(url: String, body: NSDictionary, onCompletion: @escaping ServiceResponse) {
 		var request =  URLRequest(url: URL(string: baseURL + url)!)
 		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
@@ -76,7 +76,7 @@ class Synchronizer {
 	}
 
 	func logout() {
-		makeHTTPPostRequest(url: "api/logout", body: [String : Any](), onCompletion:  { data, error in
+		makeHTTPPostRequest(url: "api/logout", body: NSDictionary(), onCompletion:  { data, error in
 			if error != nil {
 				print(error!.localizedDescription)
 			}

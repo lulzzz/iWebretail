@@ -55,6 +55,12 @@ class MovementRepository: MovementProtocol {
 		let current = try self.get(id: id)!
 		current.movementNumber = item.movementNumber
 		current.movementDate = item.movementDate
+		current.movementStore = item.movementStore
+		current.movementCausal = item.movementCausal
+		current.movementCustomer = item.movementCustomer
+		current.movementDevice = item.movementDevice
+		current.movementNote = item.movementNote
+		current.completed = item.completed
 		
 		try context.save()
 	}

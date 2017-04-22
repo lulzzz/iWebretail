@@ -19,9 +19,8 @@ class ArticleViewCell: UITableViewCell {
 	@IBOutlet weak var textQuantity: UITextField!
 	
 	@IBOutlet weak var textAmount: UITextField!
-	
-	@IBAction func updateQuantity(_ sender: UIStepper) {
-	}
+
+	@IBOutlet weak var stepperQuantity: UIStepper!
 	
     override func awakeFromNib() {
         super.awakeFromNib()

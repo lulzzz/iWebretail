@@ -39,6 +39,36 @@ class MovementViewController: UITableViewController {
 		tableView.reloadData()
 	}
 	
+	@IBAction func stepperValueChanged(_ sender: UIStepper) {
+		let point = sender.convert(CGPoint(x: 0, y: 0), to: tableView)
+		let indexPath = self.tableView.indexPathForRow(at: point)!
+		let item = movementArticles[indexPath.row]
+		let cell = tableView.cellForRow(at: indexPath) as! ArticleViewCell
+		
+		item.movementArticleQuantity = sender.value
+		cell.textQuantity.text = String(sender.value)
+		cell.textAmount.text = String(item.movementArticleQuantity * item.movementArticlePrice)
+		
+		 try! repository.update(id: item.movementArticleId, item: item)
+	}
+	
+	@IBAction func textValueChanged(_ sender: UITextField) {
+		let point = sender.convert(CGPoint(x: 0, y: 0), to: tableView)
+		let indexPath = self.tableView.indexPathForRow(at: point)!
+		let item = movementArticles[indexPath.row]
+		let cell = tableView.cellForRow(at: indexPath) as! ArticleViewCell
+		
+		if sender == cell.textQuantity {
+			item.movementArticleQuantity = Double(sender.text!)!
+			cell.stepperQuantity.value = item.movementArticleQuantity
+		} else {
+			item.movementArticlePrice = Double(sender.text!)!
+		}		
+		cell.textAmount.text = String(item.movementArticleQuantity * item.movementArticlePrice)
+
+		try! repository.update(id: item.movementArticleId, item: item)
+	}
+	
 	// MARK: - Table view data source
 	
 	override func numberOfSections(in tableView: UITableView) -> Int {
@@ -58,11 +88,13 @@ class MovementViewController: UITableViewController {
 		let item = movementArticles[index]
 		
 		// Configure the cell...
+		cell.tag = index
 		cell.labelBarcode.text = item.movementArticleBarcode
 		cell.labelName.text = item.movementProduct
 		cell.textPrice.text = String(item.movementArticlePrice)
 		cell.textQuantity.text = String(item.movementArticleQuantity)
 		cell.textAmount.text = String(item.movementArticleQuantity * item.movementArticlePrice)
+		cell.stepperQuantity.value = item.movementArticleQuantity
 		
 		return cell
 	}
