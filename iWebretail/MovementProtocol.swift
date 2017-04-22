@@ -17,4 +17,10 @@ protocol MovementProtocol {
 	func update(id: Int64, item: Movement) throws
 	
 	func delete(id: Int64) throws
+
+	func getStore() throws -> Store
+
+	func getCausals() throws -> [Causal]
+
+	func getCustomers() throws -> [Customer]
 }

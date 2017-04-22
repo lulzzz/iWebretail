@@ -102,4 +102,26 @@ class MovementRepository: MovementProtocol {
 		
 		return NSPredicate(format: "movementDate >= %@ AND movementDate =< %@", argumentArray: [startDate!, endDate!])
 	}
+
+	func getStore() throws -> Store {
+		let request: NSFetchRequest<Store> = Store.fetchRequest()
+		request.fetchLimit = 1
+		let results = try context.fetch(request)
+		
+		return results.first!
+	}
+
+	func getCausals() throws -> [Causal] {
+		let request: NSFetchRequest<Causal> = Causal.fetchRequest()
+
+		return try context.fetch(request)
+	}
+
+	func getCustomers() throws -> [Customer] {
+		let request: NSFetchRequest<Customer> = Customer.fetchRequest()
+		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "customerName", ascending: true)
+		request.sortDescriptors = [idDescriptor]
+
+		return try context.fetch(request)
+	}
 }
