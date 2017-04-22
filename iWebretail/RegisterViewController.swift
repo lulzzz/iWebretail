@@ -14,7 +14,6 @@ class RegisterViewController: UIViewController {
 	@IBOutlet weak var numberTextField: UITextField!
 	
 	var movement: Movement
-	let dateFormatter: DateFormatter
 	
 	@IBAction func textFieldEditing(_ sender: UITextField) {
 		
@@ -27,7 +26,7 @@ class RegisterViewController: UIViewController {
 	@IBAction func buttonSave(_ sender: UIBarButtonItem) {
 		do {
 			self.movement.movementNumber = Int32(self.numberTextField.text!)!
-			self.movement.movementDate = self.dateFormatter.date(from: self.dateTextField.text!)! as NSDate			
+			self.movement.movementDate = self.dateTextField.text!.toDateInput()
 			try repository.update(id: self.movement.movementId, item: self.movement)
 		} catch {
 			let alert = UIAlertController(title: "Error", message: "\(error)", preferredStyle: UIAlertControllerStyle.alert)
@@ -41,7 +40,6 @@ class RegisterViewController: UIViewController {
 	private let repository: MovementProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
-		self.dateFormatter = DateFormatter()
 		self.movement = Movement()
 		let delegate = UIApplication.shared.delegate as! AppDelegate
 		repository = delegate.ioCContainer.resolve() as MovementProtocol
@@ -52,12 +50,8 @@ class RegisterViewController: UIViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 
-        //dateFormatter.dateFormat = "dd-mm-yyyy"
-		dateFormatter.dateStyle = .medium
-		dateFormatter.timeStyle = .none
-		
 		numberTextField.text = String(self.movement.movementNumber)
-		dateTextField.text = dateFormatter.string(for: self.movement.movementDate)
+		dateTextField.text = self.movement.movementDate?.formatDateInput()
     }
 
     override func didReceiveMemoryWarning() {
@@ -66,6 +60,6 @@ class RegisterViewController: UIViewController {
     }
     
 	func datePickerValueChanged(sender:UIDatePicker) {		
-		dateTextField.text = dateFormatter.string(for: sender.date)
+		dateTextField.text = (sender.date as NSDate).formatDateInput()
 	}
 }

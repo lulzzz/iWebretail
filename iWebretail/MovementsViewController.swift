@@ -30,7 +30,7 @@ class MovementsViewController: UITableViewController {
 		
 		dateFormatter.dateStyle = .medium
 
-		Syncronizer.shared.run(date: Date())
+		Synchronizer.shared.pull(date: Date())
    	}
 
     override func didReceiveMemoryWarning() {

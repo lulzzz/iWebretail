@@ -12,9 +12,9 @@ import CoreData
 
 typealias ServiceResponse = (Data?, Error?) -> Void
 
-class Syncronizer {
+class Synchronizer {
 	
-	static let shared = Syncronizer()
+	static let shared = Synchronizer()
 	
 	let baseURL = "http://ec2-35-157-208-60.eu-central-1.compute.amazonaws.com/"
 	var token: String = ""
@@ -53,20 +53,6 @@ class Syncronizer {
 				onCompletion(data, error)
 			})
 		task.resume()
-	}
-
-	func run(date: Date) {
-		UIApplication.shared.isNetworkActivityIndicatorVisible = true
-		
-		let appDel = UIApplication.shared.delegate as! AppDelegate
-		let context = appDel.persistentContainer.viewContext
-		
-		self.syncStore(context: context)
-		self.syncCausals(context: context)
-		self.syncCustomers(context: context)
-		self.syncProducts(context: context)
-		
-		UIApplication.shared.isNetworkActivityIndicatorVisible = false
 	}
 	
 	func login() {
@@ -244,5 +230,53 @@ class Syncronizer {
 		DispatchQueue.main.async {
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: notification)
 		}
+	}
+
+	func pull(date: Date) {
+		UIApplication.shared.isNetworkActivityIndicatorVisible = true
+		
+		let appDel = UIApplication.shared.delegate as! AppDelegate
+		let context = appDel.persistentContainer.viewContext
+		
+		self.syncStore(context: context)
+		self.syncCausals(context: context)
+		self.syncCustomers(context: context)
+		self.syncProducts(context: context)
+		
+		UIApplication.shared.isNetworkActivityIndicatorVisible = false
+	}
+
+	func push() {
+		UIApplication.shared.isNetworkActivityIndicatorVisible = true
+		
+		let appDel = UIApplication.shared.delegate as! AppDelegate
+		let context = appDel.persistentContainer.viewContext
+		
+		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
+		fetchRequest.predicate = NSPredicate.init(format: "completed == true AND synced == false")
+		let items = try! context.fetch(fetchRequest)
+		
+		for item in items {
+			
+			let rowsRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
+			rowsRequest.predicate = NSPredicate.init(format: "movementId == \(item.movementId)")
+			let rows = try! context.fetch(rowsRequest)
+
+			makeHTTPPostRequest(url: "api/syncronize/movement", body: item.getJSONValues(rows: rows), onCompletion:  { data, error in
+				if error != nil {
+					print(error!.localizedDescription)
+				} else {
+					do {
+						item.synced = true
+						try context.save()
+					} catch {
+						print("Error on sync movement: \(error)")
+					}
+				}
+			})
+		}
+		
+		
+		UIApplication.shared.isNetworkActivityIndicatorVisible = false
 	}
 }

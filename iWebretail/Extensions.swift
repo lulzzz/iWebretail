@@ -53,6 +53,37 @@ class ProgressNotification {
 	var total:   Int = 0
 }
 
+extension String {
+	func toDateInput() -> NSDate {
+		let formatter = DateFormatter()
+		formatter.dateStyle = .medium
+		formatter.timeStyle = .none
+		formatter.timeZone = TimeZone(abbreviation: "UTC")
+		return formatter.date(from: self)! as NSDate
+	}
+}
+
+extension NSDate {
+	func formatDateInput() -> String {
+		let formatter = DateFormatter()
+		formatter.dateStyle = .medium
+		formatter.timeStyle = .none
+		formatter.timeZone = TimeZone(abbreviation: "UTC")
+		return formatter.string(from: self as Date)
+	}
+
+	func formatDateShort() -> String {
+		return formatDate(format: "yyyy-MM-dd")
+	}
+
+	func formatDate(format: String = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'") -> String {
+		let formatter = DateFormatter()
+		formatter.dateFormat = format
+		formatter.timeZone = TimeZone(abbreviation: "UTC")
+		return formatter.string(from: self as Date)
+	}
+}
+
 extension Store {
 	func setJSONValues(json: NSDictionary) {
 		self.storeId = json["storeId"] as! Int16
@@ -130,5 +161,32 @@ extension ProductArticle {
 			let value = values[attributeValue["attributeValueId"] as! Int]
 			self.articleAttribute!.append("\(value!) ")
 		}
+	}
+}
+
+extension Movement {
+	func getJSONValues(rows: [MovementArticle]) -> [String : Any] {
+		
+		var items = [[String : Any]]()
+		for row in rows {
+			items.append([
+				"movementArticleBarcode": row.movementArticleBarcode!,
+				"movementArticleQuantity": row.movementArticleQuantity,
+				"movementArticlePrice": row.movementArticlePrice
+				])
+		}
+		
+		return [
+			"movementNumber": self.movementNumber,
+			"movementDate": self.movementDate!.formatDateShort(),
+			"movementNote": self.movementNote!,
+			"movementStatus": "New",
+			"movementUser": self.movementDevice!,
+			"movementDevice": self.movementDevice!,
+			"movementStore": self.movementStore!,
+			"movementCausal": self.movementCausal!,
+			"movementCustomer": self.movementCustomer!,
+			"movementItems": items
+		]
 	}
 }
