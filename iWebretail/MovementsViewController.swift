@@ -12,23 +12,20 @@ import CoreData
 class MovementsViewController: UITableViewController {
 
 	var movements: [Movement]
-	let dateFormatter: DateFormatter
 	
 	private let repository: MovementProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
-		self.movements = []
-		self.dateFormatter = DateFormatter()
 		let delegate = UIApplication.shared.delegate as! AppDelegate
 		repository = delegate.ioCContainer.resolve() as MovementProtocol
+		
+		self.movements = []
 		
 		super.init(coder: aDecoder)
 	}
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
-		
-		dateFormatter.dateStyle = .medium
 
 		Synchronizer.shared.pull(date: Date())
    	}
@@ -60,8 +57,8 @@ class MovementsViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Receipt", for: indexPath)
 		
-		cell.textLabel?.text = "\(self.movements[indexPath.row].movementNumber)"
-		cell.detailTextLabel?.text = dateFormatter.string(for: self.movements[indexPath.row].movementDate)
+		cell.textLabel?.text = "\(movements[indexPath.row].movementNumber)"
+		cell.detailTextLabel?.text = movements[indexPath.row].movementDate?.formatDateShort()
         return cell
     }
 	

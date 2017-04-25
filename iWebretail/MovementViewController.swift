@@ -88,7 +88,6 @@ class MovementViewController: UITableViewController {
 		let item = movementArticles[index]
 		
 		// Configure the cell...
-		cell.tag = index
 		cell.labelBarcode.text = item.movementArticleBarcode
 		cell.labelName.text = item.movementProduct
 		cell.textPrice.text = String(item.movementArticlePrice)

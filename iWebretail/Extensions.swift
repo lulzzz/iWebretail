@@ -185,14 +185,12 @@ extension Product {
 		let brand = json["brand"] as! NSDictionary
 		self.productBrand = brand["brandName"] as? String ?? ""
 		self.updatedAt = json["updatedAt"] as! Int64
-	}
-}
 
-extension ProductCategory {
-	func setJSONValues(json: NSDictionary) {
-		self.productId = json["productId"] as! Int64
-		let category = json["category"] as! NSDictionary
-		self.category = category["categoryName"] as? String ?? ""
+		self.productCategories = ""
+		for productCategory in json["categories"] as! [NSDictionary] {
+			let category = productCategory["category"] as! NSDictionary
+			self.productCategories!.append("\(category["categoryName"]!) ")
+		}
 	}
 }
 
@@ -206,10 +204,10 @@ extension ProductArticle {
 				values.updateValue(value["attributeValueName"] as! String, forKey: value["attributeValueId"] as! Int)
 			}
 		}
-		self.articleAttribute = ""
+		self.articleAttributes = ""
 		for attributeValue in json["attributeValues"] as! [NSDictionary] {
 			let value = values[attributeValue["attributeValueId"] as! Int]
-			self.articleAttribute!.append("\(value!) ")
+			self.articleAttributes!.append("\(value!) ")
 		}
 	}
 }

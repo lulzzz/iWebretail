@@ -26,7 +26,7 @@ class MovementRepository: MovementProtocol {
 	
 	func get(id: Int64) throws -> Movement? {
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
-		fetchRequest.predicate = NSPredicate.init(format: "movementId==\(id)")
+		fetchRequest.predicate = NSPredicate.init(format: "movementId == \(id)")
 		fetchRequest.fetchLimit = 1
 		let object = try! context.fetch(fetchRequest)
 		
@@ -34,18 +34,12 @@ class MovementRepository: MovementProtocol {
 	}
 	
 	func add() throws -> Movement {
-		let date = Date()
-		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
-		fetchRequest.predicate = self.makeDayPredicate(date: date)
-		let items = try! context.fetch(fetchRequest)
-		let max = items.max { $0.movementNumber < $1.movementNumber }
-		
 		//let movement = NSEntityDescription.insertNewObject(forEntityName: "Movement", into: context) as! Movement
 		let entity =  NSEntityDescription.entity(forEntityName: "Movement", in: context)
 		let movement = Movement(entity: entity!, insertInto: context)
 		movement.movementId = try self.newId()
-		movement.movementNumber = max == nil ? 1 : max!.movementNumber + 1
-		movement.movementDate = date as NSDate
+		movement.movementNumber = try self.newNumber()
+		movement.movementDate = NSDate()
 		try context.save()
 		
 		return movement
@@ -70,7 +64,7 @@ class MovementRepository: MovementProtocol {
 		context.delete(item!)
 
 		let fetchRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
-		fetchRequest.predicate = NSPredicate.init(format: "movementId==\(id)")
+		fetchRequest.predicate = NSPredicate.init(format: "movementId == \(id)")
 		let rows = try! context.fetch(fetchRequest)
 		for row in rows {
 			context.delete(row)
@@ -94,6 +88,15 @@ class MovementRepository: MovementProtocol {
 		return newId
 	}
 	
+	func newNumber() throws -> Int32 {
+		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
+		fetchRequest.predicate = self.makeDayPredicate(date: Date())
+		let items = try! context.fetch(fetchRequest)
+		let max = items.max { $0.movementNumber < $1.movementNumber }
+		
+		return max == nil ? 1 : max!.movementNumber + 1
+	}
+
 	func makeDayPredicate(date: Date) -> NSPredicate {
 		let calendar = Calendar.current
 		var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
@@ -123,8 +126,11 @@ class MovementRepository: MovementProtocol {
 		return try context.fetch(request)
 	}
 
-	func getCustomers() throws -> [Customer] {
+	func getCustomers(search: String) throws -> [Customer] {
 		let request: NSFetchRequest<Customer> = Customer.fetchRequest()
+		if !search.isEmpty {
+			request.predicate = NSPredicate.init(format: "customerName LIKE[c] %@", search)
+		}
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "customerName", ascending: true)
 		request.sortDescriptors = [idDescriptor]
 

@@ -17,6 +17,7 @@
 		562BDAED1EA0C1EF00B8C7D6 /* MovementsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562BDAEC1EA0C1EF00B8C7D6 /* MovementsViewController.swift */; };
 		562BDAF31EA0CC7B00B8C7D6 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */; };
 		562BDAF61EA0CC9D00B8C7D6 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */; };
+		567A40EB1EADF0F9003A6A33 /* CustomerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567A40EA1EADF0F9003A6A33 /* CustomerViewController.swift */; };
 		56ECF5951EA4B655001B9E21 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56ECF5941EA4B655001B9E21 /* Extensions.swift */; };
 		56ECF5971EA4B6D4001B9E21 /* Synchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56ECF5961EA4B6D4001B9E21 /* Synchronizer.swift */; };
 		56FE39971E9EB60C007FE7F5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FE39961E9EB60C007FE7F5 /* AppDelegate.swift */; };
@@ -38,6 +39,7 @@
 		562BDAEC1EA0C1EF00B8C7D6 /* MovementsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovementsViewController.swift; sourceTree = "<group>"; };
 		562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		562BDAF51EA0CC9D00B8C7D6 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		567A40EA1EADF0F9003A6A33 /* CustomerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerViewController.swift; sourceTree = "<group>"; };
 		56ECF5941EA4B655001B9E21 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		56ECF5961EA4B6D4001B9E21 /* Synchronizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronizer.swift; sourceTree = "<group>"; };
 		56FE39931E9EB60C007FE7F5 /* iWebretail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iWebretail.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -70,6 +72,18 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		567A40EC1EADF131003A6A33 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				56FE399F1E9EB60C007FE7F5 /* Assets.xcassets */,
+				56FE399C1E9EB60C007FE7F5 /* Main.storyboard */,
+				56FE39A11E9EB60C007FE7F5 /* LaunchScreen.storyboard */,
+				56FE39A41E9EB60C007FE7F5 /* Info.plist */,
+				562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
 		56FE398A1E9EB60C007FE7F5 = {
 			isa = PBXGroup;
 			children = (
@@ -90,23 +104,20 @@
 		56FE39951E9EB60C007FE7F5 /* iWebretail */ = {
 			isa = PBXGroup;
 			children = (
+				567A40EC1EADF131003A6A33 /* Resources */,
 				56FE39961E9EB60C007FE7F5 /* AppDelegate.swift */,
-				561C43F71EA15C2100BC072B /* RegisterViewController.swift */,
-				562BDAEC1EA0C1EF00B8C7D6 /* MovementsViewController.swift */,
-				56FE39981E9EB60C007FE7F5 /* MovementViewController.swift */,
 				5626CAEA1EA3E46900997082 /* ArticleViewCell.swift */,
 				56FE399A1E9EB60C007FE7F5 /* BarcodeViewController.swift */,
-				56FE399C1E9EB60C007FE7F5 /* Main.storyboard */,
-				56FE399F1E9EB60C007FE7F5 /* Assets.xcassets */,
-				56FE39A11E9EB60C007FE7F5 /* LaunchScreen.storyboard */,
-				56FE39A41E9EB60C007FE7F5 /* Info.plist */,
-				562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */,
-				5626CAEC1EA3F03F00997082 /* MovementProtocol.swift */,
-				5626CAEE1EA3F3F000997082 /* MovementRepository.swift */,
+				567A40EA1EADF0F9003A6A33 /* CustomerViewController.swift */,
+				56ECF5941EA4B655001B9E21 /* Extensions.swift */,
 				5626CAF01EA3F57D00997082 /* IoCContainer.swift */,
 				5626CAF21EA42CC500997082 /* MovementArticleProtocol.swift */,
 				5626CAF41EA42D6800997082 /* MovementArticleRepository.swift */,
-				56ECF5941EA4B655001B9E21 /* Extensions.swift */,
+				5626CAEC1EA3F03F00997082 /* MovementProtocol.swift */,
+				5626CAEE1EA3F3F000997082 /* MovementRepository.swift */,
+				562BDAEC1EA0C1EF00B8C7D6 /* MovementsViewController.swift */,
+				56FE39981E9EB60C007FE7F5 /* MovementViewController.swift */,
+				561C43F71EA15C2100BC072B /* RegisterViewController.swift */,
 				56ECF5961EA4B6D4001B9E21 /* Synchronizer.swift */,
 			);
 			path = iWebretail;
@@ -197,6 +208,7 @@
 				562BDAF61EA0CC9D00B8C7D6 /* Model.xcdatamodeld in Sources */,
 				561C43F81EA15C2100BC072B /* RegisterViewController.swift in Sources */,
 				5626CAED1EA3F03F00997082 /* MovementProtocol.swift in Sources */,
+				567A40EB1EADF0F9003A6A33 /* CustomerViewController.swift in Sources */,
 				56ECF5971EA4B6D4001B9E21 /* Synchronizer.swift in Sources */,
 				5626CAEB1EA3E46900997082 /* ArticleViewCell.swift in Sources */,
 			);

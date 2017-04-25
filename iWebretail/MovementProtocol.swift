@@ -12,6 +12,8 @@ protocol MovementProtocol {
 	
 	func get(id: Int64) throws -> Movement?
 	
+	func newNumber() throws -> Int32
+	
 	func add() throws -> Movement
 	
 	func update(id: Int64, item: Movement) throws
@@ -22,5 +24,5 @@ protocol MovementProtocol {
 
 	func getCausals() throws -> [Causal]
 
-	func getCustomers() throws -> [Customer]
+	func getCustomers(search: String) throws -> [Customer]
 }

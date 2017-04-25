@@ -51,7 +51,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 		movementArticle.movementId = movementId
 		movementArticle.movementArticleId = try self.newId()
 		movementArticle.movementArticleBarcode = barcode
-		movementArticle.movementProduct = article.articleAttribute
+		movementArticle.movementProduct = article.articleAttributes
 		movementArticle.movementArticleQuantity = 1
 		movementArticle.movementArticlePrice = (products.first?.productSelling)!
 		try context.save()
@@ -84,5 +84,27 @@ class MovementArticleRepository: MovementArticleProtocol {
 		}
 		
 		return newId
+	}
+
+	func getProducts(search: String = "") throws -> [Product] {
+		let request: NSFetchRequest<Product> = Product.fetchRequest()
+		if !search.isEmpty {
+			request.predicate = NSPredicate.init(
+				format: "productCode LIKE[c] %@ OR productName LIKE[c] %@ OR productCategories LIKE[c] %@",
+				search, search, search)
+		}
+		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "productName", ascending: true)
+		request.sortDescriptors = [idDescriptor]
+		
+		return try context.fetch(request)
+	}
+
+	func getArticles(productId: Int64) throws -> [ProductArticle] {
+		let request: NSFetchRequest<ProductArticle> = ProductArticle.fetchRequest()
+		request.predicate = NSPredicate.init(format: "productId == \(productId)")
+		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "articleAttributes", ascending: true)
+		request.sortDescriptors = [idDescriptor]
+		
+		return try context.fetch(request)
 	}
 }

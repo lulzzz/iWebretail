@@ -199,13 +199,7 @@ class Synchronizer {
 						let product = Product(context: context)
 						product.setJSONValues(json: item)
 						context.insert(product)
-						
-						for category in item["categories"] as! [NSDictionary] {
-							let productCategory = ProductCategory(context: context)
-							productCategory.setJSONValues(json: category)
-							context.insert(productCategory)
-						}
-						
+												
 						for article in item["articles"] as! [NSDictionary] {
 							let productArticle = ProductArticle(context: context)
 							productArticle.productId = product.productId

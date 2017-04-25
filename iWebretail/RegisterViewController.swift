@@ -14,7 +14,7 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	@IBOutlet weak var dateTextField: UITextField!
 	@IBOutlet weak var storeTextField: UITextField!
 	@IBOutlet weak var causalTextField: UITextField!
-	@IBOutlet weak var customerTextField: UITextField!
+	@IBOutlet weak var customerButton: UIButton!
 	@IBOutlet weak var noteTextView: UITextView!
 	
 	private let repository: MovementProtocol
@@ -22,7 +22,7 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	let store: Store
 	let causals: [Causal]
 	var customer: Customer? = nil
-	var movement: Movement = Movement()
+	var movement: Movement!
 	
 	required init?(coder aDecoder: NSCoder) {
 		let delegate = UIApplication.shared.delegate as! AppDelegate
@@ -39,26 +39,34 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 		numberTextField.text = String(movement.movementNumber)
 		dateTextField.text = movement.movementDate?.formatDateInput()
 		noteTextView.text = movement.movementNote
+		customerButton.layer.borderColor = UIColor.lightGray.cgColor
+		customerButton.layer.borderWidth = 0.25
+		customerButton.layer.cornerRadius = 5
+		noteTextView.layer.borderColor = UIColor.lightGray.cgColor
+		noteTextView.layer.borderWidth = 0.25
+		noteTextView.layer.cornerRadius = 5
 		
 		if movement.movementStore != nil {
-			storeTextField.text = movement.movementStore?.getJSONValues()["storeName"] as? String
+			storeTextField.text = movement.movementStore!.getJSONValues()["storeName"] as? String
 		} else {
 			storeTextField.text = store.storeName
 			movement.movementStore = store.getJSONValues().getJSONString()
 		}
 		
 		if movement.movementCausal != nil {
-			causalTextField.text = movement.movementCausal?.getJSONValues()["causalName"] as? String
+			causalTextField.text = movement.movementCausal!.getJSONValues()["causalName"] as? String
 		} else {
 			causalTextField.text = causals.first?.causalName
 			movement.movementCausal = causals.first?.getJSONValues().getJSONString()
 		}
-		
-		if movement.movementCustomer != nil {
-			customerTextField.text = movement.movementCustomer?.getJSONValues()["customerName"] as? String
-		}
 	}
 	
+	override func viewDidAppear(_ animated: Bool) {
+		if movement.movementCustomer != nil {
+			customerButton.setTitle(movement.movementCustomer!.getJSONValues()["customerName"] as? String, for: .normal)
+		}
+	}
+
 	override func didReceiveMemoryWarning() {
 		super.didReceiveMemoryWarning()
 		// Dispose of any resources that can be recreated.
@@ -101,6 +109,7 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	}
 
 	//MARK: - Delegates and data sources
+	
 	func numberOfComponents(in pickerView: UIPickerView) -> Int {
 		return 1
 	}
@@ -114,7 +123,21 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	}
 
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+		if causals[row].causalIsPos {
+			numberTextField.text = String(movement.movementNumber)
+			numberTextField.isEnabled = true
+		} else {
+			numberTextField.text = "0"
+			numberTextField.isEnabled = false
+		}
 		movement.movementCausal = causals[row].getJSONValues().getJSONString()
 		causalTextField.text = causals[row].causalName
+	}
+
+	// MARK: - Navigation
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		let viewController = segue.destination as! CustomerViewController
+		viewController.movement = self.movement
 	}
 }
