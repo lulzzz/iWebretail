@@ -8,7 +8,7 @@
 
 import UIKit
 
-class MovementViewController: UITableViewController {
+class MovementController: UITableViewController {
 	
 	var movement: Movement!
 	var movementArticles: [MovementArticle]
@@ -43,7 +43,7 @@ class MovementViewController: UITableViewController {
 		let point = sender.convert(CGPoint(x: 0, y: 0), to: tableView)
 		let indexPath = self.tableView.indexPathForRow(at: point)!
 		let item = movementArticles[indexPath.row]
-		let cell = tableView.cellForRow(at: indexPath) as! ArticleViewCell
+		let cell = tableView.cellForRow(at: indexPath) as! ArticleCell
 		
 		item.movementArticleQuantity = sender.value
 		cell.textQuantity.text = String(sender.value)
@@ -56,7 +56,7 @@ class MovementViewController: UITableViewController {
 		let point = sender.convert(CGPoint(x: 0, y: 0), to: tableView)
 		let indexPath = self.tableView.indexPathForRow(at: point)!
 		let item = movementArticles[indexPath.row]
-		let cell = tableView.cellForRow(at: indexPath) as! ArticleViewCell
+		let cell = tableView.cellForRow(at: indexPath) as! ArticleCell
 		
 		if sender == cell.textQuantity {
 			item.movementArticleQuantity = Double(sender.text!)!
@@ -82,7 +82,7 @@ class MovementViewController: UITableViewController {
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath) as! ArticleViewCell
+		let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath) as! ArticleCell
 		
 		let index = (indexPath as NSIndexPath).row
 		let item = movementArticles[index]
@@ -121,10 +121,10 @@ class MovementViewController: UITableViewController {
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 		if segue.identifier == "RegisterView" {
-			let viewController = segue.destination as! RegisterViewController
+			let viewController = segue.destination as! RegisterController
 			viewController.movement = self.movement
 		} else {
-			let viewController = segue.destination as! BarcodeViewController
+			let viewController = segue.destination as! BarcodeController
 			viewController.movement = self.movement
 		}
 	}

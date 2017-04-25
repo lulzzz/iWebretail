@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ArticleViewCell: UITableViewCell {
+class ArticleCell: UITableViewCell {
 
 	@IBOutlet weak var labelBarcode: UILabel!
 	

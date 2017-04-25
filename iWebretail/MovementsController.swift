@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class MovementsViewController: UITableViewController {
+class MovementsController: UITableViewController {
 
 	var movements: [Movement]
 	
@@ -55,10 +55,10 @@ class MovementsViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Receipt", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "MovementCell", for: indexPath)
 		
 		cell.textLabel?.text = "\(movements[indexPath.row].movementNumber)"
-		cell.detailTextLabel?.text = movements[indexPath.row].movementDate?.formatDateShort()
+		cell.detailTextLabel?.text = movements[indexPath.row].movementDate?.formatDateInput()
         return cell
     }
 	
@@ -81,7 +81,7 @@ class MovementsViewController: UITableViewController {
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		let viewController: MovementViewController = segue.destination as! MovementViewController
+		let viewController = segue.destination as! MovementController
 
 		let indexPath = self.tableView?.indexPathForSelectedRow
 		if (indexPath == nil) {

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
+class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
 
 	@IBOutlet weak var numberTextField: UITextField!
 	@IBOutlet weak var dateTextField: UITextField!
@@ -76,7 +76,7 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 		let datePickerView = UIDatePicker()
 		datePickerView.datePickerMode = UIDatePickerMode.date
 		sender.inputView = datePickerView
-		datePickerView.addTarget(self, action: #selector(RegisterViewController.datePickerValueChanged), for: UIControlEvents.valueChanged)
+		datePickerView.addTarget(self, action: #selector(RegisterController.datePickerValueChanged), for: UIControlEvents.valueChanged)
 	}
 	
 	@IBAction func causalFieldEditing(_ sender: UITextField) {
@@ -137,7 +137,7 @@ class RegisterViewController: UIViewController, UIPickerViewDataSource, UIPicker
 	// MARK: - Navigation
 	
 	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		let viewController = segue.destination as! CustomerViewController
+		let viewController = segue.destination as! CustomersController
 		viewController.movement = self.movement
 	}
 }
