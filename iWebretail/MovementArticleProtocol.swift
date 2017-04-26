@@ -12,7 +12,7 @@ protocol MovementArticleProtocol {
 	
 	func get(id: Int64) throws -> MovementArticle?
 	
-	func add(barcode: String, movementId: Int64) throws
+	func add(barcode: String, movementId: Int64) throws -> Bool
 	
 	func update(id: Int64, item: MovementArticle) throws
 	

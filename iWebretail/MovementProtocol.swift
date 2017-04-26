@@ -20,7 +20,7 @@ protocol MovementProtocol {
 	
 	func delete(id: Int64) throws
 
-	func getStore() throws -> Store
+	func getStore() throws -> Store?
 
 	func getCausals() throws -> [Causal]
 

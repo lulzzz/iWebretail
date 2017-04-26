@@ -34,13 +34,16 @@ class MovementArticleRepository: MovementArticleProtocol {
 		return object.first
 	}
 	
-	func add(barcode: String, movementId: Int64) throws {
+	func add(barcode: String, movementId: Int64) throws -> Bool {
 		let articleRequest: NSFetchRequest<ProductArticle> = ProductArticle.fetchRequest()
 		articleRequest.predicate = NSPredicate.init(format: "articleBarcode == %@", barcode)
 		articleRequest.fetchLimit = 1
 		let articles = try! context.fetch(articleRequest)
+		if articles.count == 0 {
+			return false
+		}
+		
 		let article = articles.first!
-
 		let productRequest: NSFetchRequest<Product> = Product.fetchRequest()
 		productRequest.predicate = NSPredicate.init(format: "productId == \(article.productId)")
 		productRequest.fetchLimit = 1
@@ -55,6 +58,8 @@ class MovementArticleRepository: MovementArticleProtocol {
 		movementArticle.movementArticleQuantity = 1
 		movementArticle.movementArticlePrice = (products.first?.productSelling)!
 		try context.save()
+		
+		return true
 	}
 	
 	func update(id: Int64, item: MovementArticle) throws {

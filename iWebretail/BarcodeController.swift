@@ -74,8 +74,8 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		found(code: "1000000000002")
-		//read()
+		//found(code: "1000000000002")
+		read()
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -106,11 +106,12 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 	}
 	
 	func found(code: String) {
-		print(code)
 		do {
-			_ = try repository.add(barcode: code, movementId: movement.movementId)
+			if try repository.add(barcode: code, movementId: movement.movementId) == false {
+				self.navigationController?.push(title: "Attention", message: "Barcode \(code) not found!")
+			}
 		} catch {
-			print("Error on add barcode: \(error)")
+			self.navigationController?.alert(title: "Error", message: "\(error)")
 		}
 		
 		read()

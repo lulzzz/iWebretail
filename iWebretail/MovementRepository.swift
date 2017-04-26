@@ -112,12 +112,12 @@ class MovementRepository: MovementProtocol {
 		return NSPredicate(format: "movementDate >= %@ AND movementDate =< %@", argumentArray: [startDate!, endDate!])
 	}
 
-	func getStore() throws -> Store {
+	func getStore() throws -> Store? {
 		let request: NSFetchRequest<Store> = Store.fetchRequest()
 		request.fetchLimit = 1
 		let results = try context.fetch(request)
 		
-		return results.first!
+		return results.first
 	}
 
 	func getCausals() throws -> [Causal] {

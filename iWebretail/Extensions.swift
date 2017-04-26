@@ -7,14 +7,18 @@
 //
 
 import UIKit
+import UserNotifications
 
 let kProgressViewTag = 10000
 let kProgressUpdateNotification = "kProgressUpdateNotification"
 
-extension UINavigationController {
+extension UINavigationController: UNUserNotificationCenterDelegate {
+	
 	open override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		UNUserNotificationCenter.current().delegate = self
+
 		/*
 		let progressView = UIProgressView(progressViewStyle: .bar)
 		progressView.tag = kProgressViewTag
@@ -44,6 +48,36 @@ extension UINavigationController {
 				self.progressView?.setProgress(perc, animated: true)
 			}
 		}
+	}
+
+	func alert(title: String, message: String) {
+		let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+		alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
+		self.present(alert, animated: true, completion: nil)
+	}
+	
+	func push(title: String, message: String) {
+		let center = UNUserNotificationCenter.current()
+		center.getNotificationSettings { (settings) in
+			if settings.authorizationStatus == .authorized {
+				let content = UNMutableNotificationContent()
+				content.title = title
+				content.body = message
+				content.sound = UNNotificationSound.default()
+				content.categoryIdentifier = "message"
+				content.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
+				let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+				let request = UNNotificationRequest.init(identifier: "iWebretail", content: content, trigger: trigger)
+				center.add(request, withCompletionHandler: { (error) in
+					print(error.debugDescription)
+    			})
+			}
+		}
+	}
+
+	public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+		
+		completionHandler([.alert, .sound, .badge])
 	}
 }
 

@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import UserNotifications
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -18,10 +19,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	override init() {
 		ioCContainer.register { MovementRepository() as MovementProtocol }
 		ioCContainer.register { MovementArticleRepository() as MovementArticleProtocol }
+
+		UIApplication.shared.applicationIconBadgeNumber = 0
 	}
 	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		// Override point for customization after application launch.
+		
+		UNUserNotificationCenter.current().requestAuthorization(
+			options: [.alert,.sound,.badge],
+			completionHandler: { (granted,error) in
+				if !granted {
+					print("Something went wrong")
+				}
+			}
+		)
+		
 		Synchronizer.shared.login()
 		return true
 	}

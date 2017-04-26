@@ -19,17 +19,18 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	
 	private let repository: MovementProtocol
 	
-	let store: Store
-	let causals: [Causal]
+	var store: Store?
+	var causals: [Causal]
 	var customer: Customer? = nil
 	var movement: Movement!
 	
 	required init?(coder aDecoder: NSCoder) {
 		let delegate = UIApplication.shared.delegate as! AppDelegate
 		repository = delegate.ioCContainer.resolve() as MovementProtocol
+
 		store = try! repository.getStore()
 		causals = try! repository.getCausals()
-		
+
 		super.init(coder: aDecoder)
 	}
 
@@ -48,9 +49,11 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 		
 		if movement.movementStore != nil {
 			storeTextField.text = movement.movementStore!.getJSONValues()["storeName"] as? String
+		} else if store == nil {
+			self.navigationController?.alert(title: "Attention", message: "Register your device: \(UIDevice.current.name)")
 		} else {
-			storeTextField.text = store.storeName
-			movement.movementStore = store.getJSONValues().getJSONString()
+			storeTextField.text = store!.storeName
+			movement.movementStore = store!.getJSONValues().getJSONString()
 		}
 		
 		if movement.movementCausal != nil {
@@ -96,9 +99,7 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 			
 			try repository.update(id: movement.movementId, item: movement)
 		} catch {
-			let alert = UIAlertController(title: "Error", message: "\(error)", preferredStyle: UIAlertControllerStyle.alert)
-			alert.addAction(UIAlertAction(title: "OK", style: UIAlertActionStyle.default, handler: nil))
-			self.present(alert, animated: true, completion: nil)
+			self.navigationController?.alert(title: "Error", message: "\(error)")
 		}
 		
 		navigationController?.popToRootViewController(animated: true)
@@ -107,7 +108,7 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	func datePickerValueChanged(sender:UIDatePicker) {
 		dateTextField.text = (sender.date as NSDate).formatDateInput()
 	}
-
+	
 	//MARK: - Delegates and data sources
 	
 	func numberOfComponents(in pickerView: UIPickerView) -> Int {
