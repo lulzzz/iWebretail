@@ -39,7 +39,7 @@ class MovementsController: UITableViewController {
 			movements = try repository.getAll()
 			self.tableView.reloadData()
 		} catch {
-			print("Error on movement getAll: \(error)")
+			self.navigationController?.alert(title: "Error", message: "\(error)")
 		}
  	}
 	
@@ -73,7 +73,7 @@ class MovementsController: UITableViewController {
 				self.movements.remove(at: indexPath.row)
 				tableView.deleteRows(at: [indexPath], with: .fade)
 			} catch {
-				print("Error on movement delete: \(error)")
+				self.navigationController?.alert(title: "Error", message: "\(error)")
 			}
         }
     }
@@ -88,7 +88,7 @@ class MovementsController: UITableViewController {
 			do {
 				viewController.movement = try repository.add()
 			} catch {
-				print("Error on movement add: \(error)")
+				self.navigationController?.alert(title: "Error", message: "\(error)")
 			}
 		} else {
 			viewController.movement = self.movements[indexPath!.row]

@@ -112,7 +112,7 @@ class MovementController: UITableViewController {
 				self.movementArticles.remove(at: indexPath.row)
 				tableView.deleteRows(at: [indexPath], with: .fade)
 			} catch {
-				print("Error on article delete: \(error)")
+				self.navigationController?.alert(title: "Error", message: "\(error)")
 			}
 		}
 	}
