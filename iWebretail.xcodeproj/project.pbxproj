@@ -19,6 +19,9 @@
 		562BDAF31EA0CC7B00B8C7D6 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */; };
 		562BDAF61EA0CC9D00B8C7D6 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */; };
 		567A40EB1EADF0F9003A6A33 /* CustomersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567A40EA1EADF0F9003A6A33 /* CustomersViewController.swift */; };
+		567B2D9E1EB129BA004EB68C /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 567B2D9B1EB129BA004EB68C /* iTunesArtwork */; };
+		567B2D9F1EB129BA004EB68C /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = 567B2D9C1EB129BA004EB68C /* iTunesArtwork@2x */; };
+		567B2DA01EB129BA004EB68C /* iTunesArtwork@3x in Resources */ = {isa = PBXBuildFile; fileRef = 567B2D9D1EB129BA004EB68C /* iTunesArtwork@3x */; };
 		56ECF5951EA4B655001B9E21 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56ECF5941EA4B655001B9E21 /* Extensions.swift */; };
 		56ECF5971EA4B6D4001B9E21 /* Synchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56ECF5961EA4B6D4001B9E21 /* Synchronizer.swift */; };
 		56FE39971E9EB60C007FE7F5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FE39961E9EB60C007FE7F5 /* AppDelegate.swift */; };
@@ -42,6 +45,9 @@
 		562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		562BDAF51EA0CC9D00B8C7D6 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		567A40EA1EADF0F9003A6A33 /* CustomersViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomersViewController.swift; sourceTree = "<group>"; };
+		567B2D9B1EB129BA004EB68C /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
+		567B2D9C1EB129BA004EB68C /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@2x"; sourceTree = "<group>"; };
+		567B2D9D1EB129BA004EB68C /* iTunesArtwork@3x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@3x"; sourceTree = "<group>"; };
 		56ECF5941EA4B655001B9E21 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		56ECF5961EA4B6D4001B9E21 /* Synchronizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronizer.swift; sourceTree = "<group>"; };
 		56FE39931E9EB60C007FE7F5 /* iWebretail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iWebretail.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -77,6 +83,9 @@
 		567A40EC1EADF131003A6A33 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				567B2D9B1EB129BA004EB68C /* iTunesArtwork */,
+				567B2D9C1EB129BA004EB68C /* iTunesArtwork@2x */,
+				567B2D9D1EB129BA004EB68C /* iTunesArtwork@3x */,
 				56FE399F1E9EB60C007FE7F5 /* Assets.xcassets */,
 				56FE399C1E9EB60C007FE7F5 /* Main.storyboard */,
 				56FE39A11E9EB60C007FE7F5 /* LaunchScreen.storyboard */,
@@ -187,7 +196,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				56FE39A31E9EB60C007FE7F5 /* LaunchScreen.storyboard in Resources */,
+				567B2D9F1EB129BA004EB68C /* iTunesArtwork@2x in Resources */,
 				56FE39A01E9EB60C007FE7F5 /* Assets.xcassets in Resources */,
+				567B2D9E1EB129BA004EB68C /* iTunesArtwork in Resources */,
+				567B2DA01EB129BA004EB68C /* iTunesArtwork@3x in Resources */,
 				56FE399E1E9EB60C007FE7F5 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
