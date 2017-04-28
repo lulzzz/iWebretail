@@ -65,16 +65,31 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+
 		if movement.movementCustomer != nil {
 			customerButton.setTitle(movement.movementCustomer!.getJSONValues()["customerName"] as? String, for: .normal)
 		}
 	}
 
-	override func didReceiveMemoryWarning() {
-		super.didReceiveMemoryWarning()
-		// Dispose of any resources that can be recreated.
+	override func viewWillDisappear(_ animated: Bool) {
+		NotificationCenter.default.removeObserver(self,name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+		NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
 	}
 
+	func keyboardWillShow(notification: NSNotification) {
+		if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+			let h = self.view.frame.height - keyboardSize.height
+			let offset = (noteTextView.isFirstResponder ? noteTextView.frame.origin.y + 210 : 0)
+			self.view.frame.origin.y = offset > h ? h - offset : 0
+		}
+	}
+	
+	func keyboardWillHide(notification: NSNotification) {
+		self.view.frame.origin.y = 0
+	}
+	
 	@IBAction func dateFieldEditing(_ sender: UITextField) {
 		let datePickerView = UIDatePicker()
 		datePickerView.datePickerMode = UIDatePickerMode.date

@@ -23,15 +23,60 @@ class CustomerController: UIViewController {
 	
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
     }
+	
+	override func viewDidAppear(_ animated: Bool) {
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil) // self.view.window
+		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+	}
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
+	override func viewWillDisappear(_ animated: Bool) {
+		NotificationCenter.default.removeObserver(self,name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+		NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+	}
+
+	// MARK: - keyboard
+	
+	func keyboardWillShow(notification: NSNotification) {
+		if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+			let h = self.view.frame.height - keyboardSize.height
+			let offset = getOffset() + 152
+			self.view.frame.origin.y = offset > h ? h - offset : 0
+		}
+	}
+	
+	func keyboardWillHide(notification: NSNotification) {
+		self.view.frame.origin.y = 0
+	}
+
+	func getOffset() -> CGFloat {
+		if nameTextField.isEditing {
+			return nameTextField.frame.origin.y
+		}
+		if emailTextField.isEditing {
+			return emailTextField.frame.origin.y
+		}
+		if phoneTextField.isEditing {
+			return phoneTextField.frame.origin.y
+		}
+		if addressTextField.isEditing {
+			return addressTextField.frame.origin.y
+		}
+		if cityTextField.isEditing {
+			return cityTextField.frame.origin.y
+		}
+		if zipTextField.isEditing {
+			return zipTextField.frame.origin.y
+		}
+		if countryTextField.isEditing {
+			return countryTextField.frame.origin.y
+		}
+		if fiscalcodeTextField.isEditing {
+			return fiscalcodeTextField.frame.origin.y
+		}
+		return vatnumberTextField.frame.origin.y
+	}
+	
 	@IBAction func saveButton(_ sender: UIBarButtonItem) {
 	}
 
