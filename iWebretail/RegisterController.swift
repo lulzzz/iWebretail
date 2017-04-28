@@ -77,18 +77,6 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 		NotificationCenter.default.removeObserver(self,name: NSNotification.Name.UIKeyboardWillShow, object: nil)
 		NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIKeyboardWillHide, object: nil)
 	}
-
-	func keyboardWillShow(notification: NSNotification) {
-		if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-			let h = self.view.frame.height - keyboardSize.height
-			let offset = (noteTextView.isFirstResponder ? noteTextView.frame.origin.y + 210 : 0)
-			self.view.frame.origin.y = offset > h ? h - offset : 0
-		}
-	}
-	
-	func keyboardWillHide(notification: NSNotification) {
-		self.view.frame.origin.y = 0
-	}
 	
 	@IBAction func dateFieldEditing(_ sender: UITextField) {
 		let datePickerView = UIDatePicker()
@@ -124,6 +112,20 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 		dateTextField.text = (sender.date as NSDate).formatDateInput()
 	}
 	
+	// MARK: - keyboard
+	
+	func keyboardWillShow(notification: NSNotification) {
+		if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+			let h = self.view.frame.height - keyboardSize.height
+			let offset = (noteTextView.isFirstResponder ? noteTextView.frame.origin.y + 210 : 0)
+			self.view.frame.origin.y = offset > h ? h - offset : 0
+		}
+	}
+	
+	func keyboardWillHide(notification: NSNotification) {
+		self.view.frame.origin.y = 0
+	}
+
 	//MARK: - Delegates and data sources
 	
 	func numberOfComponents(in pickerView: UIPickerView) -> Int {
