@@ -165,8 +165,8 @@ class Synchronizer {
 					for (index, item) in items.enumerated() {
 						let customer = Customer(context: context)
 						customer.setJSONValues(json: item)
+						try self.deleteCustomerIfExist(id: customer.customerId, context: context)
 						context.insert(customer)
-						
 						try context.save()
 						self.notify(total: items.count, current: index + 1)
 					}
@@ -175,6 +175,17 @@ class Synchronizer {
 				}
 			}
 		})
+	}
+
+	func deleteCustomerIfExist(id: Int64, context: NSManagedObjectContext) throws {
+		let fetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
+		fetchRequest.predicate = NSPredicate.init(format: "customerId == \(id)")
+		fetchRequest.fetchLimit = 1
+		let object = try context.fetch(fetchRequest)
+		if let item = object.first {
+			context.delete(item)
+			try context.save()
+		}
 	}
 
 	func syncProducts(context: NSManagedObjectContext) {
@@ -198,6 +209,7 @@ class Synchronizer {
 					for (index, item) in items.enumerated() {
 						let product = Product(context: context)
 						product.setJSONValues(json: item)
+						try self.deleteProductIfExist(id: product.productId, context: context)
 						context.insert(product)
 												
 						for article in item["articles"] as! [NSDictionary] {
@@ -215,6 +227,25 @@ class Synchronizer {
 				}
 			}
 		})
+	}
+
+	func deleteProductIfExist(id: Int64, context: NSManagedObjectContext) throws {
+		let fetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
+		fetchRequest.predicate = NSPredicate.init(format: "productId == \(id)")
+		fetchRequest.fetchLimit = 1
+		let object = try context.fetch(fetchRequest)
+		if let item = object.first {
+			context.delete(item)
+
+			let request: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
+			request.predicate = NSPredicate.init(format: "productId == \(id)")
+			let rows = try context.fetch(request)
+			for row in rows {
+				context.delete(row)
+			}
+			
+			try context.save()
+		}
 	}
 
 	func notify(total: Int, current: Int) {
@@ -259,8 +290,10 @@ class Synchronizer {
 			makeHTTPPostRequest(url: "api/syncronize/movement", body: item.getJSONValues(rows: rows), onCompletion:  { data, error in
 				if error != nil {
 					print(error!.localizedDescription)
-				} else {
+				} else if let usableData = data {
 					do {
+						let json = try JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as! NSDictionary
+						item.movementNumber = json["movementNumber"] as! Int32
 						item.synced = true
 						try context.save()
 					} catch {

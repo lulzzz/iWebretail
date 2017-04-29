@@ -22,14 +22,14 @@ class MovementArticleRepository: MovementArticleProtocol {
 		let fetchRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "movementId == \(id)")
 		
-		return try! context.fetch(fetchRequest)
+		return try context.fetch(fetchRequest)
 	}
 	
 	func get(id: Int64) throws -> MovementArticle? {
 		let fetchRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "movementArticleId == \(id)")
 		fetchRequest.fetchLimit = 1
-		let object = try! context.fetch(fetchRequest)
+		let object = try context.fetch(fetchRequest)
 		
 		return object.first
 	}
@@ -38,7 +38,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 		let articleRequest: NSFetchRequest<ProductArticle> = ProductArticle.fetchRequest()
 		articleRequest.predicate = NSPredicate.init(format: "articleBarcode == %@", barcode)
 		articleRequest.fetchLimit = 1
-		let articles = try! context.fetch(articleRequest)
+		let articles = try context.fetch(articleRequest)
 		if articles.count == 0 {
 			return false
 		}
@@ -47,7 +47,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 		let productRequest: NSFetchRequest<Product> = Product.fetchRequest()
 		productRequest.predicate = NSPredicate.init(format: "productId == \(article.productId)")
 		productRequest.fetchLimit = 1
-		let products = try! context.fetch(productRequest)
+		let products = try context.fetch(productRequest)
 
 		let entity =  NSEntityDescription.entity(forEntityName: "MovementArticle", in: context)
 		let movementArticle = MovementArticle(entity: entity!, insertInto: context)

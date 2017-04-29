@@ -28,7 +28,7 @@ class MovementRepository: MovementProtocol {
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "movementId == \(id)")
 		fetchRequest.fetchLimit = 1
-		let object = try! context.fetch(fetchRequest)
+		let object = try context.fetch(fetchRequest)
 		
 		return object.first
 	}
@@ -65,7 +65,7 @@ class MovementRepository: MovementProtocol {
 
 		let fetchRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "movementId == \(id)")
-		let rows = try! context.fetch(fetchRequest)
+		let rows = try context.fetch(fetchRequest)
 		for row in rows {
 			context.delete(row)
 		}
@@ -91,7 +91,7 @@ class MovementRepository: MovementProtocol {
 	func newNumber() throws -> Int32 {
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		fetchRequest.predicate = self.makeDayPredicate(date: Date())
-		let items = try! context.fetch(fetchRequest)
+		let items = try context.fetch(fetchRequest)
 		let max = items.max { $0.movementNumber < $1.movementNumber }
 		
 		return max == nil ? 1 : max!.movementNumber + 1

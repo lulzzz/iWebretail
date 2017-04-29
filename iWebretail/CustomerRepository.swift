@@ -33,7 +33,7 @@ class CustomerRepository: CustomerProtocol {
 		let fetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "customerId == \(id)")
 		fetchRequest.fetchLimit = 1
-		let object = try! context.fetch(fetchRequest)
+		let object = try context.fetch(fetchRequest)
 		
 		return object.first
 	}
