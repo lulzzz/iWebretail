@@ -14,14 +14,12 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 	
 	var products: [Product]!
 	var filtered: [Product]!
-	var articles: [ProductArticle]
 	public var movement: Movement!
 	private let repository: MovementArticleProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
 		let delegate = UIApplication.shared.delegate as! AppDelegate
 		repository = delegate.ioCContainer.resolve() as MovementArticleProtocol
-		articles = []
 		
 		super.init(coder: aDecoder)
 	}
@@ -60,7 +58,6 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		do {
 			let items = try repository.getArticles(productId: filtered[section].productId)
-			articles.append(contentsOf: items)
 			return items.count
 		} catch {
 			print("\(error)")
@@ -71,20 +68,24 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "ProductCell", for: indexPath)
 		
-		let items = articles.filter{ item in
-			return item.productId == filtered[indexPath.section].productId
+		do {
+			let items = try repository.getArticles(productId: filtered[indexPath.section].productId)
+			cell.textLabel?.text = items[indexPath.row].articleAttributes
+			cell.detailTextLabel?.text = items[indexPath.row].articleBarcode
+		} catch {
+			print("\(error)")
 		}
-		cell.textLabel?.text = items[indexPath.row].articleBarcode
-		cell.detailTextLabel?.text = items[indexPath.row].articleAttributes
 		
 		return cell
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let items = articles.filter{ item in
-			return item.productId == filtered[indexPath.section].productId
+		do {
+			let items = try repository.getArticles(productId: filtered[indexPath.section].productId)
+			_ = try repository.add(barcode: items[indexPath.row].articleBarcode!, movementId: movement.movementId)
+		} catch {
+			print("\(error)")
 		}
-		_ = try! repository.add(barcode: items[indexPath.row].articleBarcode!, movementId: movement.movementId)
 
 		navigationController?.popViewController(animated: true)
 	}

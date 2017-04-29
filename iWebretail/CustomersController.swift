@@ -12,6 +12,7 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 
 	@IBOutlet weak var searchBar: UISearchBar!
 	
+	var letters: [String]!
 	var customers: [Customer]!
 	var filtered: [Customer]!
 	public var movement: Movement!
@@ -32,6 +33,7 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 	override func viewWillAppear(_ animated: Bool) {
 		customers = try! repository.getAll(search: "")
 		filtered = customers
+		self.loadLetters()
 		self.tableView.reloadData()
 	}
 	
@@ -44,30 +46,53 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 				return tmp.customerName!.contains(searchText)
 			})
 		}
+		self.loadLetters()
 		self.tableView.reloadData()
 	}
 	
+	func loadLetters() {
+		letters = filtered.map { (item) -> String in
+			return item.customerName![item.customerName!.startIndex].description
+		}
+	}
+
+	func getCustomers(section: Int) -> [Customer] {
+		return filtered.filter({ (item) -> Bool in
+			let tmp: Customer = item
+			return tmp.customerName!.hasPrefix(self.letters[section])
+		})
+	}
 	// MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return letters.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filtered.count
+        return getCustomers(section: section).count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		return letters[section].description
+	}
+
+	override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+		return self.letters
+	}
+	
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomerCell", for: indexPath)
 
-		cell.textLabel?.text = filtered[indexPath.row].customerName
-		cell.detailTextLabel?.text = filtered[indexPath.row].customerEmail
+		let items = getCustomers(section: indexPath.section)
+		cell.textLabel?.text = items[indexPath.row].customerName
+		cell.detailTextLabel?.text = items[indexPath.row].customerEmail
 
         return cell
     }
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		movement.movementCustomer = filtered[indexPath.row].getJSONValues().getJSONString()
+		let items = getCustomers(section: indexPath.section)
+		movement.movementCustomer = items[indexPath.row].getJSONValues().getJSONString()
 		navigationController?.popViewController(animated: true)
 	}
 	
@@ -76,10 +101,12 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 	}
 
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+		let items = getCustomers(section: indexPath.section)
+		let item = items[indexPath.row]
 		let delete = UITableViewRowAction(style: .destructive, title: "Delete") { action, index in
 			do {
-				try self.repository.delete(id: self.filtered[indexPath.row].customerId)
-				self.filtered.remove(at: indexPath.row)
+				try self.repository.delete(id: item.customerId)
+				self.filtered.remove(at: self.filtered.index(of: item)!)
 				tableView.deleteRows(at: [indexPath], with: .fade)
 			} catch {
 				self.navigationController?.alert(title: "Error", message: "\(error)")
@@ -89,7 +116,7 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 		let edit = UITableViewRowAction(style: .normal, title: "Edit") { action, index in
 			let storyboard = UIStoryboard(name: "Main", bundle: nil)
 			let vc = storyboard.instantiateViewController(withIdentifier: "CustomerView") as! CustomerController
-			vc.customer = self.filtered[indexPath.row]
+			vc.customer = item
 			self.navigationController!.pushViewController(vc, animated: true)
 		}
 		
