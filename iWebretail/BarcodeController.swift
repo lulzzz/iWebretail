@@ -12,8 +12,7 @@ import UIKit
 class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 	var captureSession: AVCaptureSession!
 	var previewLayer: AVCaptureVideoPreviewLayer!
-	var movement: Movement!
-	
+	public var movement: Movement!	
 	private var repository: MovementArticleProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -66,9 +65,7 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 	}
 	
 	func failed() {
-		let ac = UIAlertController(title: "Scanning not supported", message: "Your device does not support scanning a code from an item. Please use a device with a camera.", preferredStyle: .alert)
-		ac.addAction(UIAlertAction(title: "OK", style: .default))
-		present(ac, animated: true)
+		self.navigationController?.alert(title: "Scanning not supported", message: "Your device does not support scanning a code from an item. Please use a device with a camera.")
 		captureSession = nil
 	}
 	

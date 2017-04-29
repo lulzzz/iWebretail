@@ -19,6 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	override init() {
 		ioCContainer.register { MovementRepository() as MovementProtocol }
 		ioCContainer.register { MovementArticleRepository() as MovementArticleProtocol }
+		ioCContainer.register { CustomerRepository() as CustomerProtocol }
 
 		UIApplication.shared.applicationIconBadgeNumber = 0
 	}

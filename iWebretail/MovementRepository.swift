@@ -125,15 +125,4 @@ class MovementRepository: MovementProtocol {
 
 		return try context.fetch(request)
 	}
-
-	func getCustomers(search: String) throws -> [Customer] {
-		let request: NSFetchRequest<Customer> = Customer.fetchRequest()
-		if !search.isEmpty {
-			request.predicate = NSPredicate.init(format: "customerName LIKE[c] %@", search)
-		}
-		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "customerName", ascending: true)
-		request.sortDescriptors = [idDescriptor]
-
-		return try context.fetch(request)
-	}
 }

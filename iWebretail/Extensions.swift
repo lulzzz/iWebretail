@@ -86,6 +86,12 @@ class ProgressNotification {
 	var total: Int = 0
 }
 
+extension Int64 {
+	static func now() -> Int64 {
+		return Int64(Date.timeIntervalSinceReferenceDate)
+	}
+}
+
 extension String {
 	func toDateInput() -> NSDate {
 		let formatter = DateFormatter()

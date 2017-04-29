@@ -168,7 +168,7 @@
         <!--Customer-->
         <scene sceneID="jUh-uo-E68">
             <objects>
-                <viewController id="v0K-dT-Wp5" customClass="CustomerController" customModule="iWebretail" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="CustomerView" id="v0K-dT-Wp5" customClass="CustomerController" customModule="iWebretail" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="5dh-pL-Jp5"/>
                         <viewControllerLayoutGuide type="bottom" id="nOC-iW-BMx"/>

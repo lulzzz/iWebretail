@@ -17,12 +17,11 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	@IBOutlet weak var customerButton: UIButton!
 	@IBOutlet weak var noteTextView: UITextView!
 	
-	private let repository: MovementProtocol
-	
 	var store: Store?
 	var causals: [Causal]
 	var customer: Customer? = nil
-	var movement: Movement!
+	public var movement: Movement!
+	private let repository: MovementProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
 		let delegate = UIApplication.shared.delegate as! AppDelegate

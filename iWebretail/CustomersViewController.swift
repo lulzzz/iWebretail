@@ -15,30 +15,26 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 	var movement: Movement!
 	var customers: [Customer]!
 	var filtered: [Customer]!
-	private let repository: MovementProtocol
+	private let repository: CustomerProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
 		let delegate = UIApplication.shared.delegate as! AppDelegate
-		repository = delegate.ioCContainer.resolve() as MovementProtocol
+		repository = delegate.ioCContainer.resolve() as CustomerProtocol
 		
 		super.init(coder: aDecoder)
 	}
 
 	override func viewDidLoad() {
         super.viewDidLoad()
-
 		searchBar.delegate = self
-		
-		customers = try! repository.getCustomers(search: "")
+	}
+
+	override func viewWillAppear(_ animated: Bool) {
+		customers = try! repository.getAll(search: "")
 		filtered = customers
 		self.tableView.reloadData()
 	}
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-
+	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
 		if searchText.isEmpty {
 			filtered = customers
@@ -80,12 +76,23 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 	}
 
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-		let edit = UITableViewRowAction(style: .normal, title: "Edit") { action, index in
-			//self.isEditing = false
-			print("edit button tapped")
+		let delete = UITableViewRowAction(style: .destructive, title: "Delete") { action, index in
+			do {
+				try self.repository.delete(id: self.filtered[indexPath.row].customerId)
+				self.filtered.remove(at: indexPath.row)
+				tableView.deleteRows(at: [indexPath], with: .fade)
+			} catch {
+				self.navigationController?.alert(title: "Error", message: "\(error)")
+			}
 		}
-		edit.backgroundColor = UIColor.blue
+
+		let edit = UITableViewRowAction(style: .normal, title: "Edit") { action, index in
+			let storyboard = UIStoryboard(name: "Main", bundle: nil)
+			let vc = storyboard.instantiateViewController(withIdentifier: "CustomerView") as! CustomerController
+			vc.customer = self.filtered[indexPath.row]
+			self.navigationController!.pushViewController(vc, animated: true)
+		}
 		
-		return [edit]
+		return [delete, edit]
 	}
 }

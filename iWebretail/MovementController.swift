@@ -10,7 +10,7 @@ import UIKit
 
 class MovementController: UITableViewController {
 	
-	var movement: Movement!
+	public var movement: Movement!
 	var movementArticles: [MovementArticle]
 	
 	private var repository: MovementArticleProtocol
