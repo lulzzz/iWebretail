@@ -21,4 +21,6 @@ protocol MovementArticleProtocol {
 	func getProducts(search: String) throws -> [Product]
 
 	func getArticles(productId: Int64) throws -> [ProductArticle]
+	
+	func updateAmount(item: Movement, amount: Double) throws -> Movement
 }

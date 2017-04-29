@@ -87,6 +87,8 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 			print("\(error)")
 		}
 
-		navigationController?.popViewController(animated: true)
+		if let composeViewController = self.navigationController?.viewControllers[1] {
+			self.navigationController?.popToViewController(composeViewController, animated: true)
+		}
 	}
 }

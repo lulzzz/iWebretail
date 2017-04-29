@@ -92,6 +92,18 @@ extension Int64 {
 	}
 }
 
+extension Double {
+	func formatCurrency() -> String {
+		let formatter = NumberFormatter()
+		formatter.numberStyle = .currency
+		formatter.maximumFractionDigits = 2;
+		formatter.locale = Locale.current
+		let result = formatter.string(from: self as NSNumber);
+		
+		return result!
+	}
+}
+
 extension String {
 	func toDateInput() -> NSDate {
 		let formatter = DateFormatter()

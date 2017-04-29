@@ -27,12 +27,8 @@ class MovementsController: UITableViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 
-		Synchronizer.shared.pull(date: Date())
+		self.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
    	}
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
 
 	override func viewDidAppear(_ animated: Bool) {
 		do {
@@ -43,6 +39,11 @@ class MovementsController: UITableViewController {
 		}
  	}
 	
+	func refresh(sender:AnyObject)
+	{
+		Synchronizer.shared.pull(date: Date())
+		self.refreshControl?.endRefreshing()
+	}
 	
 	// MARK: - Table view data source
 
@@ -57,8 +58,8 @@ class MovementsController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovementCell", for: indexPath)
 		
-		cell.textLabel?.text = "\(movements[indexPath.row].movementNumber)"
-		cell.detailTextLabel?.text = movements[indexPath.row].movementDate?.formatDateInput()
+		cell.textLabel?.text = "\(movements[indexPath.row].movementNumber)     \(movements[indexPath.row].movementDate!.formatDateInput())"
+		cell.detailTextLabel?.text = movements[indexPath.row].movementAmount.formatCurrency()
         return cell
     }
 	

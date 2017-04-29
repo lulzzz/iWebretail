@@ -114,13 +114,11 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 		read()
 	}
 	
-	/*
-	// MARK: - Navigation
-	func addItem(barcode: String) {
 
-		let firstView = storyboard?.instantiateViewController(withIdentifier: "FirstView") as! FirstViewController
-		firstView.items.append(barcode)
-		navigationController?.pushViewController(firstView, animated: true)
+	// MARK: - Navigation
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		let viewController = segue.destination as! ProductController
+		viewController.movement = movement
 	}
-	*/
 }

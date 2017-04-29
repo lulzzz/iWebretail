@@ -10,6 +10,8 @@ import UIKit
 
 class MovementController: UITableViewController {
 	
+	@IBOutlet weak var amountLabel: UILabel!
+
 	public var movement: Movement!
 	var movementArticles: [MovementArticle]
 	
@@ -23,19 +25,9 @@ class MovementController: UITableViewController {
 		super.init(coder: aDecoder)
 	}
 
-	override func viewDidLoad() {
-		super.viewDidLoad()
-		// Do any additional setup after loading the view, typically from a nib.
-		
-	}
-
-	override func didReceiveMemoryWarning() {
-		super.didReceiveMemoryWarning()
-		// Dispose of any resources that can be recreated.
-	}
-
 	override func viewDidAppear(_ animated: Bool) {
 		self.movementArticles = try! repository.getAll(id: movement.movementId)
+		self.updateAmount()
 		tableView.reloadData()
 	}
 	
@@ -49,7 +41,8 @@ class MovementController: UITableViewController {
 		cell.textQuantity.text = String(sender.value)
 		cell.textAmount.text = String(item.movementArticleQuantity * item.movementArticlePrice)
 		
-		 try! repository.update(id: item.movementArticleId, item: item)
+		try! repository.update(id: item.movementArticleId, item: item)
+		self.updateAmount()
 	}
 	
 	@IBAction func textValueChanged(_ sender: UITextField) {
@@ -67,6 +60,16 @@ class MovementController: UITableViewController {
 		cell.textAmount.text = String(item.movementArticleQuantity * item.movementArticlePrice)
 
 		try! repository.update(id: item.movementArticleId, item: item)
+		self.updateAmount()
+	}
+	
+	func updateAmount() {
+		let amount = movementArticles
+			.map { $0.movementArticleQuantity * $0.movementArticlePrice as Double }
+			.reduce (0, +)
+		amountLabel.text = amount.formatCurrency()
+		
+		movement = try! repository.updateAmount(item: movement, amount: amount)
 	}
 	
 	// MARK: - Table view data source
@@ -111,6 +114,7 @@ class MovementController: UITableViewController {
 				try repository.delete(id: self.movementArticles[indexPath.row].movementArticleId)
 				self.movementArticles.remove(at: indexPath.row)
 				tableView.deleteRows(at: [indexPath], with: .fade)
+				self.updateAmount()
 			} catch {
 				self.navigationController?.alert(title: "Error", message: "\(error)")
 			}

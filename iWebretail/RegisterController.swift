@@ -10,6 +10,7 @@ import UIKit
 
 class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
 
+	@IBOutlet weak var amountLabel: UILabel!
 	@IBOutlet weak var numberTextField: UITextField!
 	@IBOutlet weak var dateTextField: UITextField!
 	@IBOutlet weak var storeTextField: UITextField!
@@ -36,6 +37,7 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
+		amountLabel.text = movement.movementAmount.formatCurrency()
 		numberTextField.text = String(movement.movementNumber)
 		dateTextField.text = movement.movementDate?.formatDateInput()
 		noteTextView.text = movement.movementNote
@@ -110,7 +112,7 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	func datePickerValueChanged(sender:UIDatePicker) {
 		dateTextField.text = (sender.date as NSDate).formatDateInput()
 	}
-	
+
 	// MARK: - keyboard
 	
 	func keyboardWillShow(notification: NSNotification) {
