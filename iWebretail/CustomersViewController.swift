@@ -12,9 +12,9 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 
 	@IBOutlet weak var searchBar: UISearchBar!
 	
-	var movement: Movement!
 	var customers: [Customer]!
 	var filtered: [Customer]!
+	public var movement: Movement!
 	private let repository: CustomerProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
