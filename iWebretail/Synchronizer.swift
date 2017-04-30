@@ -84,7 +84,12 @@ class Synchronizer {
 	}
 	
 	func syncStore(context: NSManagedObjectContext) {
-		makeHTTPGetRequest(url: "api/cashregister", onCompletion: { data, error in
+		let fetchRequest: NSFetchRequest<Store> = Store.fetchRequest()
+		fetchRequest.fetchLimit = 1
+		let objects = try! context.fetch(fetchRequest)
+		let store = objects.count == 0 ? Store(context: context) : objects.first!
+
+		makeHTTPGetRequest(url: "api/cashregisterfrom/\(store.updatedAt)", onCompletion: { data, error in
 			if error != nil {
 				print(error!.localizedDescription)
 				return
@@ -96,11 +101,8 @@ class Synchronizer {
 					
 					for item in items {
 						if UIDevice.current.name == item["cashRegisterName"] as! String {
-							let fetchRequest: NSFetchRequest<Store> = Store.fetchRequest()
-							fetchRequest.fetchLimit = 1
-							let objects = try! context.fetch(fetchRequest)
-							let store = objects.count == 0 ? Store(context: context) : objects.first!
 							store.setJSONValues(json: item["store"] as! NSDictionary)
+							store.updatedAt = item["updatedAt"] as! Int64
 							try context.save()
 						}
 					}
@@ -119,7 +121,7 @@ class Synchronizer {
 		let results = try! context.fetch(fetchRequest)
 		let date = results.count == 1 ? results.first!.updatedAt : 0
 		
-		makeHTTPGetRequest(url: "/api/syncronize/causal/\(date)", onCompletion: { data, error in
+		makeHTTPGetRequest(url: "/api/causalfrom/\(date)", onCompletion: { data, error in
 			if error != nil {
 				print(error!.localizedDescription)
 				return
@@ -132,8 +134,8 @@ class Synchronizer {
 					for (index, item) in items.enumerated() {
 						let causal = Causal(context: context)
 						causal.setJSONValues(json: item)
+						try self.deleteCausalIfExist(id: causal.causalId, context: context)
 						context.insert(causal)
-						
 						try context.save()
 						self.notify(total: items.count, current: index + 1)
 					}
@@ -144,6 +146,17 @@ class Synchronizer {
 		})
 	}
 
+	func deleteCausalIfExist(id: Int16, context: NSManagedObjectContext) throws {
+		let fetchRequest: NSFetchRequest<Causal> = Causal.fetchRequest()
+		fetchRequest.predicate = NSPredicate.init(format: "causalId == \(id)")
+		fetchRequest.fetchLimit = 1
+		let object = try context.fetch(fetchRequest)
+		if let item = object.first {
+			context.delete(item)
+			try context.save()
+		}
+	}
+
 	func syncCustomers(context: NSManagedObjectContext) {
 		let fetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "updatedAt", ascending: false)
@@ -152,7 +165,7 @@ class Synchronizer {
 		let results = try! context.fetch(fetchRequest)
 		let date = results.count == 1 ? results.first!.updatedAt : 0
 		
-		makeHTTPGetRequest(url: "/api/syncronize/customer/\(date)", onCompletion: { data, error in
+		makeHTTPGetRequest(url: "/api/customerfrom/\(date)", onCompletion: { data, error in
 			if error != nil {
 				print(error!.localizedDescription)
 				return
@@ -196,7 +209,7 @@ class Synchronizer {
 		let results = try! context.fetch(fetchRequest)
 		let date = results.count == 1 ? results.first!.updatedAt : 0
 		
-		makeHTTPGetRequest(url: "/api/syncronize/product/\(date)", onCompletion: { data, error in
+		makeHTTPGetRequest(url: "/api/productfrom/\(date)", onCompletion: { data, error in
 			if error != nil {
 				print(error!.localizedDescription)
 				return
@@ -287,7 +300,7 @@ class Synchronizer {
 			rowsRequest.predicate = NSPredicate.init(format: "movementId == \(item.movementId)")
 			let rows = try! context.fetch(rowsRequest)
 
-			makeHTTPPostRequest(url: "api/syncronize/movement", body: item.getJSONValues(rows: rows), onCompletion:  { data, error in
+			makeHTTPPostRequest(url: "api/movement", body: item.getJSONValues(rows: rows), onCompletion:  { data, error in
 				if error != nil {
 					print(error!.localizedDescription)
 				} else if let usableData = data {
