@@ -118,7 +118,7 @@ class Synchronizer {
 		fetchRequest.sortDescriptors = [idDescriptor]
 		fetchRequest.fetchLimit = 1
 		let results = try! context.fetch(fetchRequest)
-		let date = results.count == 1 ? results.first!.updatedAt : 0
+		let date = results.count == 1 ? results.first!.updatedAt : 1
 		
 		makeHTTPGetRequest(url: "/api/causalfrom/\(date)", onCompletion: { data, error in
 			if error != nil {
@@ -163,7 +163,7 @@ class Synchronizer {
 		fetchRequest.sortDescriptors = [idDescriptor]
 		fetchRequest.fetchLimit = 1
 		let results = try! context.fetch(fetchRequest)
-		let date = results.count == 1 ? results.first!.updatedAt : 0
+		let date = results.count == 1 ? results.first!.updatedAt : 1
 		
 		makeHTTPGetRequest(url: "/api/customerfrom/\(date)", onCompletion: { data, error in
 			if error != nil {
@@ -208,7 +208,7 @@ class Synchronizer {
 		fetchRequest.sortDescriptors = [idDescriptor]
 		fetchRequest.fetchLimit = 1
 		let results = try! context.fetch(fetchRequest)
-		let date = results.count == 1 ? results.first!.updatedAt : 0
+		let date = results.count == 1 ? results.first!.updatedAt : 1
 		
 		makeHTTPGetRequest(url: "/api/productfrom/\(date)", onCompletion: { data, error in
 			if error != nil {
