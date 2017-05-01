@@ -21,7 +21,6 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	var store: Store?
 	var causals: [Causal]
 	var customer: Customer? = nil
-	public var movement: Movement!
 	private let repository: MovementProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -36,6 +35,12 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		
+		let movement = Synchronizer.shared.movement!
+		
+		if movement.completed {
+			self.navigationItem.rightBarButtonItem?.isEnabled = false
+		}
 		
 		amountLabel.text = movement.movementAmount.formatCurrency()
 		numberTextField.text = String(movement.movementNumber)
@@ -69,6 +74,7 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
 		NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
 
+		let movement = Synchronizer.shared.movement!
 		if movement.movementCustomer != nil {
 			customerButton.setTitle(movement.movementCustomer!.getJSONValues()["customerName"] as? String, for: .normal)
 		}
@@ -95,6 +101,8 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 
 	@IBAction func buttonSave(_ sender: UIBarButtonItem) {
 		do {
+			let movement = Synchronizer.shared.movement!
+
 			movement.movementNumber = Int32(numberTextField.text!)!
 			movement.movementDate = dateTextField.text!.toDateInput()
 			movement.movementNote = noteTextView.text
@@ -144,6 +152,8 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	}
 
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+		let movement = Synchronizer.shared.movement!
+
 		if causals[row].causalIsPos {
 			numberTextField.text = String(movement.movementNumber)
 			numberTextField.isEnabled = true
@@ -153,12 +163,5 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 		}
 		movement.movementCausal = causals[row].getJSONValues().getJSONString()
 		causalTextField.text = causals[row].causalName
-	}
-
-	// MARK: - Navigation
-	
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		let viewController = segue.destination as! CustomersController
-		viewController.movement = self.movement
 	}
 }

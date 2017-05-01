@@ -66,7 +66,6 @@ class MovementArticleRepository: MovementArticleProtocol {
 		let current = try self.get(id: id)!
 		current.movementArticleQuantity = item.movementArticleQuantity
 		current.movementArticlePrice = item.movementArticlePrice
-		
 		try context.save()
 	}
 	

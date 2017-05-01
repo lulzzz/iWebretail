@@ -98,6 +98,7 @@
 				56FE39A11E9EB60C007FE7F5 /* LaunchScreen.storyboard */,
 				56FE39A41E9EB60C007FE7F5 /* Info.plist */,
 				562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */,
+				567B2DA11EB13C3F004EB68C /* iWebretail.entitlements */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -122,7 +123,6 @@
 		56FE39951E9EB60C007FE7F5 /* iWebretail */ = {
 			isa = PBXGroup;
 			children = (
-				567B2DA11EB13C3F004EB68C /* iWebretail.entitlements */,
 				567A40EC1EADF131003A6A33 /* Resources */,
 				56FE39961E9EB60C007FE7F5 /* AppDelegate.swift */,
 				5626CAEA1EA3E46900997082 /* ArticleCell.swift */,

@@ -14,7 +14,6 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 	
 	var products: [Product]!
 	var filtered: [Product]!
-	public var movement: Movement!
 	private let repository: MovementArticleProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -26,6 +25,7 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+		self.tableView.contentOffset = CGPoint(x: 0, y: 44)
 		searchBar.delegate = self
 
 		products = try! repository.getProducts(search: "")
@@ -82,13 +82,13 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		do {
 			let items = try repository.getArticles(productId: filtered[indexPath.section].productId)
-			_ = try repository.add(barcode: items[indexPath.row].articleBarcode!, movementId: movement.movementId)
+			_ = try repository.add(barcode: items[indexPath.row].articleBarcode!, movementId: Synchronizer.shared.movement.movementId)
 		} catch {
 			print("\(error)")
 		}
 
-		if let composeViewController = self.navigationController?.viewControllers[1] {
-			self.navigationController?.popToViewController(composeViewController, animated: true)
-		}
+		let composeViewController = self.navigationController?.viewControllers[1] as! UITabBarController
+		composeViewController.selectedIndex = 0
+		self.navigationController?.popToViewController(composeViewController, animated: true)
 	}
 }

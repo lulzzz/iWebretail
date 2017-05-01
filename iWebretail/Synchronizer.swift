@@ -18,15 +18,14 @@ class Synchronizer {
 	
 	let baseURL = "http://ec2-35-157-208-60.eu-central-1.compute.amazonaws.com/"
 	var token: String = ""
-	
-	// MARK: - webapi
+	var movement: Movement!
 	
 	func makeHTTPGetRequest(url: String, onCompletion: @escaping ServiceResponse) {
 		var request =  URLRequest(url: URL(string: baseURL + url)!)
 		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
-		request.addValue("Bearer token=" + token, forHTTPHeaderField: "Authorization")
+		//request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
+		request.addValue("Bearer " + token, forHTTPHeaderField: "Authorization")
 		request.httpMethod = "GET"
 		let task = URLSession.shared.dataTask(with: request, completionHandler: {
 			data, response, error -> Void in
@@ -39,8 +38,8 @@ class Synchronizer {
 		var request =  URLRequest(url: URL(string: baseURL + url)!)
 		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
-		request.addValue("Bearer token=" + token, forHTTPHeaderField: "Authorization")
+		//request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
+		request.addValue("Bearer " + token, forHTTPHeaderField: "Authorization")
 		request.httpMethod = "POST"
 		do {
 			request.httpBody = try JSONSerialization.data(withJSONObject: body, options: JSONSerialization.WritingOptions.init(rawValue: 0))

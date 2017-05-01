@@ -8,11 +8,11 @@
 
 import UIKit
 
-class MovementController: UITableViewController {
+class MovementController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 	
+	@IBOutlet weak var tableView: UITableView!
 	@IBOutlet weak var amountLabel: UILabel!
 
-	public var movement: Movement!
 	var movementArticles: [MovementArticle]
 	
 	private var repository: MovementArticleProtocol
@@ -25,8 +25,16 @@ class MovementController: UITableViewController {
 		super.init(coder: aDecoder)
 	}
 
+	override func viewDidLoad()
+	{
+		super.viewDidLoad()
+		tableView.delegate = self
+		tableView.dataSource = self
+	}
+	
 	override func viewDidAppear(_ animated: Bool) {
-		self.movementArticles = try! repository.getAll(id: movement.movementId)
+		self.tabBarController?.navigationItem.rightBarButtonItem = self.navigationItem.rightBarButtonItem
+		self.movementArticles = try! repository.getAll(id: Synchronizer.shared.movement.movementId)
 		self.updateAmount()
 		tableView.reloadData()
 	}
@@ -69,28 +77,25 @@ class MovementController: UITableViewController {
 			.reduce (0, +)
 		amountLabel.text = amount.formatCurrency()
 		
-		movement = try! repository.updateAmount(item: movement, amount: amount)
+		Synchronizer.shared.movement = try! repository.updateAmount(item: Synchronizer.shared.movement, amount: amount)
 	}
 	
 	// MARK: - Table view data source
 	
-	override func numberOfSections(in tableView: UITableView) -> Int {
-		// #warning Incomplete implementation, return the number of sections
+	func numberOfSections(in tableView: UITableView) -> Int {
 		return 1
 	}
 	
-	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		// #warning Incomplete implementation, return the number of rows
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return movementArticles.count
 	}
 	
-	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "ArticleCell", for: indexPath) as! ArticleCell
 		
 		let index = (indexPath as NSIndexPath).row
 		let item = movementArticles[index]
 		
-		// Configure the cell...
 		cell.labelBarcode.text = item.movementArticleBarcode
 		cell.labelName.text = item.movementProduct
 		cell.textPrice.text = String(item.movementArticlePrice)
@@ -101,14 +106,11 @@ class MovementController: UITableViewController {
 		return cell
 	}
 	
-	// Override to support conditional editing of the table view.
-	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		// Return false if you do not want the specified item to be editable.
+	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
 		return true
 	}
 	
-	// Override to support editing the table view.
-	override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
 		if editingStyle == .delete {
 			do {
 				try repository.delete(id: self.movementArticles[indexPath.row].movementArticleId)
@@ -118,18 +120,6 @@ class MovementController: UITableViewController {
 			} catch {
 				self.navigationController?.alert(title: "Error", message: "\(error)")
 			}
-		}
-	}
-
-	// MARK: - Navigation
-	
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		if segue.identifier == "RegisterView" {
-			let viewController = segue.destination as! RegisterController
-			viewController.movement = self.movement
-		} else {
-			let viewController = segue.destination as! BarcodeController
-			viewController.movement = self.movement
 		}
 	}
 }

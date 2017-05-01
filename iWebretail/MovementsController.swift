@@ -11,15 +11,13 @@ import CoreData
 
 class MovementsController: UITableViewController {
 
-	var movements: [Movement]
+	var movements: [Movement] = []
 	
 	private let repository: MovementProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
 		let delegate = UIApplication.shared.delegate as! AppDelegate
 		repository = delegate.ioCContainer.resolve() as MovementProtocol
-		
-		self.movements = []
 		
 		super.init(coder: aDecoder)
 	}
@@ -82,19 +80,19 @@ class MovementsController: UITableViewController {
     // MARK: - Navigation
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		let viewController = segue.destination as! MovementController
-
+		let tabViewController: UITabBarController = segue.destination as! UITabBarController
+		
 		let indexPath = self.tableView?.indexPathForSelectedRow
 		if (indexPath == nil) {
 			do {
-				viewController.movement = try repository.add()
+				Synchronizer.shared.movement = try repository.add()
 			} catch {
 				self.navigationController?.alert(title: "Error", message: "\(error)")
 			}
 		} else {
-			viewController.movement = self.movements[indexPath!.row]
+			Synchronizer.shared.movement = self.movements[indexPath!.row]
 		}
 
-		viewController.title = String(viewController.movement.movementNumber)
+		tabViewController.navigationItem.title = String(Synchronizer.shared.movement.movementNumber)
 	}
 }

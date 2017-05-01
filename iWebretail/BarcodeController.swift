@@ -12,7 +12,6 @@ import UIKit
 class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 	var captureSession: AVCaptureSession!
 	var previewLayer: AVCaptureVideoPreviewLayer!
-	public var movement: Movement!	
 	private var repository: MovementArticleProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -71,6 +70,8 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 	
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
+		
+		self.tabBarController?.navigationItem.rightBarButtonItem = self.navigationItem.rightBarButtonItem
 		//found(code: "1000000000002")
 		read()
 	}
@@ -104,7 +105,7 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 	
 	func found(code: String) {
 		do {
-			if try repository.add(barcode: code, movementId: movement.movementId) == false {
+			if try repository.add(barcode: code, movementId: Synchronizer.shared.movement.movementId) == false {
 				self.navigationController?.push(title: "Attention", message: "Barcode \(code) not found!")
 			}
 		} catch {
@@ -112,13 +113,5 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 		}
 		
 		read()
-	}
-	
-
-	// MARK: - Navigation
-	
-	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-		let viewController = segue.destination as! ProductController
-		viewController.movement = movement
 	}
 }

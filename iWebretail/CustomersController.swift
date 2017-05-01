@@ -15,7 +15,6 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 	var letters: [String]!
 	var customers: [Customer]!
 	var filtered: [Customer]!
-	public var movement: Movement!
 	private let repository: CustomerProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -27,6 +26,7 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 
 	override func viewDidLoad() {
         super.viewDidLoad()
+		self.tableView.contentOffset = CGPoint(x: 0, y: 44)
 		searchBar.delegate = self
 	}
 
@@ -92,7 +92,7 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let items = getCustomers(section: indexPath.section)
-		movement.movementCustomer = items[indexPath.row].getJSONValues().getJSONString()
+		Synchronizer.shared.movement.movementCustomer = items[indexPath.row].getJSONValues().getJSONString()
 		navigationController?.popViewController(animated: true)
 	}
 	
