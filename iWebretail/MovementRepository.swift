@@ -40,6 +40,8 @@ class MovementRepository: MovementProtocol {
 		movement.movementId = try self.newId()
 		movement.movementNumber = try self.newNumber()
 		movement.movementDate = NSDate()
+		movement.completed = false
+		movement.synced = false
 		try context.save()
 		
 		return movement
