@@ -24,13 +24,11 @@ class ArticleCell: UITableViewCell {
 	
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+		
+		if Synchronizer.shared.movement.completed {
+			textQuantity.isEnabled = false
+			stepperQuantity.isEnabled = false
+			textPrice.isEnabled = false
+		}
     }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-
 }

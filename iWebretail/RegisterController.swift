@@ -113,9 +113,7 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 		} catch {
 			self.navigationController?.alert(title: "Error", message: "\(error)")
 		}
-		
-		Synchronizer.shared.push()
-		
+				
 		navigationController?.popToRootViewController(animated: true)
 	}
 

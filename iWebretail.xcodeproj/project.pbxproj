@@ -90,15 +90,15 @@
 		567A40EC1EADF131003A6A33 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				56FE399F1E9EB60C007FE7F5 /* Assets.xcassets */,
+				56FE39A41E9EB60C007FE7F5 /* Info.plist */,
 				567B2D9B1EB129BA004EB68C /* iTunesArtwork */,
 				567B2D9C1EB129BA004EB68C /* iTunesArtwork@2x */,
 				567B2D9D1EB129BA004EB68C /* iTunesArtwork@3x */,
-				56FE399F1E9EB60C007FE7F5 /* Assets.xcassets */,
-				56FE399C1E9EB60C007FE7F5 /* Main.storyboard */,
-				56FE39A11E9EB60C007FE7F5 /* LaunchScreen.storyboard */,
-				56FE39A41E9EB60C007FE7F5 /* Info.plist */,
-				562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */,
 				567B2DA11EB13C3F004EB68C /* iWebretail.entitlements */,
+				56FE39A11E9EB60C007FE7F5 /* LaunchScreen.storyboard */,
+				56FE399C1E9EB60C007FE7F5 /* Main.storyboard */,
+				562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -128,20 +128,20 @@
 				5626CAEA1EA3E46900997082 /* ArticleCell.swift */,
 				56FE399A1E9EB60C007FE7F5 /* BarcodeController.swift */,
 				562A1EB31EAFF0090066A1B0 /* CustomerController.swift */,
+				56C51A381EB47CB60063B94C /* CustomerProtocol.swift */,
+				56C51A3A1EB47D0C0063B94C /* CustomerRepository.swift */,
 				567A40EA1EADF0F9003A6A33 /* CustomersController.swift */,
 				56ECF5941EA4B655001B9E21 /* Extensions.swift */,
 				5626CAF01EA3F57D00997082 /* IoCContainer.swift */,
 				5626CAF21EA42CC500997082 /* MovementArticleProtocol.swift */,
 				5626CAF41EA42D6800997082 /* MovementArticleRepository.swift */,
+				56FE39981E9EB60C007FE7F5 /* MovementController.swift */,
 				5626CAEC1EA3F03F00997082 /* MovementProtocol.swift */,
 				5626CAEE1EA3F3F000997082 /* MovementRepository.swift */,
 				562BDAEC1EA0C1EF00B8C7D6 /* MovementsController.swift */,
-				56FE39981E9EB60C007FE7F5 /* MovementController.swift */,
+				56C51A3C1EB495E20063B94C /* ProductController.swift */,
 				561C43F71EA15C2100BC072B /* RegisterController.swift */,
 				56ECF5961EA4B6D4001B9E21 /* Synchronizer.swift */,
-				56C51A381EB47CB60063B94C /* CustomerProtocol.swift */,
-				56C51A3A1EB47D0C0063B94C /* CustomerRepository.swift */,
-				56C51A3C1EB495E20063B94C /* ProductController.swift */,
 			);
 			path = iWebretail;
 			sourceTree = "<group>";

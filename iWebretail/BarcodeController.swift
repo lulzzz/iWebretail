@@ -72,8 +72,12 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 		super.viewWillAppear(animated)
 		
 		self.tabBarController?.navigationItem.rightBarButtonItem = self.navigationItem.rightBarButtonItem
-		//found(code: "1000000000002")
-		read()
+
+		if Synchronizer.shared.movement.completed {
+			self.tabBarController?.navigationItem.rightBarButtonItem?.isEnabled = false
+		} else {
+			read()
+		}
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
