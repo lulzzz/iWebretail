@@ -24,8 +24,8 @@ class Synchronizer {
 		var request =  URLRequest(url: URL(string: baseURL + url)!)
 		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-		//request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
-		request.addValue("Bearer " + token, forHTTPHeaderField: "Authorization")
+		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
+		request.addValue("Bearer token=" + token, forHTTPHeaderField: "Authorization")
 		request.httpMethod = "GET"
 		let task = URLSession.shared.dataTask(with: request, completionHandler: {
 			data, response, error -> Void in
@@ -38,8 +38,8 @@ class Synchronizer {
 		var request =  URLRequest(url: URL(string: baseURL + url)!)
 		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-		//request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
-		request.addValue("Bearer " + token, forHTTPHeaderField: "Authorization")
+		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
+		request.addValue("Bearer token=" + token, forHTTPHeaderField: "Authorization")
 		request.httpMethod = "POST"
 		do {
 			request.httpBody = try JSONSerialization.data(withJSONObject: body, options: JSONSerialization.WritingOptions.init(rawValue: 0))
@@ -68,7 +68,7 @@ class Synchronizer {
 				return
 			}
 
-			let json = try! JSONSerialization.jsonObject(with: data!, options:.allowFragments) as! [String:AnyObject]
+			let json = try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary
 			self.token = json["token"] as! String
 		})
 		task.resume()
@@ -96,7 +96,7 @@ class Synchronizer {
 			
 			if let usableData = data {
 				do {
-					let items = try JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as! [NSDictionary]
+					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
 					
 					for item in items {
 						if UIDevice.current.name == item["cashRegisterName"] as! String {
@@ -128,12 +128,14 @@ class Synchronizer {
 			
 			if let usableData = data {
 				do {
-					let items = try JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as! [NSDictionary]
+					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
 					
 					for (index, item) in items.enumerated() {
+
+						try self.deleteCausalIfExist(id: item["causalId"] as! Int16, context: context)
+
 						let causal = Causal(context: context)
 						causal.setJSONValues(json: item)
-						try self.deleteCausalIfExist(id: causal.causalId, context: context)
 						context.insert(causal)
 						try context.save()
 						self.notify(total: items.count, current: index + 1)
@@ -148,10 +150,9 @@ class Synchronizer {
 	func deleteCausalIfExist(id: Int16, context: NSManagedObjectContext) throws {
 		let fetchRequest: NSFetchRequest<Causal> = Causal.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "causalId == \(id)")
-		fetchRequest.fetchLimit = 1
 		let object = try context.fetch(fetchRequest)
-		if let item = object.first {
-			context.delete(item)
+		if object.count > 0 {
+			context.delete(object.first!)
 			try context.save()
 		}
 	}
@@ -172,12 +173,14 @@ class Synchronizer {
 			
 			if let usableData = data {
 				do {
-					let items = try JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as! [NSDictionary]
+					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
 					
 					for (index, item) in items.enumerated() {
+						
+						try self.deleteCustomerIfExist(id: item["customerId"] as! Int64, context: context)
+
 						let customer = Customer(context: context)
 						customer.setJSONValues(json: item)
-						try self.deleteCustomerIfExist(id: customer.customerId, context: context)
 						context.insert(customer)
 						try context.save()
 						self.notify(total: items.count, current: index + 1)
@@ -192,10 +195,9 @@ class Synchronizer {
 	func deleteCustomerIfExist(id: Int64, context: NSManagedObjectContext) throws {
 		let fetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "customerId == \(id)")
-		fetchRequest.fetchLimit = 1
 		let object = try context.fetch(fetchRequest)
-		if let item = object.first {
-			context.delete(item)
+		if object.count > 0 {
+			context.delete(object.first!)
 			try context.save()
 		}
 	}
@@ -216,12 +218,14 @@ class Synchronizer {
 			
 			if let usableData = data {
 				do {
-					let items = try JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as! [NSDictionary]
+					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
 					
 					for (index, item) in items.enumerated() {
+						
+						try self.deleteProductIfExist(id: item["productId"] as! Int64, context: context)
+						
 						let product = Product(context: context)
 						product.setJSONValues(json: item)
-						try self.deleteProductIfExist(id: product.productId, context: context)
 						context.insert(product)
 												
 						for article in item["articles"] as! [NSDictionary] {
@@ -244,18 +248,17 @@ class Synchronizer {
 	func deleteProductIfExist(id: Int64, context: NSManagedObjectContext) throws {
 		let fetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "productId == \(id)")
-		fetchRequest.fetchLimit = 1
 		let object = try context.fetch(fetchRequest)
-		if let item = object.first {
-			context.delete(item)
+		if object.count > 0 {
+			context.delete(object.first!)
 
-			let request: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
+			let request: NSFetchRequest<ProductArticle> = ProductArticle.fetchRequest()
 			request.predicate = NSPredicate.init(format: "productId == \(id)")
 			let rows = try context.fetch(request)
 			for row in rows {
 				context.delete(row)
 			}
-			
+
 			try context.save()
 		}
 	}
@@ -304,7 +307,7 @@ class Synchronizer {
 					print(error!.localizedDescription)
 				} else if let usableData = data {
 					do {
-						let json = try JSONSerialization.jsonObject(with: usableData, options:.allowFragments) as! NSDictionary
+						let json = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! NSDictionary
 						item.movementNumber = json["movementNumber"] as! Int32
 						item.synced = true
 						try context.save()
@@ -314,7 +317,6 @@ class Synchronizer {
 				}
 			})
 		}
-		
 		
 		UIApplication.shared.isNetworkActivityIndicatorVisible = false
 	}
