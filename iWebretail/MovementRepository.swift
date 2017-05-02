@@ -101,7 +101,8 @@ class MovementRepository: MovementProtocol {
 	}
 
 	func makeDayPredicate(date: Date) -> NSPredicate {
-		let calendar = Calendar.current
+		var calendar = Calendar.current
+		calendar.timeZone = TimeZone(identifier: "UTC")!
 		var components = calendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
 		components.hour = 00
 		components.minute = 00

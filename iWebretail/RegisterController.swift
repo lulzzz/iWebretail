@@ -64,9 +64,10 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 		
 		if movement.movementCausal != nil {
 			causalTextField.text = movement.movementCausal!.getJSONValues()["causalName"] as? String
-		} else {
-			causalTextField.text = causals.first?.causalName
-			movement.movementCausal = causals.first?.getJSONValues().getJSONString()
+		} else if let causal = causals.first {
+			causalTextField.text = causal.causalName
+			movement.movementCausal = causal.getJSONValues().getJSONString()
+			movement.movementStatus = causal.causalIsPos ? "Completed" : "New"
 		}
 	}
 	
