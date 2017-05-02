@@ -155,9 +155,11 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 		if causals[row].causalIsPos {
 			numberTextField.text = String(movement.movementNumber)
 			numberTextField.isEnabled = true
+			movement.movementStatus = "Completed"
 		} else {
 			numberTextField.text = "0"
 			numberTextField.isEnabled = false
+			movement.movementStatus = "New"
 		}
 		movement.movementCausal = causals[row].getJSONValues().getJSONString()
 		causalTextField.text = causals[row].causalName

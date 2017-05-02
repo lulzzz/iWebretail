@@ -278,12 +278,12 @@ extension Movement {
 			"movementNumber": self.movementNumber,
 			"movementDate": self.movementDate!.formatDateShort(),
 			"movementNote": self.movementNote!,
-			"movementStatus": "New",
+			"movementStatus": self.movementStatus!,
 			"movementUser": self.movementDevice!,
 			"movementDevice": self.movementDevice!,
-			"movementStore": self.movementStore!,
-			"movementCausal": self.movementCausal!,
-			"movementCustomer": self.movementCustomer!,
+			"movementStore": self.movementStore!.getJSONValues(),
+			"movementCausal": self.movementCausal!.getJSONValues(),
+			"movementCustomer": self.movementCustomer!.getJSONValues(),
 			"movementItems": items
 		]
 	}
