@@ -283,7 +283,7 @@ extension Movement {
 			"movementDevice": self.movementDevice!,
 			"movementStore": self.movementStore!.getJSONValues(),
 			"movementCausal": self.movementCausal!.getJSONValues(),
-			"movementCustomer": self.movementCustomer!.getJSONValues(),
+			"movementCustomer": self.movementCustomer?.getJSONValues() ?? "",
 			"movementItems": items
 		]
 	}

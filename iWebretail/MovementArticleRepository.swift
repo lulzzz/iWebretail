@@ -112,10 +112,8 @@ class MovementArticleRepository: MovementArticleProtocol {
 		return try context.fetch(request)
 	}
 
-	func updateAmount(item: Movement, amount: Double) throws -> Movement {
+	func updateAmount(item: Movement, amount: Double) throws {
 		item.movementAmount = amount
 		try context.save()
-		
-		return item
 	}
 }

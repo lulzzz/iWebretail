@@ -77,7 +77,7 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 			.reduce (0, +)
 		amountLabel.text = amount.formatCurrency()
 		
-		Synchronizer.shared.movement = try! repository.updateAmount(item: Synchronizer.shared.movement, amount: amount)
+		try! repository.updateAmount(item: Synchronizer.shared.movement, amount: amount)
 	}
 	
 	// MARK: - Table view data source
@@ -107,7 +107,7 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 	}
 	
 	func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-		return true
+		return !Synchronizer.shared.movement.completed
 	}
 	
 	func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
