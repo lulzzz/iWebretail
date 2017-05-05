@@ -27,6 +27,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		// Override point for customization after application launch.
 		
+		Synchronizer.shared.iCloudUserIDAsync()
+
 		UNUserNotificationCenter.current().requestAuthorization(
 			options: [.alert,.sound,.badge],
 			completionHandler: { (granted,error) in
@@ -36,7 +38,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 			}
 		)
 		
-		Synchronizer.shared.login()
 		return true
 	}
 
@@ -60,6 +61,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func applicationWillTerminate(_ application: UIApplication) {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+		
 		Synchronizer.shared.logout()
 	}
 

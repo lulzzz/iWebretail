@@ -25,6 +25,7 @@
 		56C51A391EB47CB60063B94C /* CustomerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C51A381EB47CB60063B94C /* CustomerProtocol.swift */; };
 		56C51A3B1EB47D0C0063B94C /* CustomerRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C51A3A1EB47D0C0063B94C /* CustomerRepository.swift */; };
 		56C51A3D1EB495E20063B94C /* ProductController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56C51A3C1EB495E20063B94C /* ProductController.swift */; };
+		56DD7C561EBB91DB003BC27F /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56DD7C551EBB91DB003BC27F /* CloudKit.framework */; };
 		56ECF5951EA4B655001B9E21 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56ECF5941EA4B655001B9E21 /* Extensions.swift */; };
 		56ECF5971EA4B6D4001B9E21 /* Synchronizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56ECF5961EA4B6D4001B9E21 /* Synchronizer.swift */; };
 		56FE39971E9EB60C007FE7F5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56FE39961E9EB60C007FE7F5 /* AppDelegate.swift */; };
@@ -55,6 +56,7 @@
 		56C51A381EB47CB60063B94C /* CustomerProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerProtocol.swift; sourceTree = "<group>"; };
 		56C51A3A1EB47D0C0063B94C /* CustomerRepository.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerRepository.swift; sourceTree = "<group>"; };
 		56C51A3C1EB495E20063B94C /* ProductController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductController.swift; sourceTree = "<group>"; };
+		56DD7C551EBB91DB003BC27F /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		56ECF5941EA4B655001B9E21 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		56ECF5961EA4B6D4001B9E21 /* Synchronizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Synchronizer.swift; sourceTree = "<group>"; };
 		56FE39931E9EB60C007FE7F5 /* iWebretail.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iWebretail.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,6 +75,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				562BDAF31EA0CC7B00B8C7D6 /* CoreData.framework in Frameworks */,
+				56DD7C561EBB91DB003BC27F /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +85,7 @@
 		562BDAF11EA0CC7B00B8C7D6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				56DD7C551EBB91DB003BC27F /* CloudKit.framework */,
 				562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */,
 			);
 			name = Frameworks;
@@ -182,6 +186,9 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
 								enabled = 1;
 							};
 						};

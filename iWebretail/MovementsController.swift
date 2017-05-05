@@ -28,9 +28,9 @@ class MovementsController: UITableViewController {
 		self.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
    	}
 
-	override func viewDidAppear(_ animated: Bool) {
-		self.refresh(sender: self)
- 	}
+//	override func viewDidAppear(_ animated: Bool) {
+//		self.refresh(sender: self)
+// 	}
 	
 	func refresh(sender:AnyObject)
 	{

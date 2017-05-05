@@ -8,7 +8,7 @@
 
 import UIKit
 import CoreData
-
+import CloudKit
 
 typealias ServiceResponse = (Data?, Error?) -> Void
 
@@ -16,16 +16,30 @@ class Synchronizer {
 	
 	static let shared = Synchronizer()
 	
-	let baseURL = "http://ec2-35-157-208-60.eu-central-1.compute.amazonaws.com/"
+	let baseURL = "http://localhost:8181/" //"http://ec2-35-157-208-60.eu-central-1.compute.amazonaws.com/"
 	var token: String = ""
 	var movement: Movement!
+	
+	func iCloudUserIDAsync() {
+		let container = CKContainer.default()
+		container.fetchUserRecordID() {
+			recordID, error in
+			if error != nil {
+				print(error!.localizedDescription)
+			} else {
+				self.token = recordID!.recordName
+				print("fetched ID \(self.token)")
+				self.login()
+			}
+		}
+	}
 	
 	func makeHTTPGetRequest(url: String, onCompletion: @escaping ServiceResponse) {
 		var request =  URLRequest(url: URL(string: baseURL + url)!)
 		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
-		request.addValue("Bearer token=" + token, forHTTPHeaderField: "Authorization")
+		request.addValue("Basic \(UIDevice.current.name):\(self.token)", forHTTPHeaderField: "Authorization")
 		request.httpMethod = "GET"
 		let task = URLSession.shared.dataTask(with: request, completionHandler: {
 			data, response, error -> Void in
@@ -39,7 +53,7 @@ class Synchronizer {
 		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
-		request.addValue("Bearer token=" + token, forHTTPHeaderField: "Authorization")
+		request.addValue("Basic \(UIDevice.current.name):\(self.token)", forHTTPHeaderField: "Authorization")
 		request.httpMethod = "POST"
 		do {
 			request.httpBody = try JSONSerialization.data(withJSONObject: body, options: JSONSerialization.WritingOptions.init(rawValue: 0))
@@ -55,9 +69,9 @@ class Synchronizer {
 	}
 	
 	func login() {
-		let paramString = "username=admin&password=admin"
+		let paramString = "id=\(UIDevice.current.name)&secret=\(self.token)"
 		
-		var request =  URLRequest(url: URL(string: baseURL + "api/login")!)
+		var request =  URLRequest(url: URL(string: baseURL + "api/login/apikey")!)
 		request.httpMethod = "POST"
 		request.httpBody = paramString.data(using: String.Encoding.utf8)
 		
@@ -69,7 +83,7 @@ class Synchronizer {
 			}
 
 			let json = try! JSONSerialization.jsonObject(with: data!, options: .allowFragments) as! NSDictionary
-			self.token = json["token"] as! String
+			print(json["login"] as! String)
 		})
 		task.resume()
 	}
@@ -88,7 +102,7 @@ class Synchronizer {
 		let objects = try! context.fetch(fetchRequest)
 		let store = objects.count == 0 ? Store(context: context) : objects.first!
 
-		makeHTTPGetRequest(url: "api/cashregisterfrom/\(store.updatedAt)", onCompletion: { data, error in
+		makeHTTPGetRequest(url: "api/device/\(store.updatedAt)", onCompletion: { data, error in
 			if error != nil {
 				print(error!.localizedDescription)
 				return
@@ -99,7 +113,7 @@ class Synchronizer {
 					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
 					
 					for item in items {
-						if UIDevice.current.name == item["cashRegisterName"] as! String {
+						if self.token == item["deviceToken"] as! String {
 							store.setJSONValues(json: item["store"] as! NSDictionary)
 							store.updatedAt = item["updatedAt"] as! Int64
 							try context.save()
@@ -272,6 +286,11 @@ class Synchronizer {
 		}
 	}
 
+	func syncronize() {
+		Synchronizer.shared.push()
+		Synchronizer.shared.pull(date: Date())
+	}
+	
 	func pull(date: Date) {
 		UIApplication.shared.isNetworkActivityIndicatorVisible = true
 		
