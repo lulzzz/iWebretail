@@ -126,6 +126,8 @@ class MovementRepository: MovementProtocol {
 
 	func getCausals() throws -> [Causal] {
 		let request: NSFetchRequest<Causal> = Causal.fetchRequest()
+		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "causalIsPos", ascending: false)
+		request.sortDescriptors = [idDescriptor]
 
 		return try context.fetch(request)
 	}

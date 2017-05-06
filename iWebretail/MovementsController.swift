@@ -28,20 +28,18 @@ class MovementsController: UITableViewController {
 		self.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
    	}
 
-//	override func viewDidAppear(_ animated: Bool) {
-//		self.refresh(sender: self)
-// 	}
-	
-	func refresh(sender:AnyObject)
-	{
+	override func viewDidAppear(_ animated: Bool) {
 		do {
-			Synchronizer.shared.push()
-			Synchronizer.shared.pull(date: Date())
 			movements = try repository.getAll()
 			self.tableView.reloadData()
 		} catch {
 			self.navigationController?.alert(title: "Error", message: "\(error)")
 		}
+ 	}
+	
+	func refresh(sender:AnyObject)
+	{
+		Synchronizer.shared.syncronize()
 		self.refreshControl?.endRefreshing()
 	}
 	
