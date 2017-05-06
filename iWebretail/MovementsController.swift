@@ -29,17 +29,18 @@ class MovementsController: UITableViewController {
    	}
 
 	override func viewDidAppear(_ animated: Bool) {
+		refresh(sender: self)
+ 	}
+	
+	func refresh(sender:AnyObject)
+	{
 		do {
+			Synchronizer.shared.syncronize()
 			movements = try repository.getAll()
 			self.tableView.reloadData()
 		} catch {
 			self.navigationController?.alert(title: "Error", message: "\(error)")
 		}
- 	}
-	
-	func refresh(sender:AnyObject)
-	{
-		Synchronizer.shared.syncronize()
 		self.refreshControl?.endRefreshing()
 	}
 	

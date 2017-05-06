@@ -34,84 +34,14 @@ class Synchronizer {
 	}
 	
 	func syncronize() {
+		if deviceToken.isEmpty { return }
+		
 		UIApplication.shared.isNetworkActivityIndicatorVisible = true
 
 		let appDel = UIApplication.shared.delegate as! AppDelegate
-		let context = appDel.persistentContainer.viewContext
-
-		self.push(context: context)
-		self.pull(context: context, date: Date())
+		self.syncStore(context: appDel.persistentContainer.viewContext)
 
 		UIApplication.shared.isNetworkActivityIndicatorVisible = false
-	}
-	
-	internal func pull(context: NSManagedObjectContext, date: Date) {
-		self.syncStore(context: context)
-		self.syncCausals(context: context)
-		self.syncCustomers(context: context)
-		self.syncProducts(context: context)
-	}
-	
-	internal func push(context: NSManagedObjectContext) {
-		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
-		fetchRequest.predicate = NSPredicate.init(format: "completed == true AND synced == false")
-		let items = try! context.fetch(fetchRequest)
-		
-		for item in items {
-			
-			let rowsRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
-			rowsRequest.predicate = NSPredicate.init(format: "movementId == \(item.movementId)")
-			let rows = try! context.fetch(rowsRequest)
-			
-			makeHTTPPostRequest(url: "api/movement", body: item.getJSONValues(rows: rows), onCompletion:  { data, error in
-				if error != nil {
-					print(error!.localizedDescription)
-				} else if let usableData = data {
-					do {
-						let json = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! NSDictionary
-						item.movementNumber = json["movementNumber"] as! Int32
-						item.synced = true
-						try context.save()
-					} catch {
-						print("Error on sync movement: \(error)")
-					}
-				}
-			})
-		}
-	}
-	
-	internal func makeHTTPGetRequest(url: String, onCompletion: @escaping ServiceResponse) {
-		var request =  URLRequest(url: URL(string: baseURL + url)!)
-		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
-		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
-		request.addValue("Basic \(UIDevice.current.name):\(self.deviceToken)", forHTTPHeaderField: "Authorization")
-		request.httpMethod = "GET"
-		let task = URLSession.shared.dataTask(with: request, completionHandler: {
-			data, response, error -> Void in
-				onCompletion(data, error)
-			})
-		task.resume()
-	}
-	
-	internal func makeHTTPPostRequest(url: String, body: NSDictionary, onCompletion: @escaping ServiceResponse) {
-		var request =  URLRequest(url: URL(string: baseURL + url)!)
-		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
-		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
-		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
-		request.addValue("Basic \(UIDevice.current.name):\(self.deviceToken)", forHTTPHeaderField: "Authorization")
-		request.httpMethod = "POST"
-		do {
-			request.httpBody = try JSONSerialization.data(withJSONObject: body, options: JSONSerialization.WritingOptions.init(rawValue: 0))
-		} catch let error as NSError {
-			print(error)
-		}
-		
-		let task = URLSession.shared.dataTask(with: request, completionHandler: {
-			data, response, error -> Void in
-				onCompletion(data, error)
-			})
-		task.resume()
 	}
 	
 	internal func syncStore(context: NSManagedObjectContext) {
@@ -141,6 +71,8 @@ class Synchronizer {
 					print("Error on sync store: \(error)")
 				}
 			}
+
+			self.syncCausals(context: context)
 		})
 	}
 
@@ -190,6 +122,8 @@ class Synchronizer {
 					print("Error on sync causal: \(error)")
 				}
 			}
+
+			self.syncCustomers(context: context)
 		})
 	}
 
@@ -244,6 +178,8 @@ class Synchronizer {
 					print("Error on sync customer: \(error)")
 				}
 			}
+
+			self.syncProducts(context: context)
 		})
 	}
 
@@ -297,7 +233,7 @@ class Synchronizer {
 							let rows = try context.fetch(request)
 							if rows.count > 0 {
 								let row = rows.first!
-								productArticle.articleAttributes = row.articleAttributes
+								row.articleAttributes = productArticle.articleAttributes
 							} else {
 								context.insert(productArticle)
 							}
@@ -311,7 +247,71 @@ class Synchronizer {
 					print("Error on sync product: \(error)")
 				}
 			}
+
+			self.syncMovement(context: context)
 		})
+	}
+
+	internal func syncMovement(context: NSManagedObjectContext) {
+		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
+		fetchRequest.predicate = NSPredicate.init(format: "completed == true AND synced == false")
+		let items = try! context.fetch(fetchRequest)
+		
+		for item in items {
+			
+			let rowsRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
+			rowsRequest.predicate = NSPredicate.init(format: "movementId == \(item.movementId)")
+			let rows = try! context.fetch(rowsRequest)
+			
+			makeHTTPPostRequest(url: "api/movement", body: item.getJSONValues(rows: rows), onCompletion:  { data, error in
+				if error != nil {
+					print(error!.localizedDescription)
+				} else if let usableData = data {
+					do {
+						let json = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! NSDictionary
+						item.movementNumber = json["movementNumber"] as! Int32
+						item.synced = true
+						try context.save()
+					} catch {
+						print("Error on sync movement: \(error)")
+					}
+				}
+			})
+		}
+	}
+
+	internal func makeHTTPGetRequest(url: String, onCompletion: @escaping ServiceResponse) {
+		var request =  URLRequest(url: URL(string: baseURL + url)!)
+		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
+		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
+		request.addValue("Basic \(UIDevice.current.name):\(self.deviceToken)", forHTTPHeaderField: "Authorization")
+		request.httpMethod = "GET"
+		let task = URLSession.shared.dataTask(with: request, completionHandler: {
+			data, response, error -> Void in
+			onCompletion(data, error)
+		})
+		task.resume()
+	}
+	
+	internal func makeHTTPPostRequest(url: String, body: NSDictionary, onCompletion: @escaping ServiceResponse) {
+		var request =  URLRequest(url: URL(string: baseURL + url)!)
+		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
+		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
+		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Accept")
+		request.addValue("Basic \(UIDevice.current.name):\(self.deviceToken)", forHTTPHeaderField: "Authorization")
+		request.httpMethod = "POST"
+		do {
+			request.httpBody = try JSONSerialization.data(withJSONObject: body, options: JSONSerialization.WritingOptions.init(rawValue: 0))
+		} catch let error as NSError {
+			print(error)
+		}
+		
+		let task = URLSession.shared.dataTask(with: request, completionHandler: {
+			data, response, error -> Void in
+			onCompletion(data, error)
+		})
+		task.resume()
 	}
 
 	internal func notify(total: Int, current: Int) {
