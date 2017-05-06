@@ -13,7 +13,7 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 	@IBOutlet weak var searchBar: UISearchBar!
 	
 	var products: [Product]!
-	var filtered: [Product]!
+	var filtered: [String: [Product]]!
 	private let repository: MovementArticleProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
@@ -29,18 +29,19 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 		searchBar.delegate = self
 
 		products = try! repository.getProducts(search: "")
-		filtered = products
+		filtered = products.groupBy { $0.productBrand! }
+
 		self.tableView.reloadData()
 	}
 	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
 		if searchText.isEmpty {
-			filtered = products
+			filtered = products.groupBy { $0.productBrand! }
 		} else {
 			filtered = products.filter({ (item) -> Bool in
 				let tmp: Product = item
 				return tmp.productName!.contains(searchText)
-			})
+			}).groupBy { $0.productBrand! }
 		}
 		self.tableView.reloadData()
 	}
@@ -52,43 +53,31 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 	}
 	
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		return filtered[section].productName
+		return Array(filtered.keys)[section]
 	}
 
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		do {
-			let items = try repository.getArticles(productId: filtered[section].productId)
-			return items.count
-		} catch {
-			print("\(error)")
-			return 0
-		}
+		let key = Array(filtered.keys)[section]
+		return filtered[key]!.count
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "ProductCell", for: indexPath)
 		
-		do {
-			let items = try repository.getArticles(productId: filtered[indexPath.section].productId)
-			cell.textLabel?.text = items[indexPath.row].articleAttributes
-			cell.detailTextLabel?.text = items[indexPath.row].articleBarcode
-		} catch {
-			print("\(error)")
-		}
+		let key = Array(filtered.keys)[indexPath.section]
+		cell.textLabel?.text = filtered[key]![indexPath.row].productName
+		cell.detailTextLabel?.text = filtered[key]![indexPath.row].productCategories
 		
 		return cell
 	}
-	
-	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		do {
-			let items = try repository.getArticles(productId: filtered[indexPath.section].productId)
-			_ = try repository.add(barcode: items[indexPath.row].articleBarcode!, movementId: Synchronizer.shared.movement.movementId)
-		} catch {
-			print("\(error)")
-		}
 
-		let composeViewController = self.navigationController?.viewControllers[1] as! UITabBarController
-		composeViewController.selectedIndex = 0
-		self.navigationController?.popToViewController(composeViewController, animated: true)
+	// MARK: - Navigation
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		let articleController: ArticleController = segue.destination as! ArticleController
+		
+		let indexPath = self.tableView?.indexPathForSelectedRow
+		let key = Array(filtered.keys)[indexPath!.section]
+		articleController.product = filtered[key]![indexPath!.row]
 	}
 }

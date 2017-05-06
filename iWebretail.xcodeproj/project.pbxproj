@@ -18,6 +18,7 @@
 		562BDAED1EA0C1EF00B8C7D6 /* MovementsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 562BDAEC1EA0C1EF00B8C7D6 /* MovementsController.swift */; };
 		562BDAF31EA0CC7B00B8C7D6 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */; };
 		562BDAF61EA0CC9D00B8C7D6 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 562BDAF41EA0CC9D00B8C7D6 /* Model.xcdatamodeld */; };
+		566C72D41EBE64C10049F3F7 /* ArticleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 566C72D31EBE64C10049F3F7 /* ArticleController.swift */; };
 		567A40EB1EADF0F9003A6A33 /* CustomersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 567A40EA1EADF0F9003A6A33 /* CustomersController.swift */; };
 		567B2D9E1EB129BA004EB68C /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 567B2D9B1EB129BA004EB68C /* iTunesArtwork */; };
 		567B2D9F1EB129BA004EB68C /* iTunesArtwork@2x in Resources */ = {isa = PBXBuildFile; fileRef = 567B2D9C1EB129BA004EB68C /* iTunesArtwork@2x */; };
@@ -48,6 +49,7 @@
 		562BDAEC1EA0C1EF00B8C7D6 /* MovementsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MovementsController.swift; sourceTree = "<group>"; };
 		562BDAF21EA0CC7B00B8C7D6 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		562BDAF51EA0CC9D00B8C7D6 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		566C72D31EBE64C10049F3F7 /* ArticleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ArticleController.swift; sourceTree = "<group>"; };
 		567A40EA1EADF0F9003A6A33 /* CustomersController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomersController.swift; sourceTree = "<group>"; };
 		567B2D9B1EB129BA004EB68C /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		567B2D9C1EB129BA004EB68C /* iTunesArtwork@2x */ = {isa = PBXFileReference; lastKnownFileType = file; path = "iTunesArtwork@2x"; sourceTree = "<group>"; };
@@ -146,6 +148,7 @@
 				56C51A3C1EB495E20063B94C /* ProductController.swift */,
 				561C43F71EA15C2100BC072B /* RegisterController.swift */,
 				56ECF5961EA4B6D4001B9E21 /* Synchronizer.swift */,
+				566C72D31EBE64C10049F3F7 /* ArticleController.swift */,
 			);
 			path = iWebretail;
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 				5626CAF11EA3F57D00997082 /* IoCContainer.swift in Sources */,
 				5626CAEF1EA3F3F000997082 /* MovementRepository.swift in Sources */,
 				56C51A391EB47CB60063B94C /* CustomerProtocol.swift in Sources */,
+				566C72D41EBE64C10049F3F7 /* ArticleController.swift in Sources */,
 				5626CAF51EA42D6800997082 /* MovementArticleRepository.swift in Sources */,
 				56FE39991E9EB60C007FE7F5 /* MovementController.swift in Sources */,
 				5626CAF31EA42CC500997082 /* MovementArticleProtocol.swift in Sources */,
