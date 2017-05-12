@@ -31,6 +31,7 @@
         <attribute name="movementId" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="movementNote" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="movementNumber" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="movementPayment" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="movementStatus" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="movementStore" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="synced" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
@@ -71,7 +72,7 @@
     <elements>
         <element name="Causal" positionX="-389" positionY="45" width="128" height="135"/>
         <element name="Customer" positionX="-74" positionY="186" width="128" height="210"/>
-        <element name="Movement" positionX="-227" positionY="21" width="128" height="225"/>
+        <element name="Movement" positionX="-227" positionY="21" width="128" height="240"/>
         <element name="MovementArticle" positionX="-54" positionY="18" width="128" height="135"/>
         <element name="Product" positionX="-693" positionY="90" width="128" height="180"/>
         <element name="ProductArticle" positionX="-549" positionY="87" width="128" height="90"/>

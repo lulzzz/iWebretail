@@ -132,6 +132,7 @@
 				567A40EC1EADF131003A6A33 /* Resources */,
 				56FE39961E9EB60C007FE7F5 /* AppDelegate.swift */,
 				5626CAEA1EA3E46900997082 /* ArticleCell.swift */,
+				566C72D31EBE64C10049F3F7 /* ArticleController.swift */,
 				56FE399A1E9EB60C007FE7F5 /* BarcodeController.swift */,
 				562A1EB31EAFF0090066A1B0 /* CustomerController.swift */,
 				56C51A381EB47CB60063B94C /* CustomerProtocol.swift */,
@@ -148,7 +149,6 @@
 				56C51A3C1EB495E20063B94C /* ProductController.swift */,
 				561C43F71EA15C2100BC072B /* RegisterController.swift */,
 				56ECF5961EA4B6D4001B9E21 /* Synchronizer.swift */,
-				566C72D31EBE64C10049F3F7 /* ArticleController.swift */,
 			);
 			path = iWebretail;
 			sourceTree = "<group>";

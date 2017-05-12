@@ -15,11 +15,14 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	@IBOutlet weak var dateTextField: UITextField!
 	@IBOutlet weak var storeTextField: UITextField!
 	@IBOutlet weak var causalTextField: UITextField!
+	@IBOutlet weak var paymentTextField: UITextField!
 	@IBOutlet weak var customerButton: UIButton!
 	@IBOutlet weak var noteTextView: UITextView!
 	
 	var store: Store?
+	var isCausal: Bool!
 	var causals: [Causal]
+	var payments: [String]
 	var customer: Customer? = nil
 	private let repository: MovementProtocol
 	
@@ -29,7 +32,8 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 
 		store = try! repository.getStore()
 		causals = try! repository.getCausals()
-
+		payments = repository.getPayments()
+		
 		super.init(coder: aDecoder)
 	}
 
@@ -69,6 +73,8 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 			movement.movementCausal = causal.getJSONValues().getJSONString()
 			movement.movementStatus = causal.causalIsPos ? "Completed" : "New"
 		}
+
+		paymentTextField.text = movement.movementPayment != nil ? movement.movementPayment : payments.first
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -94,10 +100,19 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	}
 	
 	@IBAction func causalFieldEditing(_ sender: UITextField) {
+		isCausal = true
 		let causalPickerView = UIPickerView()
 		causalPickerView.dataSource = self
 		causalPickerView.delegate = self
 		sender.inputView = causalPickerView
+	}
+
+	@IBAction func paymentFieldEditing(_ sender: UITextField) {
+		isCausal = false
+		let paymentPickerView = UIPickerView()
+		paymentPickerView.dataSource = self
+		paymentPickerView.delegate = self
+		sender.inputView = paymentPickerView
 	}
 
 	@IBAction func buttonSave(_ sender: UIBarButtonItem) {
@@ -143,26 +158,31 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-		return causals.count
+		return isCausal ? causals.count : payments.count
 	}
 	
 	func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-		return causals[row].causalName
+		return isCausal ? causals[row].causalName : payments[row]
 	}
 
 	func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
 		let movement = Synchronizer.shared.movement!
 
-		if causals[row].causalIsPos {
-			numberTextField.text = String(movement.movementNumber)
-			numberTextField.isEnabled = true
-			movement.movementStatus = "Completed"
+		if isCausal {
+			if causals[row].causalIsPos {
+				numberTextField.text = String(movement.movementNumber)
+				numberTextField.isEnabled = true
+				movement.movementStatus = "Completed"
+			} else {
+				numberTextField.text = "0"
+				numberTextField.isEnabled = false
+				movement.movementStatus = "New"
+			}
+			movement.movementCausal = causals[row].getJSONValues().getJSONString()
+			causalTextField.text = causals[row].causalName
 		} else {
-			numberTextField.text = "0"
-			numberTextField.isEnabled = false
-			movement.movementStatus = "New"
+			movement.movementPayment = payments[row]
+			paymentTextField.text = payments[row]
 		}
-		movement.movementCausal = causals[row].getJSONValues().getJSONString()
-		causalTextField.text = causals[row].causalName
 	}
 }

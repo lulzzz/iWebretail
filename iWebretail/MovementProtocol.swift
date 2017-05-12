@@ -23,4 +23,6 @@ protocol MovementProtocol {
 	func getStore() throws -> Store?
 
 	func getCausals() throws -> [Causal]
+	
+	func getPayments() -> [String]
 }

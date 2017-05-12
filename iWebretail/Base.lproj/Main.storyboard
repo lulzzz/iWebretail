@@ -23,7 +23,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Cmr-uk-r7i">
-                                <rect key="frame" x="16" y="74" width="288" height="412"/>
+                                <rect key="frame" x="16" y="74" width="288" height="443"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BLM-OZ-QlL">
                                         <rect key="frame" x="0.0" y="0.0" width="288" height="20"/>
@@ -51,13 +51,13 @@
                                         </constraints>
                                     </view>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Number" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jdm-ra-hPU">
-                                        <rect key="frame" x="0.0" y="40" width="288" height="29"/>
+                                        <rect key="frame" x="0.0" y="40" width="288" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <textInputTraits key="textInputTraits" keyboardType="phonePad"/>
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Date" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="P2T-da-Nma">
-                                        <rect key="frame" x="0.0" y="89" width="288" height="30"/>
+                                        <rect key="frame" x="0.0" y="90" width="288" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <textInputTraits key="textInputTraits"/>
@@ -66,13 +66,13 @@
                                         </connections>
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Store" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="a6g-oV-MJa">
-                                        <rect key="frame" x="0.0" y="139" width="288" height="30"/>
+                                        <rect key="frame" x="0.0" y="140" width="288" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Causal" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="MHa-Xo-Rin">
-                                        <rect key="frame" x="0.0" y="189" width="288" height="30"/>
+                                        <rect key="frame" x="0.0" y="190" width="288" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <textInputTraits key="textInputTraits"/>
@@ -80,11 +80,20 @@
                                             <action selector="causalFieldEditing:" destination="eup-gP-P07" eventType="editingDidBegin" id="Vrb-qu-IHv"/>
                                         </connections>
                                     </textField>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Payment" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="kix-bl-vOn">
+                                        <rect key="frame" x="0.0" y="240" width="288" height="30"/>
+                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                        <textInputTraits key="textInputTraits"/>
+                                        <connections>
+                                            <action selector="paymentFieldEditing:" destination="eup-gP-P07" eventType="editingDidBegin" id="8ch-ni-eju"/>
+                                        </connections>
+                                    </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ndr-Yh-JmS">
-                                        <rect key="frame" x="0.0" y="239" width="288" height="36"/>
+                                        <rect key="frame" x="0.0" y="290" width="288" height="36"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <inset key="titleEdgeInsets" minX="6" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                        <state key="normal">
+                                        <state key="normal" title="Customer">
                                             <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
                                         </state>
                                         <connections>
@@ -92,7 +101,7 @@
                                         </connections>
                                     </button>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="FOp-6e-4w8">
-                                        <rect key="frame" x="0.0" y="295" width="288" height="117"/>
+                                        <rect key="frame" x="0.0" y="346" width="288" height="97"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
@@ -100,7 +109,7 @@
                                     </textView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="412" id="222-cJ-gej"/>
+                                    <constraint firstAttribute="height" constant="443" id="xzH-NI-Ea5"/>
                                 </constraints>
                             </stackView>
                         </subviews>
@@ -125,12 +134,13 @@
                         <outlet property="dateTextField" destination="P2T-da-Nma" id="Otz-HU-Lni"/>
                         <outlet property="noteTextView" destination="FOp-6e-4w8" id="7Nj-Xb-7V1"/>
                         <outlet property="numberTextField" destination="jdm-ra-hPU" id="c0R-IX-CDj"/>
+                        <outlet property="paymentTextField" destination="kix-bl-vOn" id="vrR-MT-EdM"/>
                         <outlet property="storeTextField" destination="a6g-oV-MJa" id="zGP-0i-bPk"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dDd-X0-8Yw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="437" y="-3"/>
+            <point key="canvasLocation" x="436.875" y="-3.1690140845070425"/>
         </scene>
         <!--Customers-->
         <scene sceneID="mo2-0L-XiR">

@@ -55,6 +55,7 @@ class MovementRepository: MovementProtocol {
 		current.movementStore = item.movementStore
 		current.movementCausal = item.movementCausal
 		current.movementCustomer = item.movementCustomer
+		current.movementPayment = item.movementPayment
 		current.movementDevice = item.movementDevice
 		current.movementNote = item.movementNote
 		current.completed = item.completed
@@ -130,5 +131,15 @@ class MovementRepository: MovementProtocol {
 		request.sortDescriptors = [idDescriptor]
 
 		return try context.fetch(request)
+	}
+
+	func getPayments() -> [String] {
+		return [
+			"Cash",
+			"Credit card",
+			"Bank transfer",
+			"Carrier",
+			"None"
+		]
 	}
 }
