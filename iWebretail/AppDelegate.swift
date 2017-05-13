@@ -91,7 +91,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 				let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
 				let request = UNNotificationRequest.init(identifier: "iWebretail", content: content, trigger: trigger)
 				center.add(request, withCompletionHandler: { (error) in
-					print(error.debugDescription)
+					if error != nil {
+						print(error!.localizedDescription)
+					}
 				})
 			}
 		}

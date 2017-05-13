@@ -273,15 +273,9 @@ class Synchronizer {
 		request.httpMethod = "GET"
 		let task = URLSession.shared.dataTask(with: request, completionHandler: {
 			data, response, error -> Void in
-			if error != nil {
-				self.appDelegate.push(title: "Error", message: error!.localizedDescription)
-				return
+			if self.onResponse(response: response as? HTTPURLResponse, error: error) {
+				onCompletion(data)
 			}
-			if (response as! HTTPURLResponse).statusCode == 401 {
-				self.appDelegate.push(title: "Unauthorized", message: "Access is denied due to invalid credentials")
-				return
-			}
-			onCompletion(data)
 		})
 		task.resume()
 	}
@@ -301,19 +295,25 @@ class Synchronizer {
 		
 		let task = URLSession.shared.dataTask(with: request, completionHandler: {
 			data, response, error -> Void in
-			if error != nil {
-				self.appDelegate.push(title: "Error", message: error!.localizedDescription)
-				return
+			if self.onResponse(response: response as? HTTPURLResponse, error: error) {
+				onCompletion(data)
 			}
-			if (response as! HTTPURLResponse).statusCode == 401 {
-				self.appDelegate.push(title: "Unauthorized", message: "Access is denied due to invalid credentials")
-				return
-			}
-			onCompletion(data)
 		})
 		task.resume()
 	}
 
+	internal func onResponse(response: HTTPURLResponse?, error: Error?) -> Bool {
+		if error != nil {
+			self.appDelegate.push(title: "Error", message: error!.localizedDescription)
+			return false
+		}
+		if response!.statusCode == 401 {
+			self.appDelegate.push(title: "Unauthorized", message: "Access is denied due to invalid credentials")
+			return false
+		}
+		return true
+	}
+	
 	internal func notify(total: Int, current: Int) {
 		let notification = ProgressNotification()
 		notification.total = total
