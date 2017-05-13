@@ -10,6 +10,7 @@ import UIKit
 
 class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerViewDelegate {
 
+	@IBOutlet weak var scrollView: UIScrollView!
 	@IBOutlet weak var amountLabel: UILabel!
 	@IBOutlet weak var numberTextField: UITextField!
 	@IBOutlet weak var dateTextField: UITextField!
@@ -137,18 +138,50 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 		dateTextField.text = (sender.date as NSDate).formatDateInput()
 	}
 
-	// MARK: - keyboard
+	// MARK: - ScrollView
+
+	func resizeInset(frame: CGRect, height: CGFloat) {
+		let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: height, right: 0.0)
+		self.scrollView.contentInset = contentInsets
+		self.scrollView.scrollIndicatorInsets = contentInsets
+		var aRect = self.view.frame
+		aRect.size.height -= height
+		if !aRect.contains(frame.origin) {
+			self.scrollView.scrollRectToVisible(frame, animated: true)
+		}
+	}
+	
+	// MARK: - Keyboard
 	
 	func keyboardWillShow(notification: NSNotification) {
 		if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
-			let h = self.view.frame.height - keyboardSize.height
-			let offset = (noteTextView.isFirstResponder ? noteTextView.frame.origin.y + 210 : 0)
-			self.view.frame.origin.y = offset > h ? h - offset : 0
+			var frame: CGRect
+			if numberTextField.isFirstResponder {
+				frame = numberTextField.frame
+			} else if dateTextField.isFirstResponder {
+				frame = dateTextField.frame
+			} else if causalTextField.isFirstResponder {
+				frame = causalTextField.frame
+			} else if paymentTextField.isFirstResponder {
+				frame = paymentTextField.frame
+			} else {
+				frame = noteTextView.frame
+			}
+			let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardSize.height, right: 0.0)
+			self.scrollView.contentInset = contentInsets
+			self.scrollView.scrollIndicatorInsets = contentInsets
+			var aRect = self.view.frame
+			aRect.size.height -= keyboardSize.height
+			if !aRect.contains(frame.origin) {
+				self.scrollView.scrollRectToVisible(frame, animated: true)
+			}
 		}
 	}
 	
 	func keyboardWillHide(notification: NSNotification) {
-		self.view.frame.origin.y = 0
+		let contentInsets = UIEdgeInsets.zero
+		self.scrollView.contentInset = contentInsets
+		self.scrollView.scrollIndicatorInsets = contentInsets
 	}
 
 	//MARK: - Delegates and data sources
