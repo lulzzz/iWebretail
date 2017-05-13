@@ -545,6 +545,9 @@
                             </fragment>
                         </attributedString>
                     </refreshControl>
+                    <connections>
+                        <outlet property="progressView" destination="PhW-se-4YH" id="meG-b2-M7d"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Kp0-Bn-cW5" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

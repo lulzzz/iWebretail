@@ -110,7 +110,8 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 	func found(code: String) {
 		do {
 			if try repository.add(barcode: code, movementId: Synchronizer.shared.movement.movementId) == false {
-				self.navigationController?.push(title: "Attention", message: "Barcode \(code) not found!")
+				let delegate = UIApplication.shared.delegate as! AppDelegate
+				delegate.push(title: "Attention", message: "Barcode \(code) not found!")
 			}
 		} catch {
 			self.navigationController?.alert(title: "Error", message: "\(error)")

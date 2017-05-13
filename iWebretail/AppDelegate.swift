@@ -11,7 +11,7 @@ import CoreData
 import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
 	var window: UIWindow?
 	let ioCContainer = IoCContainer()
@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		navigationBarAppearace.tintColor = UIColor.white
 		navigationBarAppearace.titleTextAttributes = [NSForegroundColorAttributeName:UIColor.white]
 
+		UNUserNotificationCenter.current().delegate = self
 		UNUserNotificationCenter.current().requestAuthorization(
 			options: [.alert,.sound,.badge],
 			completionHandler: { (granted,error) in
@@ -68,6 +69,32 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 	func applicationWillTerminate(_ application: UIApplication) {
 		// Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+	}
+
+	// MARK: - Notification
+
+	public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+		
+		completionHandler([.alert, .sound, .badge])
+	}
+	
+	func push(title: String, message: String) {
+		let center = UNUserNotificationCenter.current()
+		center.getNotificationSettings { (settings) in
+			if settings.authorizationStatus == .authorized {
+				let content = UNMutableNotificationContent()
+				content.title = title
+				content.body = message
+				content.sound = UNNotificationSound.default()
+				content.categoryIdentifier = "message"
+				content.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
+				let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
+				let request = UNNotificationRequest.init(identifier: "iWebretail", content: content, trigger: trigger)
+				center.add(request, withCompletionHandler: { (error) in
+					print(error.debugDescription)
+				})
+			}
+		}
 	}
 
 	// MARK: - Core Data stack

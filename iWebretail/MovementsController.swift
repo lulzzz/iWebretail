@@ -9,9 +9,16 @@
 import UIKit
 import CoreData
 
+class ProgressNotification {
+	var current: Int = 0
+	var total: Int = 0
+}
+
 class MovementsController: UITableViewController {
 
+	@IBOutlet weak var progressView: UIProgressView!
 	var movements: [Movement] = []
+	let kProgressViewTag = 10000
 	
 	private let repository: MovementProtocol
 	
@@ -26,7 +33,9 @@ class MovementsController: UITableViewController {
         super.viewDidLoad()
 
 		self.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
-   	}
+
+		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveNotification(notification:)), name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: nil)
+	}
 
 	override func viewDidAppear(_ animated: Bool) {
 		refresh(sender: self)
@@ -44,6 +53,17 @@ class MovementsController: UITableViewController {
 		self.refreshControl?.endRefreshing()
 	}
 	
+	func didReceiveNotification(notification:NSNotification) {
+		if let progress = notification.object as? ProgressNotification {
+			if progress.current == progress.total {
+				self.progressView.setProgress(0.0, animated: false)
+			} else {
+				let perc = Float(progress.current) / Float(progress.total)
+				self.progressView.setProgress(perc, animated: true)
+			}
+		}
+	}
+
 	// MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {

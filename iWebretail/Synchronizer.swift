@@ -11,6 +11,7 @@ import CoreData
 import CloudKit
 
 typealias ServiceResponse = (Data?, Error?) -> Void
+let kProgressUpdateNotification = "kProgressUpdateNotification"
 
 class Synchronizer {
 	
@@ -28,7 +29,7 @@ class Synchronizer {
 				print(error!.localizedDescription)
 			} else {
 				self.deviceToken = recordID!.recordName
-				print("fetched ID \(self.deviceToken)")
+				//print("fetched ID \(self.deviceToken)")
 			}
 		}
 	}
@@ -38,13 +39,14 @@ class Synchronizer {
 		
 		UIApplication.shared.isNetworkActivityIndicatorVisible = true
 
-		let appDel = UIApplication.shared.delegate as! AppDelegate
-		self.syncStore(context: appDel.persistentContainer.viewContext)
+		let appDelegate = UIApplication.shared.delegate as! AppDelegate
+		self.syncStore(appDelegate: appDelegate)
 
 		UIApplication.shared.isNetworkActivityIndicatorVisible = false
 	}
 	
-	internal func syncStore(context: NSManagedObjectContext) {
+	internal func syncStore(appDelegate: AppDelegate) {
+		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Store> = Store.fetchRequest()
 		fetchRequest.fetchLimit = 1
 		let objects = try! context.fetch(fetchRequest)
@@ -68,15 +70,16 @@ class Synchronizer {
 						}
 					}
 				} catch {
-					print("Error on sync store: \(error)")
+					appDelegate.push(title: "Error on sync store", message: error.localizedDescription)
 				}
 			}
 
-			self.syncCausals(context: context)
+			self.syncCausals(appDelegate: appDelegate)
 		})
 	}
 
-	internal func syncCausals(context: NSManagedObjectContext) {
+	internal func syncCausals(appDelegate: AppDelegate) {
+		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Causal> = Causal.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "updatedAt", ascending: false)
 		fetchRequest.sortDescriptors = [idDescriptor]
@@ -119,15 +122,16 @@ class Synchronizer {
 
 					try context.save()
 				} catch {
-					print("Error on sync causal: \(error)")
+					appDelegate.push(title: "Error on sync causal", message: error.localizedDescription)
 				}
 			}
 
-			self.syncCustomers(context: context)
+			self.syncCustomers(appDelegate: appDelegate)
 		})
 	}
 
-	internal func syncCustomers(context: NSManagedObjectContext) {
+	internal func syncCustomers(appDelegate: AppDelegate) {
+		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "updatedAt", ascending: false)
 		fetchRequest.sortDescriptors = [idDescriptor]
@@ -175,15 +179,16 @@ class Synchronizer {
 					
 					try context.save()
 				} catch {
-					print("Error on sync customer: \(error)")
+					appDelegate.push(title: "Error on sync customer", message: error.localizedDescription)
 				}
 			}
 
-			self.syncProducts(context: context)
+			self.syncProducts(appDelegate: appDelegate)
 		})
 	}
 
-	internal func syncProducts(context: NSManagedObjectContext) {
+	internal func syncProducts(appDelegate: AppDelegate) {
+		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "updatedAt", ascending: false)
 		fetchRequest.sortDescriptors = [idDescriptor]
@@ -244,15 +249,16 @@ class Synchronizer {
 
 					try context.save()
 				} catch {
-					print("Error on sync product: \(error)")
+					appDelegate.push(title: "Error on sync product", message: error.localizedDescription)
 				}
 			}
 
-			self.syncMovement(context: context)
+			self.syncMovement(appDelegate: appDelegate)
 		})
 	}
 
-	internal func syncMovement(context: NSManagedObjectContext) {
+	internal func syncMovement(appDelegate: AppDelegate) {
+		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "completed == true AND synced == false")
 		let items = try! context.fetch(fetchRequest)
@@ -273,7 +279,7 @@ class Synchronizer {
 						item.synced = true
 						try context.save()
 					} catch {
-						print("Error on sync movement: \(error)")
+						appDelegate.push(title: "Error on sync movement", message: error.localizedDescription)
 					}
 				}
 			})
