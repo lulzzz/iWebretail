@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 import CloudKit
 
-typealias ServiceResponse = (Data?, Error?) -> Void
+typealias ServiceResponse = (Data?) -> Void
 let kProgressUpdateNotification = "kProgressUpdateNotification"
 
 class Synchronizer {
@@ -20,7 +20,8 @@ class Synchronizer {
 	private let baseURL = "http://ec2-35-157-208-60.eu-central-1.compute.amazonaws.com/"
 	private var deviceToken: String = ""
 	var movement: Movement!
-
+	let appDelegate = UIApplication.shared.delegate as! AppDelegate
+	
 	func iCloudUserIDAsync() {
 		let container = CKContainer.default()
 		container.fetchUserRecordID() {
@@ -39,25 +40,19 @@ class Synchronizer {
 		
 		UIApplication.shared.isNetworkActivityIndicatorVisible = true
 
-		let appDelegate = UIApplication.shared.delegate as! AppDelegate
-		self.syncStore(appDelegate: appDelegate)
+		self.syncStore()
 
 		UIApplication.shared.isNetworkActivityIndicatorVisible = false
 	}
 	
-	internal func syncStore(appDelegate: AppDelegate) {
+	internal func syncStore() {
 		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Store> = Store.fetchRequest()
 		fetchRequest.fetchLimit = 1
 		let objects = try! context.fetch(fetchRequest)
 		let store = objects.count == 0 ? Store(context: context) : objects.first!
 
-		makeHTTPGetRequest(url: "api/devicefrom/\(store.updatedAt)", onCompletion: { data, error in
-			if error != nil {
-				print(error!.localizedDescription)
-				return
-			}
-			
+		makeHTTPGetRequest(url: "api/devicefrom/\(store.updatedAt)", onCompletion: { data in
 			if let usableData = data {
 				do {
 					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
@@ -70,15 +65,15 @@ class Synchronizer {
 						}
 					}
 				} catch {
-					appDelegate.push(title: "Error on sync store", message: error.localizedDescription)
+					self.appDelegate.push(title: "Error on sync store", message: error.localizedDescription)
 				}
 			}
 
-			self.syncCausals(appDelegate: appDelegate)
+			self.syncCausals()
 		})
 	}
 
-	internal func syncCausals(appDelegate: AppDelegate) {
+	internal func syncCausals() {
 		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Causal> = Causal.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "updatedAt", ascending: false)
@@ -87,12 +82,7 @@ class Synchronizer {
 		let results = try! context.fetch(fetchRequest)
 		let date = results.count == 1 ? results.first!.updatedAt : 1
 		
-		makeHTTPGetRequest(url: "/api/causalfrom/\(date)", onCompletion: { data, error in
-			if error != nil {
-				print(error!.localizedDescription)
-				return
-			}
-			
+		makeHTTPGetRequest(url: "/api/causalfrom/\(date)", onCompletion: { data in
 			if let usableData = data {
 				do {
 					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
@@ -122,15 +112,15 @@ class Synchronizer {
 
 					try context.save()
 				} catch {
-					appDelegate.push(title: "Error on sync causal", message: error.localizedDescription)
+					self.appDelegate.push(title: "Error on sync causal", message: error.localizedDescription)
 				}
 			}
 
-			self.syncCustomers(appDelegate: appDelegate)
+			self.syncCustomers()
 		})
 	}
 
-	internal func syncCustomers(appDelegate: AppDelegate) {
+	internal func syncCustomers() {
 		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "updatedAt", ascending: false)
@@ -139,12 +129,7 @@ class Synchronizer {
 		let results = try! context.fetch(fetchRequest)
 		let date = results.count == 1 ? results.first!.updatedAt : 1
 		
-		makeHTTPGetRequest(url: "/api/customerfrom/\(date)", onCompletion: { data, error in
-			if error != nil {
-				print(error!.localizedDescription)
-				return
-			}
-			
+		makeHTTPGetRequest(url: "/api/customerfrom/\(date)", onCompletion: { data in
 			if let usableData = data {
 				do {
 					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
@@ -179,15 +164,15 @@ class Synchronizer {
 					
 					try context.save()
 				} catch {
-					appDelegate.push(title: "Error on sync customer", message: error.localizedDescription)
+					self.appDelegate.push(title: "Error on sync customer", message: error.localizedDescription)
 				}
 			}
 
-			self.syncProducts(appDelegate: appDelegate)
+			self.syncProducts()
 		})
 	}
 
-	internal func syncProducts(appDelegate: AppDelegate) {
+	internal func syncProducts() {
 		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "updatedAt", ascending: false)
@@ -196,12 +181,7 @@ class Synchronizer {
 		let results = try! context.fetch(fetchRequest)
 		let date = results.count == 1 ? results.first!.updatedAt : 1
 		
-		makeHTTPGetRequest(url: "/api/productfrom/\(date)", onCompletion: { data, error in
-			if error != nil {
-				print(error!.localizedDescription)
-				return
-			}
-			
+		makeHTTPGetRequest(url: "/api/productfrom/\(date)", onCompletion: { data in
 			if let usableData = data {
 				do {
 					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
@@ -249,15 +229,15 @@ class Synchronizer {
 
 					try context.save()
 				} catch {
-					appDelegate.push(title: "Error on sync product", message: error.localizedDescription)
+					self.appDelegate.push(title: "Error on sync product", message: error.localizedDescription)
 				}
 			}
 
-			self.syncMovement(appDelegate: appDelegate)
+			self.syncMovement()
 		})
 	}
 
-	internal func syncMovement(appDelegate: AppDelegate) {
+	internal func syncMovement() {
 		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "completed == true AND synced == false")
@@ -269,17 +249,15 @@ class Synchronizer {
 			rowsRequest.predicate = NSPredicate.init(format: "movementId == \(item.movementId)")
 			let rows = try! context.fetch(rowsRequest)
 			
-			makeHTTPPostRequest(url: "api/movement", body: item.getJSONValues(rows: rows), onCompletion:  { data, error in
-				if error != nil {
-					print(error!.localizedDescription)
-				} else if let usableData = data {
+			makeHTTPPostRequest(url: "api/movement", body: item.getJSONValues(rows: rows), onCompletion:  { data in
+				if let usableData = data {
 					do {
 						let json = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! NSDictionary
 						item.movementNumber = json["movementNumber"] as! Int32
 						item.synced = true
 						try context.save()
 					} catch {
-						appDelegate.push(title: "Error on sync movement", message: error.localizedDescription)
+						self.appDelegate.push(title: "Error on sync movement", message: error.localizedDescription)
 					}
 				}
 			})
@@ -295,7 +273,15 @@ class Synchronizer {
 		request.httpMethod = "GET"
 		let task = URLSession.shared.dataTask(with: request, completionHandler: {
 			data, response, error -> Void in
-			onCompletion(data, error)
+			if error != nil {
+				self.appDelegate.push(title: "Error", message: error!.localizedDescription)
+				return
+			}
+			if (response as! HTTPURLResponse).statusCode == 401 {
+				self.appDelegate.push(title: "Unauthorized", message: "Access is denied due to invalid credentials")
+				return
+			}
+			onCompletion(data)
 		})
 		task.resume()
 	}
@@ -315,7 +301,15 @@ class Synchronizer {
 		
 		let task = URLSession.shared.dataTask(with: request, completionHandler: {
 			data, response, error -> Void in
-			onCompletion(data, error)
+			if error != nil {
+				self.appDelegate.push(title: "Error", message: error!.localizedDescription)
+				return
+			}
+			if (response as! HTTPURLResponse).statusCode == 401 {
+				self.appDelegate.push(title: "Unauthorized", message: "Access is denied due to invalid credentials")
+				return
+			}
+			onCompletion(data)
 		})
 		task.resume()
 	}
