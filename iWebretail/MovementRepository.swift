@@ -11,11 +11,11 @@ import CoreData
 
 class MovementRepository: MovementProtocol {
 	
-	let context: NSManagedObjectContext;
+	let appDelegate: AppDelegate
+	lazy var context: NSManagedObjectContext = { return self.appDelegate.persistentContainer.viewContext }()
 	
 	init() {
-		let appDel = UIApplication.shared.delegate as! AppDelegate
-		context = appDel.persistentContainer.viewContext
+		appDelegate = UIApplication.shared.delegate as! AppDelegate
 	}
 
 	func getAll() throws -> [Movement] {
@@ -43,7 +43,7 @@ class MovementRepository: MovementProtocol {
 		movement.movementStatus = "New"
 		movement.completed = false
 		movement.synced = false
-		try context.save()
+		appDelegate.saveContext()
 		
 		return movement
 	}
@@ -60,7 +60,7 @@ class MovementRepository: MovementProtocol {
 		current.movementNote = item.movementNote
 		current.completed = item.completed
 		
-		try context.save()
+		appDelegate.saveContext()
 	}
 	
 	func delete(id: Int64) throws {
@@ -74,7 +74,7 @@ class MovementRepository: MovementProtocol {
 			context.delete(row)
 		}
 		
-		try context.save()
+		appDelegate.saveContext()
 	}
 
 	func newId() throws -> Int64 {

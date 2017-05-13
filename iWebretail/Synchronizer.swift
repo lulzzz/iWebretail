@@ -61,7 +61,7 @@ class Synchronizer {
 						if self.deviceToken == item["deviceToken"] as! String {
 							store.setJSONValues(json: item["store"] as! NSDictionary)
 							store.updatedAt = item["updatedAt"] as! Int64
-							try context.save()
+							self.appDelegate.saveContext()
 						}
 					}
 				} catch {
@@ -110,7 +110,7 @@ class Synchronizer {
 						self.notify(total: items.count, current: index + 1)
 					}
 
-					try context.save()
+					self.appDelegate.saveContext()
 				} catch {
 					self.appDelegate.push(title: "Error on sync causal", message: error.localizedDescription)
 				}
@@ -162,7 +162,7 @@ class Synchronizer {
 						self.notify(total: items.count, current: index + 1)
 					}
 					
-					try context.save()
+					self.appDelegate.saveContext()
 				} catch {
 					self.appDelegate.push(title: "Error on sync customer", message: error.localizedDescription)
 				}
@@ -227,7 +227,7 @@ class Synchronizer {
 						self.notify(total: items.count, current: index + 1)
 					}
 
-					try context.save()
+					self.appDelegate.saveContext()
 				} catch {
 					self.appDelegate.push(title: "Error on sync product", message: error.localizedDescription)
 				}
@@ -255,7 +255,7 @@ class Synchronizer {
 						let json = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! NSDictionary
 						item.movementNumber = json["movementNumber"] as! Int32
 						item.synced = true
-						try context.save()
+						self.appDelegate.saveContext()
 					} catch {
 						self.appDelegate.push(title: "Error on sync movement", message: error.localizedDescription)
 					}

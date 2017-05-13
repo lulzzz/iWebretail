@@ -134,7 +134,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 				try persistentContainer.viewContext.save()
 			} catch {
 				let nserror = error as NSError
-				fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+				//fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+				self.push(title: nserror.localizedDescription, message: nserror.userInfo.description)
 			}
 		}
 	}

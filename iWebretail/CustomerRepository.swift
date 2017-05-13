@@ -11,11 +11,11 @@ import CoreData
 
 class CustomerRepository: CustomerProtocol {
 
-	let context: NSManagedObjectContext;
+	let appDelegate: AppDelegate
+	lazy var context: NSManagedObjectContext = { return self.appDelegate.persistentContainer.viewContext }()
 	
 	init() {
-		let appDel = UIApplication.shared.delegate as! AppDelegate
-		context = appDel.persistentContainer.viewContext
+		appDelegate = UIApplication.shared.delegate as! AppDelegate
 	}
 	
 	func getAll(search: String) throws -> [Customer] {

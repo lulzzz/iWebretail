@@ -11,11 +11,11 @@ import CoreData
 
 class MovementArticleRepository: MovementArticleProtocol {
 	
-	let context: NSManagedObjectContext;
+	let appDelegate: AppDelegate
+	lazy var context: NSManagedObjectContext = { return self.appDelegate.persistentContainer.viewContext }()
 	
 	init() {
-		let appDel = UIApplication.shared.delegate as! AppDelegate
-		context = appDel.persistentContainer.viewContext
+		appDelegate = UIApplication.shared.delegate as! AppDelegate
 	}
 
 	func getAll(id: Int64) throws -> [MovementArticle] {
@@ -57,7 +57,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 		movementArticle.movementProduct = article.articleAttributes
 		movementArticle.movementArticleQuantity = 1
 		movementArticle.movementArticlePrice = (products.first?.productSelling)!
-		try context.save()
+		appDelegate.saveContext()
 		
 		return true
 	}
@@ -66,13 +66,13 @@ class MovementArticleRepository: MovementArticleProtocol {
 		let current = try self.get(id: id)!
 		current.movementArticleQuantity = item.movementArticleQuantity
 		current.movementArticlePrice = item.movementArticlePrice
-		try context.save()
+		appDelegate.saveContext()
 	}
 	
 	func delete(id: Int64) throws {
 		let item = try self.get(id: id)
 		context.delete(item!)
-		try context.save()
+		appDelegate.saveContext()
 	}
 
 	func newId() throws -> Int64 {
@@ -112,8 +112,8 @@ class MovementArticleRepository: MovementArticleProtocol {
 		return try context.fetch(request)
 	}
 
-	func updateAmount(item: Movement, amount: Double) throws {
+	func updateAmount(item: Movement, amount: Double) {
 		item.movementAmount = amount
-		try context.save()
+		appDelegate.saveContext()
 	}
 }
