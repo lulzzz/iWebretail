@@ -20,7 +20,7 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	@IBOutlet weak var noteTextView: UITextView!
 	
 	var store: Store?
-	var isCausal: Bool!
+	var isCausal: Bool = false
 	var causals: [Causal]
 	var payments: [String]
 	var customer: Customer? = nil

@@ -27,7 +27,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		// Override point for customization after application launch.
 		
-		Synchronizer.shared.iCloudUserIDAsync()
+		UIApplication.shared.statusBarStyle = .lightContent
+		let navigationBarAppearace = UINavigationBar.appearance()
+		let image = UIImage(named: "bar")!
+		navigationBarAppearace.setBackgroundImage(image.resizableImage(withCapInsets: UIEdgeInsetsMake(0, 0, 0, 0), resizingMode: .stretch), for: .default)
+		navigationBarAppearace.tintColor = UIColor.white
+		navigationBarAppearace.titleTextAttributes = [NSForegroundColorAttributeName:UIColor.white]
 
 		UNUserNotificationCenter.current().requestAuthorization(
 			options: [.alert,.sound,.badge],
@@ -37,6 +42,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 				}
 			}
 		)
+
+		Synchronizer.shared.iCloudUserIDAsync()
 		
 		return true
 	}
