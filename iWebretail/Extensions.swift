@@ -281,6 +281,7 @@ extension Movement {
 			"movementStatus": self.movementStatus!,
 			"movementUser": self.movementDevice!,
 			"movementDevice": self.movementDevice!,
+			"movementPayment": self.movementPayment!,
 			"movementStore": self.movementStore!.getJSONValues(),
 			"movementCausal": self.movementCausal!.getJSONValues(),
 			"movementCustomer": self.movementCustomer?.getJSONValues() ?? "",

@@ -75,7 +75,12 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 			movement.movementStatus = causal.causalIsPos ? "Completed" : "New"
 		}
 
-		paymentTextField.text = movement.movementPayment != nil ? movement.movementPayment : payments.first
+		if movement.movementPayment != nil {
+			paymentTextField.text = movement.movementPayment
+		} else {
+			movement.movementPayment = payments.first
+			paymentTextField.text = movement.movementPayment
+		}
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
