@@ -21,6 +21,7 @@ class Synchronizer {
 	private var deviceToken: String = ""
 	var movement: Movement!
 	let appDelegate = UIApplication.shared.delegate as! AppDelegate
+	lazy var context: NSManagedObjectContext = { return self.appDelegate.persistentContainer.viewContext }()
 	
 	func iCloudUserIDAsync() {
 		let container = CKContainer.default()
@@ -46,7 +47,6 @@ class Synchronizer {
 	}
 	
 	internal func syncStore() {
-		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Store> = Store.fetchRequest()
 		fetchRequest.fetchLimit = 1
 		let objects = try! context.fetch(fetchRequest)
@@ -74,7 +74,6 @@ class Synchronizer {
 	}
 
 	internal func syncCausals() {
-		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Causal> = Causal.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "updatedAt", ascending: false)
 		fetchRequest.sortDescriptors = [idDescriptor]
@@ -89,12 +88,12 @@ class Synchronizer {
 					
 					for (index, item) in items.enumerated() {
 
-						let causal = Causal(context: context)
+						let causal = Causal(context: self.context)
 						causal.setJSONValues(json: item)
 
 						let innerFetchRequest: NSFetchRequest<Causal> = Causal.fetchRequest()
 						innerFetchRequest.predicate = NSPredicate.init(format: "causalId == \(causal.causalId)")
-						let object = try context.fetch(innerFetchRequest)
+						let object = try self.context.fetch(innerFetchRequest)
 						
 						if object.count > 0 {
 							let current = object.first!
@@ -104,7 +103,7 @@ class Synchronizer {
 							current.causalBooked = causal.causalBooked
 							current.updatedAt = causal.updatedAt
 						} else {
-							context.insert(causal)
+							self.context.insert(causal)
 						}
 
 						self.notify(total: items.count, current: index + 1)
@@ -121,7 +120,6 @@ class Synchronizer {
 	}
 
 	internal func syncCustomers() {
-		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "updatedAt", ascending: false)
 		fetchRequest.sortDescriptors = [idDescriptor]
@@ -136,12 +134,12 @@ class Synchronizer {
 					
 					for (index, item) in items.enumerated() {
 						
-						let customer = Customer(context: context)
+						let customer = Customer(context: self.context)
 						customer.setJSONValues(json: item)
 
 						let innerFetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
 						innerFetchRequest.predicate = NSPredicate.init(format: "customerId == \(customer.customerId)")
-						let object = try context.fetch(innerFetchRequest)
+						let object = try self.context.fetch(innerFetchRequest)
 						
 						if object.count > 0 {
 							let current = object.first!
@@ -156,7 +154,7 @@ class Synchronizer {
 							current.customerVatNumber = customer.customerVatNumber
 							current.updatedAt = customer.updatedAt
 						} else {
-							context.insert(customer)
+							self.context.insert(customer)
 						}
 
 						self.notify(total: items.count, current: index + 1)
@@ -173,7 +171,6 @@ class Synchronizer {
 	}
 
 	internal func syncProducts() {
-		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "updatedAt", ascending: false)
 		fetchRequest.sortDescriptors = [idDescriptor]
@@ -188,12 +185,12 @@ class Synchronizer {
 					
 					for (index, item) in items.enumerated() {
 						
-						let product = Product(context: context)
+						let product = Product(context: self.context)
 						product.setJSONValues(json: item)
 						
 						let innerFetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
 						innerFetchRequest.predicate = NSPredicate.init(format: "productId == \(product.productId)")
-						let object = try context.fetch(innerFetchRequest)
+						let object = try self.context.fetch(innerFetchRequest)
 						if object.count > 0 {
 							let current = object.first!
 							current.productName = product.productName
@@ -205,22 +202,22 @@ class Synchronizer {
 							current.productCategories = product.productCategories
 							current.updatedAt = product.updatedAt
 						} else {
-							context.insert(product)
+							self.context.insert(product)
 						}
 						
 						for article in item["articles"] as! [NSDictionary] {
-							let productArticle = ProductArticle(context: context)
+							let productArticle = ProductArticle(context: self.context)
 							productArticle.productId = product.productId
 							productArticle.setJSONValues(json: article, attributes: item["attributes"] as! [NSDictionary])
 
 							let request: NSFetchRequest<ProductArticle> = ProductArticle.fetchRequest()
 							request.predicate = NSPredicate.init(format: "articleBarcode == %@", productArticle.articleBarcode!)
-							let rows = try context.fetch(request)
+							let rows = try self.context.fetch(request)
 							if rows.count > 0 {
 								let row = rows.first!
 								row.articleAttributes = productArticle.articleAttributes
 							} else {
-								context.insert(productArticle)
+								self.context.insert(productArticle)
 							}
 						}
 
@@ -238,7 +235,6 @@ class Synchronizer {
 	}
 
 	internal func syncMovement() {
-		let context = appDelegate.persistentContainer.viewContext
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "completed == true AND synced == false")
 		let items = try! context.fetch(fetchRequest)
