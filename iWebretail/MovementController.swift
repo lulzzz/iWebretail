@@ -77,7 +77,7 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 			.reduce (0, +)
 		amountLabel.text = amount.formatCurrency()
 		
-		try! repository.updateAmount(item: Synchronizer.shared.movement, amount: amount)
+		repository.updateAmount(item: Synchronizer.shared.movement, amount: amount)
 	}
 	
 	// MARK: - Table view data source

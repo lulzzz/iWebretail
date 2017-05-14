@@ -142,19 +142,6 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	func datePickerValueChanged(sender:UIDatePicker) {
 		dateTextField.text = (sender.date as NSDate).formatDateInput()
 	}
-
-	// MARK: - ScrollView
-
-	func resizeInset(frame: CGRect, height: CGFloat) {
-		let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: height, right: 0.0)
-		self.scrollView.contentInset = contentInsets
-		self.scrollView.scrollIndicatorInsets = contentInsets
-		var aRect = self.view.frame
-		aRect.size.height -= height
-		if !aRect.contains(frame.origin) {
-			self.scrollView.scrollRectToVisible(frame, animated: true)
-		}
-	}
 	
 	// MARK: - Keyboard
 	
@@ -175,7 +162,7 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 			let contentInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardSize.height, right: 0.0)
 			self.scrollView.contentInset = contentInsets
 			self.scrollView.scrollIndicatorInsets = contentInsets
-			var aRect = self.view.frame
+			var aRect = self.scrollView.frame
 			aRect.size.height -= keyboardSize.height
 			if !aRect.contains(frame.origin) {
 				self.scrollView.scrollRectToVisible(frame, animated: true)

@@ -35,28 +35,38 @@ class MovementArticleRepository: MovementArticleProtocol {
 	}
 	
 	func add(barcode: String, movementId: Int64) throws -> Bool {
-		let articleRequest: NSFetchRequest<ProductArticle> = ProductArticle.fetchRequest()
-		articleRequest.predicate = NSPredicate.init(format: "articleBarcode == %@", barcode)
-		articleRequest.fetchLimit = 1
-		let articles = try context.fetch(articleRequest)
-		if articles.count == 0 {
-			return false
+		let movementArticleRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
+		movementArticleRequest.predicate = NSPredicate.init(format: "movementArticleBarcode == %@", barcode)
+		movementArticleRequest.fetchLimit = 1
+		let movementArticles = try context.fetch(movementArticleRequest)
+		if movementArticles.count == 0 {
+			let articleRequest: NSFetchRequest<ProductArticle> = ProductArticle.fetchRequest()
+			articleRequest.predicate = NSPredicate.init(format: "articleBarcode == %@", barcode)
+			articleRequest.fetchLimit = 1
+			let articles = try context.fetch(articleRequest)
+			if articles.count == 0 {
+				return false
+			}
+			
+			let article = articles.first!
+			let productRequest: NSFetchRequest<Product> = Product.fetchRequest()
+			productRequest.predicate = NSPredicate.init(format: "productId == \(article.productId)")
+			productRequest.fetchLimit = 1
+			let products = try context.fetch(productRequest)
+
+			let entity =  NSEntityDescription.entity(forEntityName: "MovementArticle", in: context)
+			let movementArticle = MovementArticle(entity: entity!, insertInto: context)
+			movementArticle.movementId = movementId
+			movementArticle.movementArticleId = try self.newId()
+			movementArticle.movementArticleBarcode = barcode
+			movementArticle.movementProduct = article.articleAttributes
+			movementArticle.movementArticleQuantity = 1
+			movementArticle.movementArticlePrice = (products.first?.productSelling)!
+		} else {
+			let movementArticle = movementArticles.first!
+			movementArticle.movementArticleQuantity += 1
 		}
 		
-		let article = articles.first!
-		let productRequest: NSFetchRequest<Product> = Product.fetchRequest()
-		productRequest.predicate = NSPredicate.init(format: "productId == \(article.productId)")
-		productRequest.fetchLimit = 1
-		let products = try context.fetch(productRequest)
-
-		let entity =  NSEntityDescription.entity(forEntityName: "MovementArticle", in: context)
-		let movementArticle = MovementArticle(entity: entity!, insertInto: context)
-		movementArticle.movementId = movementId
-		movementArticle.movementArticleId = try self.newId()
-		movementArticle.movementArticleBarcode = barcode
-		movementArticle.movementProduct = article.articleAttributes
-		movementArticle.movementArticleQuantity = 1
-		movementArticle.movementArticlePrice = (products.first?.productSelling)!
 		appDelegate.saveContext()
 		
 		return true
