@@ -16,9 +16,9 @@ extension UINavigationController {
 	}
 }
 
-extension Int64 {
-	static func now() -> Int64 {
-		return Int64(Date.timeIntervalSinceReferenceDate)
+extension Int32 {
+	static func now() -> Int32 {
+		return Int32(Date.timeIntervalSinceReferenceDate)
 	}
 }
 
@@ -79,13 +79,13 @@ extension NSDate {
 
 extension Store {
 	func setJSONValues(json: NSDictionary) {
-		self.storeId = json["storeId"] as! Int16
+		self.storeId = json["storeId"] as! Int32
 		self.storeName = json["storeName"] as? String ?? ""
 		self.storeAddress = json["storeAddress"] as? String ?? ""
 		self.storeCity = json["storeCity"] as? String ?? ""
 		self.storeZip = json["storeZip"] as? String ?? ""
 		self.storeCountry = json["storeCountry"] as? String ?? ""
-		self.updatedAt = json["updatedAt"] as! Int64
+		self.updatedAt = json["updatedAt"] as! Int32
 	}
 	
 	func getJSONValues() -> NSDictionary {
@@ -103,12 +103,12 @@ extension Store {
 
 extension Causal {
 	func setJSONValues(json: NSDictionary) {
-		self.causalId = json["causalId"] as! Int16
+		self.causalId = json["causalId"] as! Int32
 		self.causalName = json["causalName"] as? String ?? ""
 		self.causalIsPos = json["causalIsPos"] as? Bool ?? false
-		self.causalQuantity = json["causalQuantity"] as! Int16
-		self.causalBooked = json["causalBooked"] as! Int16
-		self.updatedAt = json["updatedAt"] as! Int64
+		self.causalQuantity = json["causalQuantity"] as! Int32
+		self.causalBooked = json["causalBooked"] as! Int32
+		self.updatedAt = json["updatedAt"] as! Int32
 	}
 	
 	func getJSONValues() -> NSDictionary {
@@ -125,7 +125,7 @@ extension Causal {
 
 extension Customer {
 	func setJSONValues(json: NSDictionary) {
-		self.customerId = json["customerId"] as! Int64
+		self.customerId = json["customerId"] as! Int32
 		self.customerName = json["customerName"] as? String ?? ""
 		self.customerEmail = json["customerEmail"] as? String ?? ""
 		self.customerPhone = json["customerPhone"] as? String ?? ""
@@ -135,7 +135,7 @@ extension Customer {
 		self.customerCountry = json["customerCountry"] as? String ?? ""
 		self.customerFiscalCode = json["customerFiscalCode"] as? String ?? ""
 		self.customerVatNumber = json["customerVatNumber"] as? String ?? ""
-		self.updatedAt = json["updatedAt"] as! Int64
+		self.updatedAt = json["updatedAt"] as! Int32
 	}
 
 	func getJSONValues() -> NSDictionary {
@@ -157,7 +157,7 @@ extension Customer {
 
 extension Product {
 	func setJSONValues(json: NSDictionary) {
-		self.productId = json["productId"] as! Int64
+		self.productId = json["productId"] as! Int32
 		self.productCode = json["productCode"] as? String ?? ""
 		self.productName = json["productName"] as? String ?? ""
 		self.productUm = json["productUm"] as? String ?? ""
@@ -166,7 +166,7 @@ extension Product {
 		self.productDiscount = discount?["discountPrice"] as? Double ?? 0
 		let brand = json["brand"] as! NSDictionary
 		self.productBrand = brand["brandName"] as? String ?? ""
-		self.updatedAt = json["updatedAt"] as! Int64
+		self.updatedAt = json["updatedAt"] as! Int32
 
 		self.productCategories = ""
 		for productCategory in json["categories"] as! [NSDictionary] {
@@ -178,6 +178,7 @@ extension Product {
 
 extension ProductArticle {
 	func setJSONValues(json: NSDictionary, attributes: [NSDictionary]) {
+		self.articleId = json["articleId"] as! Int32
 		self.articleBarcode = json["articleBarcode"] as? String ?? ""
 		var values = [Int:String]()
 		for attribute in attributes {

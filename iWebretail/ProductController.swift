@@ -28,7 +28,7 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 		self.tableView.contentOffset = CGPoint(x: 0, y: 44)
 		searchBar.delegate = self
 
-		products = try! repository.getProducts(search: "")
+		products = try! repository.getProducts()
 		filtered = products.groupBy { $0.productBrand! }
 
 		self.tableView.reloadData()

@@ -10,15 +10,15 @@ protocol MovementProtocol {
 	
 	func getAll() throws -> [Movement]
 	
-	func get(id: Int64) throws -> Movement?
+	func get(id: Int32) throws -> Movement?
 	
 	func newNumber() throws -> Int32
 	
 	func add() throws -> Movement
 	
-	func update(id: Int64, item: Movement) throws
+	func update(id: Int32, item: Movement) throws
 	
-	func delete(id: Int64) throws
+	func delete(id: Int32) throws
 
 	func getStore() throws -> Store?
 

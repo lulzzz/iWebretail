@@ -10,11 +10,11 @@ protocol CustomerProtocol {
 	
 	func getAll(search: String) throws -> [Customer]
 	
-	func get(id: Int64) throws -> Customer?
+	func get(id: Int32) throws -> Customer?
 	
 	func add() throws -> Customer
 	
-	func update(id: Int64, item: Customer) throws
+	func update(id: Int32, item: Customer) throws
 	
-	func delete(id: Int64) throws
+	func delete(id: Int32) throws
 }

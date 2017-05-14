@@ -29,7 +29,7 @@ class CustomerRepository: CustomerProtocol {
 		return try context.fetch(request)
 	}
 
-	func get(id: Int64) throws -> Customer? {
+	func get(id: Int32) throws -> Customer? {
 		let fetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "customerId == \(id)")
 		fetchRequest.fetchLimit = 1
@@ -47,7 +47,7 @@ class CustomerRepository: CustomerProtocol {
 		return customer
 	}
 	
-	func update(id: Int64, item: Customer) throws {
+	func update(id: Int32, item: Customer) throws {
 		let current = try self.get(id: id)!
 		current.customerName = item.customerName
 		current.customerEmail = item.customerEmail
@@ -58,18 +58,18 @@ class CustomerRepository: CustomerProtocol {
 		current.customerCountry = item.customerCountry
 		current.customerFiscalCode = item.customerFiscalCode
 		current.customerVatNumber = item.customerVatNumber
-		current.updatedAt = Int64.now()
+		current.updatedAt = Int32.now()
 		try context.save()
 	}
 	
-	func delete(id: Int64) throws {
+	func delete(id: Int32) throws {
 		let item = try self.get(id: id)
 		context.delete(item!)
 		try context.save()
 	}
 	
-	private func newId() throws -> Int64 {
-		var newId: Int64 = -1;
+	private func newId() throws -> Int32 {
+		var newId: Int32 = -1;
 		
 		let fetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "customerId", ascending: true)

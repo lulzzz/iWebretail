@@ -8,19 +8,19 @@
 
 protocol MovementArticleProtocol {
 	
-	func getAll(id: Int64) throws -> [MovementArticle]
+	func getAll(id: Int32) throws -> [MovementArticle]
 	
-	func get(id: Int64) throws -> MovementArticle?
+	func get(id: Int32) throws -> MovementArticle?
 	
-	func add(barcode: String, movementId: Int64) throws -> Bool
+	func add(barcode: String, movementId: Int32) throws -> Bool
 	
-	func update(id: Int64, item: MovementArticle) throws
+	func update(id: Int32, item: MovementArticle) throws
 	
-	func delete(id: Int64) throws
+	func delete(id: Int32) throws
 
-	func getProducts(search: String) throws -> [Product]
+	func getProducts() throws -> [Product]
 
-	func getArticles(productId: Int64) throws -> [ProductArticle]
+	func getArticles(productId: Int32) throws -> [ProductArticle]
 	
 	func updateAmount(item: Movement, amount: Double)
 }

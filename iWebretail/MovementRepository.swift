@@ -24,7 +24,7 @@ class MovementRepository: MovementProtocol {
 		return try context.fetch(request)
 	}
 	
-	func get(id: Int64) throws -> Movement? {
+	func get(id: Int32) throws -> Movement? {
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "movementId == \(id)")
 		fetchRequest.fetchLimit = 1
@@ -48,7 +48,7 @@ class MovementRepository: MovementProtocol {
 		return movement
 	}
 	
-	func update(id: Int64, item: Movement) throws {
+	func update(id: Int32, item: Movement) throws {
 		let current = try self.get(id: id)!
 		current.movementNumber = item.movementNumber
 		current.movementDate = item.movementDate
@@ -63,7 +63,7 @@ class MovementRepository: MovementProtocol {
 		appDelegate.saveContext()
 	}
 	
-	func delete(id: Int64) throws {
+	func delete(id: Int32) throws {
 		let item = try self.get(id: id)
 		context.delete(item!)
 
@@ -77,8 +77,8 @@ class MovementRepository: MovementProtocol {
 		appDelegate.saveContext()
 	}
 
-	func newId() throws -> Int64 {
-		var newId: Int64 = 1;
+	func newId() throws -> Int32 {
+		var newId: Int32 = 1;
 		
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "movementId", ascending: false)
