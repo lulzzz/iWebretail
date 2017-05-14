@@ -60,7 +60,7 @@ class Synchronizer {
 					for item in items {
 						if self.deviceToken == item["deviceToken"] as! String {
 							store.setJSONValues(json: item["store"] as! NSDictionary)
-							store.updatedAt = item["updatedAt"] as! Int64
+							store.updatedAt = item["updatedAt"] as! Int32
 							self.appDelegate.saveContext()
 						}
 					}

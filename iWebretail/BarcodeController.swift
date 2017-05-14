@@ -117,6 +117,8 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 			self.navigationController?.alert(title: "Error", message: "\(error)")
 		}
 		
-		read()
+		DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+			self.read()
+		}
 	}
 }

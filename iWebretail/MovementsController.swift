@@ -25,16 +25,16 @@ class MovementsController: UITableViewController {
 	required init?(coder aDecoder: NSCoder) {
 		let delegate = UIApplication.shared.delegate as! AppDelegate
 		repository = delegate.ioCContainer.resolve() as MovementProtocol
-		
+
 		super.init(coder: aDecoder)
+
+		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveNotification(notification:)), name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: nil)
 	}
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
 
 		self.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
-
-		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveNotification(notification:)), name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: nil)
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
