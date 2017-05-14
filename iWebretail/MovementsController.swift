@@ -1,5 +1,5 @@
 //
-//  ReceiptsViewController.swift
+//  MovementsController.swift
 //  iWebretail
 //
 //  Created by Gerardo Grisolini on 14/04/17.

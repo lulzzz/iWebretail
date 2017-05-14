@@ -1,5 +1,5 @@
 //
-//  RegisterViewController.swift
+//  RegisterController.swift
 //  iWebretail
 //
 //  Created by Gerardo Grisolini on 14/04/17.

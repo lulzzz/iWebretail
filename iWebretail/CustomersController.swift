@@ -1,5 +1,5 @@
 //
-//  CustomerViewController.swift
+//  CustomersController.swift
 //  iWebretail
 //
 //  Created by Gerardo Grisolini on 24/04/17.
