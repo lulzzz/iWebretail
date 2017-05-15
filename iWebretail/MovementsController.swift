@@ -56,10 +56,15 @@ class MovementsController: UITableViewController {
 	func didReceiveNotification(notification:NSNotification) {
 		if let progress = notification.object as? ProgressNotification {
 			if progress.current == progress.total {
-				self.progressView.setProgress(0.0, animated: false)
+				DispatchQueue.main.async {
+					self.progressView.setProgress(1.0, animated: false)
+					self.progressView.setProgress(0.0, animated: false)
+				}
 			} else {
 				let perc = Float(progress.current) / Float(progress.total)
-				self.progressView.setProgress(perc, animated: true)
+				DispatchQueue.main.async {
+					self.progressView.setProgress(perc, animated: false)
+				}
 			}
 		}
 	}

@@ -28,7 +28,7 @@ class Synchronizer {
 		container.fetchUserRecordID() {
 			recordID, error in
 			if error != nil {
-				print(error!.localizedDescription)
+				self.appDelegate.push(title: "Attention", message: error!.localizedDescription)
 			} else {
 				self.deviceToken = recordID!.recordName
 				//print("fetched ID \(self.deviceToken)")
@@ -39,26 +39,19 @@ class Synchronizer {
 	func syncronize() {
 		if deviceToken.isEmpty { return }
 		
-		UIApplication.shared.isNetworkActivityIndicatorVisible = true
-
-		self.syncStore()
-
-		UIApplication.shared.isNetworkActivityIndicatorVisible = false
-	}
-	
-	internal func syncStore() {
 		let fetchRequest: NSFetchRequest<Store> = Store.fetchRequest()
 		fetchRequest.fetchLimit = 1
-		let objects = try! context.fetch(fetchRequest)
-		let store = objects.count == 0 ? Store(context: context) : objects.first!
+		let results = try! context.fetch(fetchRequest)
+		let date = results.count == 1 ? results.first!.updatedAt : 0
 
-		makeHTTPGetRequest(url: "api/devicefrom/\(store.updatedAt)", onCompletion: { data in
+		makeHTTPGetRequest(url: "api/devicefrom/\(date)", onCompletion: { data in
 			if let usableData = data {
 				do {
 					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
 					
 					for item in items {
 						if self.deviceToken == item["deviceToken"] as! String {
+							let store = results.count == 1 ? results.first! : Store(context: self.context)
 							store.setJSONValues(json: item["store"] as! NSDictionary)
 							store.updatedAt = item["updatedAt"] as! Int32
 							self.appDelegate.saveContext()
@@ -86,35 +79,23 @@ class Synchronizer {
 				do {
 					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
 					
-					for (index, item) in items.enumerated() {
-
-						let causal = Causal(context: self.context)
-						causal.setJSONValues(json: item)
+					for item in items {
 
 						let innerFetchRequest: NSFetchRequest<Causal> = Causal.fetchRequest()
-						innerFetchRequest.predicate = NSPredicate.init(format: "causalId == \(causal.causalId)")
+						innerFetchRequest.predicate = NSPredicate.init(format: "causalId == \(item["causalId"] as! Int32)")
+						innerFetchRequest.fetchLimit = 1
 						let object = try self.context.fetch(innerFetchRequest)
 						
-						if object.count > 0 {
-							let current = object.first!
-							current.causalName = causal.causalName
-							current.causalIsPos = causal.causalIsPos
-							current.causalQuantity = causal.causalQuantity
-							current.causalBooked = causal.causalBooked
-							current.updatedAt = causal.updatedAt
-						} else {
-							self.context.insert(causal)
-						}
-
-						self.notify(total: items.count, current: index + 1)
+						let causal = object.count == 1 ? object.first! : Causal(context: self.context)
+						causal.setJSONValues(json: item)
 					}
-
-					self.appDelegate.saveContext()
 				} catch {
 					self.appDelegate.push(title: "Error on sync causal", message: error.localizedDescription)
 				}
+				
+				self.appDelegate.saveContext()
 			}
-
+			
 			self.syncCustomers()
 		})
 	}
@@ -131,39 +112,25 @@ class Synchronizer {
 			if let usableData = data {
 				do {
 					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
-					
+					let itemCount = items.count
+
 					for (index, item) in items.enumerated() {
 						
-						let customer = Customer(context: self.context)
-						customer.setJSONValues(json: item)
-
 						let innerFetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
-						innerFetchRequest.predicate = NSPredicate.init(format: "customerId == \(customer.customerId)")
+						innerFetchRequest.predicate = NSPredicate.init(format: "customerId == \(item["customerId"] as! Int32)")
+						innerFetchRequest.fetchLimit = 1
 						let object = try self.context.fetch(innerFetchRequest)
 						
-						if object.count > 0 {
-							let current = object.first!
-							current.customerName = customer.customerName
-							current.customerEmail = customer.customerEmail
-							current.customerPhone = customer.customerPhone
-							current.customerAddress = customer.customerAddress
-							current.customerCity = customer.customerCity
-							current.customerZip = customer.customerZip
-							current.customerCountry = customer.customerCountry
-							current.customerFiscalCode = customer.customerFiscalCode
-							current.customerVatNumber = customer.customerVatNumber
-							current.updatedAt = customer.updatedAt
-						} else {
-							self.context.insert(customer)
-						}
+						let customer = object.count == 1 ? object.first! : Customer(context: self.context)
+						customer.setJSONValues(json: item)
 
-						self.notify(total: items.count, current: index + 1)
+						self.notify(total: itemCount, current: index + 1)
 					}
-					
-					self.appDelegate.saveContext()
 				} catch {
 					self.appDelegate.push(title: "Error on sync customer", message: error.localizedDescription)
 				}
+
+				self.appDelegate.saveContext()
 			}
 
 			self.syncProducts()
@@ -182,52 +149,39 @@ class Synchronizer {
 			if let usableData = data {
 				do {
 					let items = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! [NSDictionary]
+					let itemCount = items.count
 					
 					for (index, item) in items.enumerated() {
 						
-						let product = Product(context: self.context)
-						product.setJSONValues(json: item)
-						
-						let innerFetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
-						innerFetchRequest.predicate = NSPredicate.init(format: "productId == \(product.productId)")
-						let object = try self.context.fetch(innerFetchRequest)
-						if object.count > 0 {
-							let current = object.first!
-							current.productName = product.productName
-							current.productCode = product.productCode
-							current.productUm = product.productUm
-							current.productSelling = product.productSelling
-							current.productDiscount = product.productDiscount
-							current.productBrand = product.productBrand
-							current.productCategories = product.productCategories
-							current.updatedAt = product.updatedAt
-						} else {
-							self.context.insert(product)
-						}
-						
-						for article in item["articles"] as! [NSDictionary] {
-							let productArticle = ProductArticle(context: self.context)
-							productArticle.productId = product.productId
-							productArticle.setJSONValues(json: article, attributes: item["attributes"] as! [NSDictionary])
+						if item["productIsActive"] as! Bool {
+							let innerFetchRequest: NSFetchRequest<Product> = Product.fetchRequest()
+							innerFetchRequest.predicate = NSPredicate.init(format: "productId == \(item["productId"] as! Int32)")
+							innerFetchRequest.fetchLimit = 1
+							let object = try self.context.fetch(innerFetchRequest)
+							
+							let product = object.count == 1 ? object.first! : Product(context: self.context)
+							product.setJSONValues(json: item)
 
-							let request: NSFetchRequest<ProductArticle> = ProductArticle.fetchRequest()
-							request.predicate = NSPredicate.init(format: "articleBarcode == %@", productArticle.articleBarcode!)
-							let rows = try self.context.fetch(request)
-							if rows.count > 0 {
-								let row = rows.first!
-								row.articleAttributes = productArticle.articleAttributes
-							} else {
-								self.context.insert(productArticle)
+							for article in item["articles"] as! [NSDictionary] {
+
+								let request: NSFetchRequest<ProductArticle> = ProductArticle.fetchRequest()
+								request.predicate = NSPredicate.init(format: "articleBarcode == %@", article["articleBarcode"] as! String)
+								request.fetchLimit = 1
+								let rows = try self.context.fetch(request)
+								
+								let productArticle = rows.count == 1 ? rows.first! : ProductArticle(context: self.context)
+								productArticle.setJSONValues(json: article, attributes: item["attributes"] as! [NSDictionary])
+								productArticle.productId = product.productId
 							}
 						}
-
-						self.notify(total: items.count, current: index + 1)
+						
+						self.notify(total: itemCount, current: index + 1)
 					}
-
-					self.appDelegate.saveContext()
 				} catch {
 					self.appDelegate.push(title: "Error on sync product", message: error.localizedDescription)
 				}
+
+				self.appDelegate.saveContext()
 			}
 
 			self.syncMovement()
@@ -240,7 +194,6 @@ class Synchronizer {
 		let items = try! context.fetch(fetchRequest)
 		
 		for item in items {
-			
 			let rowsRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
 			rowsRequest.predicate = NSPredicate.init(format: "movementId == \(item.movementId)")
 			let rows = try! context.fetch(rowsRequest)
@@ -251,16 +204,19 @@ class Synchronizer {
 						let json = try JSONSerialization.jsonObject(with: usableData, options: .allowFragments) as! NSDictionary
 						item.movementNumber = json["movementNumber"] as! Int32
 						item.synced = true
-						self.appDelegate.saveContext()
 					} catch {
 						self.appDelegate.push(title: "Error on sync movement", message: error.localizedDescription)
 					}
+
+					self.appDelegate.saveContext()
 				}
 			})
 		}
 	}
 
 	internal func makeHTTPGetRequest(url: String, onCompletion: @escaping ServiceResponse) {
+		UIApplication.shared.isNetworkActivityIndicatorVisible = true
+
 		var request =  URLRequest(url: URL(string: baseURL + url)!)
 		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
@@ -277,6 +233,8 @@ class Synchronizer {
 	}
 	
 	internal func makeHTTPPostRequest(url: String, body: NSDictionary, onCompletion: @escaping ServiceResponse) {
+		UIApplication.shared.isNetworkActivityIndicatorVisible = true
+
 		var request =  URLRequest(url: URL(string: baseURL + url)!)
 		request.cachePolicy = URLRequest.CachePolicy.reloadIgnoringLocalCacheData
 		request.setValue("application/json; charset=utf-8", forHTTPHeaderField: "Content-Type")
@@ -299,6 +257,8 @@ class Synchronizer {
 	}
 
 	internal func onResponse(response: HTTPURLResponse?, error: Error?) -> Bool {
+		UIApplication.shared.isNetworkActivityIndicatorVisible = false
+
 		if error != nil {
 			self.appDelegate.push(title: "Error", message: error!.localizedDescription)
 			return false

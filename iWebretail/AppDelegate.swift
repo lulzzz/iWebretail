@@ -129,14 +129,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 	}()
 
 	func saveContext () {
-		if persistentContainer.viewContext.hasChanges {
-			do {
+		do {
+			if persistentContainer.viewContext.hasChanges {
 				try persistentContainer.viewContext.save()
-			} catch {
-				let nserror = error as NSError
-				//fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
-				self.push(title: nserror.localizedDescription, message: nserror.userInfo.description)
 			}
+		} catch {
+			let nserror = error as NSError
+			//fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
+			self.push(title: nserror.localizedDescription, message: nserror.userInfo.description)
 		}
 	}
 }

@@ -489,6 +489,7 @@
                         <progressView key="tableHeaderView" opaque="NO" tag="10000" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" id="PhW-se-4YH">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="2.5"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         </progressView>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="MovementCell" textLabel="lfw-YI-9zk" detailTextLabel="lDC-2b-Eiy" style="IBUITableViewCellStyleValue1" id="gcu-8R-Xd0">
