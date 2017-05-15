@@ -54,7 +54,7 @@
                                         <rect key="frame" x="20" y="60" width="248" height="30"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                        <textInputTraits key="textInputTraits" keyboardType="phonePad"/>
+                                        <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
                                     </textField>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Date" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="P2T-da-Nma">
                                         <rect key="frame" x="20" y="110" width="248" height="30"/>
@@ -667,7 +667,7 @@
                                                                     <rect key="frame" x="103.5" y="0.0" width="93" height="30"/>
                                                                     <nil key="textColor"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                                    <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
+                                                                    <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                                                                     <connections>
                                                                         <action selector="textValueChanged:" destination="3xW-dz-5Rz" eventType="editingDidEnd" id="Qpu-z9-1nU"/>
                                                                     </connections>
@@ -694,7 +694,7 @@
                                                                     <rect key="frame" x="103.5" y="0.0" width="93" height="30"/>
                                                                     <nil key="textColor"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                                    <textInputTraits key="textInputTraits" keyboardType="numbersAndPunctuation"/>
+                                                                    <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
                                                                     <connections>
                                                                         <action selector="textValueChanged:" destination="3xW-dz-5Rz" eventType="editingDidEnd" id="vT1-4H-SbJ"/>
                                                                     </connections>
@@ -913,8 +913,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="barcode" width="40" height="40"/>
-        <image name="movement" width="40" height="40"/>
+        <image name="barcode" width="29" height="29"/>
+        <image name="movement" width="29" height="29"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="RAf-AD-6P3"/>
