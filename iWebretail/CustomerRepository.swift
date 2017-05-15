@@ -39,8 +39,7 @@ class CustomerRepository: CustomerProtocol {
 	}
 	
 	func add() throws -> Customer {
-		let entity =  NSEntityDescription.entity(forEntityName: "Customer", in: context)
-		let customer = Customer(entity: entity!, insertInto: context)
+		let customer = Customer(context: context)
 		customer.customerId = try self.newId()
 		try context.save()
 		

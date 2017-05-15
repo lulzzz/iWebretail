@@ -34,9 +34,7 @@ class MovementRepository: MovementProtocol {
 	}
 	
 	func add() throws -> Movement {
-		//let movement = NSEntityDescription.insertNewObject(forEntityName: "Movement", into: context) as! Movement
-		let entity =  NSEntityDescription.entity(forEntityName: "Movement", in: context)
-		let movement = Movement(entity: entity!, insertInto: context)
+		let movement = Movement(context: context)
 		movement.movementId = try self.newId()
 		movement.movementNumber = try self.newNumber()
 		movement.movementDate = NSDate()

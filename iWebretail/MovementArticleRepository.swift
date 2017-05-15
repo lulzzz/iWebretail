@@ -54,8 +54,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 			productRequest.fetchLimit = 1
 			let products = try context.fetch(productRequest)
 
-			let entity =  NSEntityDescription.entity(forEntityName: "MovementArticle", in: context)
-			let movementArticle = MovementArticle(entity: entity!, insertInto: context)
+			let movementArticle = MovementArticle(context: context)
 			movementArticle.movementId = movementId
 			movementArticle.movementArticleId = try self.newId()
 			movementArticle.movementArticleBarcode = barcode
