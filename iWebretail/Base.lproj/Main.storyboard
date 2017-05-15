@@ -567,7 +567,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Barcode" image="second" id="A5K-YF-O8u"/>
+                    <tabBarItem key="tabBarItem" title="Barcode" image="barcode" id="A5K-YF-O8u"/>
                     <navigationItem key="navigationItem" title="Barcode" id="43M-pt-rqm">
                         <barButtonItem key="rightBarButtonItem" systemItem="search" id="o9L-Cw-9o7">
                             <connections>
@@ -746,7 +746,7 @@
                             <constraint firstAttribute="trailing" secondItem="ceh-O9-g9S" secondAttribute="trailing" id="ksh-PM-ztV"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Movement" image="first" id="VV0-SN-nK6"/>
+                    <tabBarItem key="tabBarItem" title="Movement" image="movement" id="VV0-SN-nK6"/>
                     <navigationItem key="navigationItem" title="Movement" id="YBj-dw-0hu">
                         <barButtonItem key="rightBarButtonItem" systemItem="compose" id="zXd-84-XJs">
                             <connections>
@@ -913,8 +913,8 @@
         </scene>
     </scenes>
     <resources>
-        <image name="first" width="30" height="30"/>
-        <image name="second" width="30" height="30"/>
+        <image name="barcode" width="40" height="40"/>
+        <image name="movement" width="40" height="40"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="RAf-AD-6P3"/>
