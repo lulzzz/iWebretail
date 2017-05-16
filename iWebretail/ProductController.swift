@@ -65,7 +65,12 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "ProductCell", for: indexPath)
 		
 		let key = Array(filtered.keys)[indexPath.section]
-		cell.textLabel?.text = filtered[key]![indexPath.row].productName
+		let product = filtered[key]![indexPath.row]
+		var text = "\(product.productName!)     \(product.productSelling.formatCurrency())"
+		if product.productDiscount > 0 {
+			text += " -> " + product.productDiscount.formatCurrency()
+		}
+		cell.textLabel?.text = text
 		cell.detailTextLabel?.text = filtered[key]![indexPath.row].productCategories
 		
 		return cell
