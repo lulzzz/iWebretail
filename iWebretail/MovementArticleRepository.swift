@@ -53,6 +53,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 			productRequest.predicate = NSPredicate.init(format: "productId == \(article.productId)")
 			productRequest.fetchLimit = 1
 			let products = try context.fetch(productRequest)
+			let product = products.first!
 
 			let movementArticle = MovementArticle(context: context)
 			movementArticle.movementId = movementId
@@ -60,7 +61,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 			movementArticle.movementArticleBarcode = barcode
 			movementArticle.movementProduct = article.articleAttributes
 			movementArticle.movementArticleQuantity = 1
-			movementArticle.movementArticlePrice = (products.first?.productSelling)!
+			movementArticle.movementArticlePrice = product.productDiscount > 0 ? product.productDiscount : product.productSelling
 		} else {
 			let movementArticle = movementArticles.first!
 			movementArticle.movementArticleQuantity += 1
