@@ -15,11 +15,13 @@ class ArticleController: UITableViewController, UISearchBarDelegate {
 	var product: Product!
 	var articles: [ProductArticle]!
 	var filtered: [ProductArticle]!
+	var barcodes: [String]
 	private let repository: MovementArticleProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
 		let delegate = UIApplication.shared.delegate as! AppDelegate
 		repository = delegate.ioCContainer.resolve() as MovementArticleProtocol
+		barcodes = []
 		
 		super.init(coder: aDecoder)
 	}
@@ -67,12 +69,28 @@ class ArticleController: UITableViewController, UISearchBarDelegate {
 	}
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+		if let cell = tableView.cellForRow(at: indexPath) {
+			let barcode = filtered[indexPath.row].articleBarcode!
+			if cell.accessoryType == .checkmark {
+				cell.accessoryType = .none
+				let index = barcodes.index(of: barcode)
+				barcodes.remove(at: index!)
+			} else {
+				cell.accessoryType = .checkmark
+				barcodes.append(barcode)
+			}
+		}
+	}
+
+	@IBAction func doneButton(_ sender: UIBarButtonItem) {
 		do {
-			_ = try repository.add(barcode: filtered[indexPath.row].articleBarcode!, movementId: Synchronizer.shared.movement.movementId)
+			for barcode in barcodes {
+				_ = try repository.add(barcode: barcode, movementId: Synchronizer.shared.movement.movementId)
+			}
 		} catch {
 			print("\(error)")
 		}
-		
+
 		let composeViewController = self.navigationController?.viewControllers[1] as! UITabBarController
 		composeViewController.selectedIndex = 0
 		self.navigationController?.popToViewController(composeViewController, animated: true)

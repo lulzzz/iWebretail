@@ -93,7 +93,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 		fetchRequest.fetchLimit = 1
 		let results = try context.fetch(fetchRequest)
 		if(results.count == 1) {
-			newId = results.first!.movementId + 1
+			newId = results.first!.movementArticleId + 1
 		}
 		
 		return newId

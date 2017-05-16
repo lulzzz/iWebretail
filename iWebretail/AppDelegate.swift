@@ -40,11 +40,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 			completionHandler: { (granted,error) in
 				if !granted {
 					print("Something went wrong")
+				} else {
+					Synchronizer.shared.iCloudUserIDAsync()
 				}
 			}
 		)
-
-		Synchronizer.shared.iCloudUserIDAsync()
 		
 		return true
 	}
@@ -87,7 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 				content.body = message
 				content.sound = UNNotificationSound.default()
 				content.categoryIdentifier = "message"
-				content.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
+				//content.badge = UIApplication.shared.applicationIconBadgeNumber + 1 as NSNumber
 				let trigger = UNTimeIntervalNotificationTrigger.init(timeInterval: 1, repeats: false)
 				let request = UNNotificationRequest.init(identifier: "iWebretail", content: content, trigger: trigger)
 				center.add(request, withCompletionHandler: { (error) in

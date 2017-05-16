@@ -115,8 +115,8 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 			do {
 				try repository.delete(id: self.movementArticles[indexPath.row].movementArticleId)
 				self.movementArticles.remove(at: indexPath.row)
-				tableView.deleteRows(at: [indexPath], with: .fade)
 				self.updateAmount()
+				tableView.deleteRows(at: [indexPath], with: .fade)
 			} catch {
 				self.navigationController?.alert(title: "Error", message: "\(error)")
 			}
