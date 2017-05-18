@@ -12,7 +12,8 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 	
 	@IBOutlet weak var tableView: UITableView!
 	@IBOutlet weak var amountLabel: UILabel!
-
+	
+	var label: UILabel!
 	var movementArticles: [MovementArticle]
 	
 	private var repository: MovementArticleProtocol
@@ -30,10 +31,37 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 		super.viewDidLoad()
 		tableView.delegate = self
 		tableView.dataSource = self
+
+		// badge label
+		label = UILabel(frame: CGRect(x: 0, y: -10, width: 34, height: 20))
+		label.layer.borderColor = UIColor.clear.cgColor
+		label.layer.borderWidth = 2
+		label.layer.cornerRadius = label.bounds.size.height / 2
+		label.textAlignment = .center
+		label.layer.masksToBounds = true
+		//label.font = UIFont(name: "SanFranciscoText-Light", size: 10)
+		label.textColor = .white
+		label.backgroundColor = Synchronizer.shared.movement.completed ? .green : .red
+		
+		// button
+		let rightButton = UIButton(frame: CGRect(x: 0, y: 0, width: 29, height: 29))
+		let basket = UIImage(named: "basket")?.withRenderingMode(.alwaysTemplate)
+		rightButton.setImage(basket, for: .normal)
+		rightButton.tintColor = UIColor.white
+		rightButton.addTarget(self, action: #selector(rightButtonTouched), for: .touchUpInside)
+		rightButton.addSubview(label)
+		
+		// Bar button item
+		self.tabBarController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)
+	}
+	
+	func rightButtonTouched(sender: UIButton) {
+		let storyboard = UIStoryboard(name: "Main", bundle: nil)
+		let vc = storyboard.instantiateViewController(withIdentifier: "RegisterView") as! RegisterController
+		self.navigationController!.pushViewController(vc, animated: true)
 	}
 	
 	override func viewDidAppear(_ animated: Bool) {
-		self.tabBarController?.navigationItem.rightBarButtonItem = self.navigationItem.rightBarButtonItem
 		self.movementArticles = try! repository.getAll(id: Synchronizer.shared.movement.movementId)
 		self.updateAmount()
 		tableView.reloadData()
@@ -77,6 +105,11 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 			.reduce (0, +)
 		amountLabel.text = amount.formatCurrency()
 		
+		let quantity = movementArticles
+			.map { $0.movementArticleQuantity }
+			.reduce (0, +)
+		label.text = quantity.description
+
 		repository.updateAmount(item: Synchronizer.shared.movement, amount: amount)
 	}
 	
