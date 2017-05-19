@@ -219,7 +219,7 @@ class Synchronizer {
 
 					self.appDelegate.saveContext()
 					
-					self.isSyncing = index < count
+					self.isSyncing = index + 1 < count
 				}
 			})
 		}

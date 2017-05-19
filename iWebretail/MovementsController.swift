@@ -36,14 +36,14 @@ class MovementsController: UITableViewController {
 	override func viewDidLoad() {
         super.viewDidLoad()
 
-		self.refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
+		self.refreshControl?.addTarget(self, action: #selector(synchronize), for: UIControlEvents.valueChanged)
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
 		refreshData()
  	}
 	
-	func refresh(sender:AnyObject)
+	func synchronize(sender:AnyObject)
 	{
 		//TODO: make this awaitable
 		DispatchQueue.global(qos: .background).async {
@@ -55,8 +55,8 @@ class MovementsController: UITableViewController {
 			}
 			
 			DispatchQueue.main.async {
-				self.refreshData()
 				self.refreshControl?.endRefreshing()
+				self.refreshData()
 			}
 		}
 	}
@@ -111,6 +111,8 @@ class MovementsController: UITableViewController {
 			cell.imageView?.image = UIImage.init(named: "sync")
 		} else if movement.completed {
 			cell.imageView?.image = UIImage.init(named: "tosync")
+		} else {
+			cell.imageView?.image = UIImage.init(named: "build")
 		}
 		cell.textLabel?.text = "\(movement.movementCausal?.getJSONValues()["causalName"] ?? "New") n° \(movement.movementNumber)"
 		cell.detailTextLabel?.text = movement.movementAmount.formatCurrency()
