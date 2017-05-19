@@ -66,12 +66,13 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 		
 		let key = Array(filtered.keys)[indexPath.section]
 		let product = filtered[key]![indexPath.row]
-		var text = "\(product.productName!)     \(product.productSelling.formatCurrency())"
+		cell.textLabel?.text = product.productName!
+		var text = product.productSelling.formatCurrency()
 		if product.productDiscount > 0 {
 			text += " -> " + product.productDiscount.formatCurrency()
 		}
-		cell.textLabel?.text = text
-		cell.detailTextLabel?.text = filtered[key]![indexPath.row].productCategories
+		text += " - " + filtered[key]![indexPath.row].productCategories!
+		cell.detailTextLabel?.text = text
 		
 		return cell
 	}
