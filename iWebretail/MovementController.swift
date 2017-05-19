@@ -33,7 +33,7 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 		tableView.dataSource = self
 
 		// badge label
-		label = UILabel(frame: CGRect(x: -15, y: -14, width: 29, height: 20))
+		label = UILabel(frame: CGRect(x: 10, y: -10, width: 29, height: 20))
 		label.layer.borderColor = UIColor.clear.cgColor
 		label.layer.borderWidth = 2
 		label.layer.cornerRadius = label.bounds.size.height / 2
