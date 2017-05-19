@@ -17,8 +17,10 @@ class ProgressNotification {
 class MovementsController: UITableViewController {
 
 	@IBOutlet weak var progressView: UIProgressView!
-	var movements: [Movement] = []
+	
 	let kProgressViewTag = 10000
+	
+	var filtered = [String: [Movement]]()
 	
 	private let repository: MovementProtocol
 	
@@ -45,7 +47,7 @@ class MovementsController: UITableViewController {
 	{
 		do {
 			Synchronizer.shared.syncronize()
-			movements = try repository.getAll()
+			filtered = try repository.getAll().groupBy { $0.movementDate!.formatDateShort() }
 			self.tableView.reloadData()
 		} catch {
 			self.navigationController?.alert(title: "Error", message: "\(error)")
@@ -72,18 +74,26 @@ class MovementsController: UITableViewController {
 	// MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+		return self.filtered.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.movements.count
-    }
+	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+		return Array(filtered.keys)[section]
+	}
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		let key = Array(filtered.keys)[section]
+		return filtered[key]!.count
+	}
+
+	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovementCell", for: indexPath)
 		
-		cell.textLabel?.text = "\(movements[indexPath.row].movementNumber)     \(movements[indexPath.row].movementDate!.formatDateInput())"
-		cell.detailTextLabel?.text = movements[indexPath.row].movementAmount.formatCurrency()
+		let key = Array(filtered.keys)[indexPath.section]
+		let movement = filtered[key]![indexPath.row]
+
+		cell.textLabel?.text = "\(movement.movementNumber)     \(movement.completed)"
+		cell.detailTextLabel?.text = movement.movementAmount.formatCurrency()
         return cell
     }
 	
@@ -94,8 +104,9 @@ class MovementsController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
 			do {
-				try repository.delete(id: self.movements[indexPath.row].movementId)
-				self.movements.remove(at: indexPath.row)
+				let key = Array(filtered.keys)[indexPath.section]
+				try repository.delete(id: filtered[key]![indexPath.row].movementId)
+				self.filtered[key]!.remove(at: indexPath.row)
 				tableView.deleteRows(at: [indexPath], with: .fade)
 			} catch {
 				self.navigationController?.alert(title: "Error", message: "\(error)")
@@ -116,7 +127,8 @@ class MovementsController: UITableViewController {
 				self.navigationController?.alert(title: "Error", message: "\(error)")
 			}
 		} else {
-			Synchronizer.shared.movement = self.movements[indexPath!.row]
+			let key = Array(filtered.keys)[indexPath!.section]
+			Synchronizer.shared.movement = filtered[key]![indexPath!.row]
 		}
 
 		tabViewController.navigationItem.title = String(Synchronizer.shared.movement.movementNumber)
