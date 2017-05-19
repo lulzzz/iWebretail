@@ -115,7 +115,7 @@ class MovementsController: UITableViewController {
 			cell.imageView?.image = UIImage.init(named: "build")
 		}
 		cell.textLabel?.text = "\(movement.movementCausal?.getJSONValues()["causalName"] ?? "New") n° \(movement.movementNumber)"
-		cell.detailTextLabel?.text = movement.movementAmount.formatCurrency()
+		cell.detailTextLabel?.text = "\(movement.movementCustomer?.getJSONValues()["customerName"] ?? "nobody") - \(movement.movementAmount.formatCurrency())"
         return cell
     }
 	
