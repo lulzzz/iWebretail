@@ -91,9 +91,12 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
     }
 
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-		let items = getCustomers(section: indexPath.section)
-		Synchronizer.shared.movement.movementCustomer = items[indexPath.row].getJSONValues().getJSONString()
-		navigationController?.popViewController(animated: true)
+		let movement = Synchronizer.shared.movement!
+		if !movement.completed {
+			let items = getCustomers(section: indexPath.section)
+			movement.movementCustomer = items[indexPath.row].getJSONValues().getJSONString()
+			navigationController?.popViewController(animated: true)
+		}
 	}
 	
 	override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {

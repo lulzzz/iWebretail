@@ -19,11 +19,11 @@
                         <viewControllerLayoutGuide type="bottom" id="SI1-9S-6pC"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="0QF-IT-QGf">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wrt-Ib-ftL">
-                                <rect key="frame" x="16" y="0.0" width="288" height="568"/>
+                                <rect key="frame" x="16" y="0.0" width="288" height="504"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BLM-OZ-QlL">
                                         <rect key="frame" x="0.0" y="20" width="288" height="25"/>
@@ -149,13 +149,14 @@
                             <constraint firstItem="wrt-Ib-ftL" firstAttribute="top" secondItem="0QF-IT-QGf" secondAttribute="topMargin" id="fHC-pq-B9A"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="Register" id="DK4-Tj-aKV">
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="20u-KA-HRB">
+                    <navigationItem key="navigationItem" title="Register" id="wiS-Y2-6xm">
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="242-Z8-TaC">
                             <connections>
-                                <action selector="buttonSave:" destination="eup-gP-P07" id="5IZ-BU-8jg"/>
+                                <action selector="buttonSave:" destination="eup-gP-P07" id="wIZ-k4-nwV"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
                     <connections>
                         <outlet property="amountLabel" destination="25q-pC-UNu" id="f7M-82-cv3"/>
                         <outlet property="causalTextField" destination="MHa-Xo-Rin" id="PQ0-YA-xVY"/>
@@ -170,14 +171,14 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dDd-X0-8Yw" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="549" y="367"/>
+            <point key="canvasLocation" x="-1404" y="-551"/>
         </scene>
         <!--Customers-->
         <scene sceneID="mo2-0L-XiR">
             <objects>
                 <tableViewController id="ign-R2-hAJ" customClass="CustomersController" customModule="iWebretail" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="qrA-8d-DI4">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="search by name" id="q3C-Vs-Dxp">
@@ -230,14 +231,14 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RrP-LB-9jW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1378" y="367"/>
+            <point key="canvasLocation" x="-579" y="-551"/>
         </scene>
         <!--Customer-->
         <scene sceneID="BVL-U5-gr6">
             <objects>
                 <tableViewController storyboardIdentifier="CustomerView" id="nGJ-xe-eUu" customClass="CustomerController" customModule="iWebretail" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="none" allowsSelection="NO" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="GFY-rA-Ox1">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <sections>
@@ -477,7 +478,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZGJ-i4-h1l" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2192" y="367"/>
+            <point key="canvasLocation" x="266" y="-551"/>
         </scene>
         <!--Movements-->
         <scene sceneID="lU4-mG-70P">
@@ -569,11 +570,10 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Barcode" image="barcode" id="A5K-YF-O8u"/>
-                    <navigationItem key="navigationItem" title="Barcode" id="43M-pt-rqm"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2NO-V2-VvD" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-433" y="693"/>
+            <point key="canvasLocation" x="409" y="842"/>
         </scene>
         <!--Movement-->
         <scene sceneID="daX-2W-Bv8">
@@ -742,7 +742,6 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Movement" image="movement" id="VV0-SN-nK6"/>
-                    <navigationItem key="navigationItem" title="Movement" id="YBj-dw-0hu"/>
                     <connections>
                         <outlet property="amountLabel" destination="Lja-IL-8Cm" id="DxD-dD-GLn"/>
                         <outlet property="tableView" destination="ceh-O9-g9S" id="FcA-gR-5eL"/>
@@ -750,7 +749,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kp0-eq-jpA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-433" y="-3"/>
+            <point key="canvasLocation" x="-233" y="147"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="UOC-fT-In5">
@@ -772,7 +771,7 @@
             </objects>
             <point key="canvasLocation" x="-1404" y="263"/>
         </scene>
-        <!--Products-->
+        <!--Search-->
         <scene sceneID="H50-Be-jVa">
             <objects>
                 <tableViewController id="7Vn-uF-1al" customClass="ProductController" customModule="iWebretail" customModuleProvider="target" sceneMemberID="viewController">
@@ -820,14 +819,13 @@
                         </connections>
                     </tableView>
                     <tabBarItem key="tabBarItem" title="Search" image="search" id="s4O-tL-fhH"/>
-                    <navigationItem key="navigationItem" title="Products" id="UFr-40-ZbP"/>
                     <connections>
                         <outlet property="searchBar" destination="rmx-mu-KSb" id="h2I-sl-hKM"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="j6U-Xz-4LH" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1404" y="1110"/>
+            <point key="canvasLocation" x="-1404" y="996"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="CvI-Ka-cN6">
@@ -894,20 +892,22 @@
                             <outlet property="delegate" destination="Srt-u9-MCQ" id="LCb-Vi-n0b"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Articles" id="RKC-jw-Phh">
-                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="MyV-TN-ga9">
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Articles" id="Edo-Gz-mFO">
+                        <barButtonItem key="rightBarButtonItem" systemItem="done" id="oMs-Vj-Dal">
                             <connections>
-                                <action selector="doneButton:" destination="Srt-u9-MCQ" id="Dbc-ex-Ycd"/>
+                                <action selector="doneButton:" destination="Srt-u9-MCQ" id="OvV-ZV-hAr"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="searchBar" destination="0pH-y9-SGP" id="VjY-Fi-dcF"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DFY-OP-lsF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-433" y="1401"/>
+            <point key="canvasLocation" x="-651" y="995"/>
         </scene>
     </scenes>
     <resources>

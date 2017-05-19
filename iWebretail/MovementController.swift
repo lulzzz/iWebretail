@@ -33,15 +33,15 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 		tableView.dataSource = self
 
 		// badge label
-		label = UILabel(frame: CGRect(x: 0, y: -10, width: 34, height: 20))
+		label = UILabel(frame: CGRect(x: -15, y: -14, width: 29, height: 20))
 		label.layer.borderColor = UIColor.clear.cgColor
 		label.layer.borderWidth = 2
 		label.layer.cornerRadius = label.bounds.size.height / 2
 		label.textAlignment = .center
 		label.layer.masksToBounds = true
-		//label.font = UIFont(name: "SanFranciscoText-Light", size: 10)
-		label.textColor = .white
-		label.backgroundColor = Synchronizer.shared.movement.completed ? .green : .red
+		label.font = UIFont.systemFont(ofSize: 12, weight: 600)
+		label.textColor = .darkText
+		label.backgroundColor = Synchronizer.shared.movement.completed ? .lightText : .white
 		
 		// button
 		let rightButton = UIButton(frame: CGRect(x: 0, y: 0, width: 29, height: 29))

@@ -28,6 +28,11 @@ class ArticleController: UITableViewController, UISearchBarDelegate {
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
+
+		if Synchronizer.shared.movement.completed {
+			self.navigationItem.rightBarButtonItem?.isEnabled = false
+		}
+
 		self.tableView.contentOffset = CGPoint(x: 0, y: 44)
 		searchBar.delegate = self
 		navigationItem.title = product.productName
