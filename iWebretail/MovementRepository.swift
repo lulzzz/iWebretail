@@ -34,11 +34,15 @@ class MovementRepository: MovementProtocol {
 	}
 	
 	func add() throws -> Movement {
+		let causals = try getCausals();
+		let causal = causals.first(where: { $0.causalIsPos })
+		
 		let movement = Movement(context: context)
 		movement.movementId = try self.newId()
-		movement.movementNumber = try self.newNumber()
+		movement.movementNumber = try self.newNumber(isPos: causal?.causalIsPos ?? false)
 		movement.movementDate = NSDate()
 		movement.movementStatus = "New"
+		movement.movementCausal = causal?.getJSONValues().getJSONString()
 		movement.completed = false
 		movement.synced = false
 		appDelegate.saveContext()
@@ -90,7 +94,12 @@ class MovementRepository: MovementProtocol {
 		return newId
 	}
 	
-	func newNumber() throws -> Int32 {
+	func newNumber(isPos: Bool) throws -> Int32 {
+		
+		if !isPos {
+			return 0
+		}
+		
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		fetchRequest.predicate = self.makeDayPredicate(date: Date())
 		let items = try context.fetch(fetchRequest)
@@ -112,7 +121,7 @@ class MovementRepository: MovementProtocol {
 		components.second = 59
 		let endDate = calendar.date(from: components)
 		
-		return NSPredicate(format: "movementDate >= %@ AND movementDate =< %@", argumentArray: [startDate!, endDate!])
+		return NSPredicate(format: "movementDate >= %@ AND movementDate =< %@ AND movementCausal contains %@", argumentArray: [startDate!, endDate!, "true"])
 	}
 
 	func getStore() throws -> Store? {

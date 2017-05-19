@@ -40,19 +40,34 @@ class MovementsController: UITableViewController {
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
-		refresh(sender: self)
+		refreshData()
  	}
 	
 	func refresh(sender:AnyObject)
 	{
-		do {
+		//TODO: make this awaitable
+		DispatchQueue.global(qos: .background).async {
+			
 			Synchronizer.shared.syncronize()
+
+			while Synchronizer.shared.isSyncing {
+				//print(Synchronizer.shared.isSyncing)
+			}
+			
+			DispatchQueue.main.async {
+				self.refreshData()
+				self.refreshControl?.endRefreshing()
+			}
+		}
+	}
+	
+	func refreshData() {
+		do {
 			filtered = try repository.getAll().groupBy { $0.movementDate!.formatDateShort() }
 			self.tableView.reloadData()
 		} catch {
 			self.navigationController?.alert(title: "Error", message: "\(error)")
 		}
-		self.refreshControl?.endRefreshing()
 	}
 	
 	func didReceiveNotification(notification:NSNotification) {
@@ -92,7 +107,12 @@ class MovementsController: UITableViewController {
 		let key = Array(filtered.keys)[indexPath.section]
 		let movement = filtered[key]![indexPath.row]
 
-		cell.textLabel?.text = "\(movement.movementNumber)     \(movement.completed)"
+		if movement.synced {
+			cell.imageView?.image = UIImage.init(named: "sync")
+		} else if movement.completed {
+			cell.imageView?.image = UIImage.init(named: "tosync")
+		}
+		cell.textLabel?.text = "\(movement.movementCausal?.getJSONValues()["causalName"] ?? "New") n° \(movement.movementNumber)"
 		cell.detailTextLabel?.text = movement.movementAmount.formatCurrency()
         return cell
     }

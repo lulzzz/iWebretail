@@ -36,7 +36,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 	
 	func add(barcode: String, movementId: Int32) throws -> Bool {
 		let movementArticleRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
-		movementArticleRequest.predicate = NSPredicate.init(format: "movementArticleBarcode == %@", barcode)
+		movementArticleRequest.predicate = NSPredicate.init(format: "movementId == %@ AND movementArticleBarcode == %@", argumentArray: [movementId, barcode])
 		movementArticleRequest.fetchLimit = 1
 		let movementArticles = try context.fetch(movementArticleRequest)
 		if movementArticles.count == 0 {

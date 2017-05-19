@@ -12,7 +12,7 @@ protocol MovementProtocol {
 	
 	func get(id: Int32) throws -> Movement?
 	
-	func newNumber() throws -> Int32
+	func newNumber(isPos: Bool) throws -> Int32
 	
 	func add() throws -> Movement
 	

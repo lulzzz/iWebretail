@@ -19,7 +19,9 @@ class Synchronizer {
 	
 	private let baseURL = "http://ec2-35-157-208-60.eu-central-1.compute.amazonaws.com/"
 	private var deviceToken: String = ""
+	var isSyncing: Bool = false
 	var movement: Movement!
+	
 	let appDelegate = UIApplication.shared.delegate as! AppDelegate
 	lazy var context: NSManagedObjectContext = { return self.appDelegate.persistentContainer.viewContext }()
 	
@@ -38,6 +40,8 @@ class Synchronizer {
 	
 	func syncronize() {
 		if deviceToken.isEmpty { return }
+		
+		isSyncing = true
 		
 		let fetchRequest: NSFetchRequest<Store> = Store.fetchRequest()
 		fetchRequest.fetchLimit = 1
@@ -192,8 +196,13 @@ class Synchronizer {
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "completed == true AND synced == false")
 		let items = try! context.fetch(fetchRequest)
+		let count = items.count
+		if count == 0 {
+			self.isSyncing = false
+			return
+		}
 		
-		for item in items {
+		for (index, item) in items.enumerated() {
 			let rowsRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
 			rowsRequest.predicate = NSPredicate.init(format: "movementId == \(item.movementId)")
 			let rows = try! context.fetch(rowsRequest)
@@ -209,6 +218,8 @@ class Synchronizer {
 					}
 
 					self.appDelegate.saveContext()
+					
+					self.isSyncing = index < count
 				}
 			})
 		}
@@ -260,10 +271,12 @@ class Synchronizer {
 		UIApplication.shared.isNetworkActivityIndicatorVisible = false
 
 		if error != nil {
+			self.isSyncing = false
 			self.appDelegate.push(title: "Error", message: error!.localizedDescription)
 			return false
 		}
 		if response!.statusCode == 401 {
+			self.isSyncing = false
 			self.appDelegate.push(title: "Unauthorized", message: "Access is denied due to invalid credentials")
 			return false
 		}
