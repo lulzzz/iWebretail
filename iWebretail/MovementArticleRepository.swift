@@ -11,25 +11,24 @@ import CoreData
 
 class MovementArticleRepository: MovementArticleProtocol {
 	
-	let appDelegate: AppDelegate
-	lazy var context: NSManagedObjectContext = { return self.appDelegate.persistentContainer.viewContext }()
+	private let service: ServiceProtocol
 	
 	init() {
-		appDelegate = UIApplication.shared.delegate as! AppDelegate
+		service = IoCContainer.shared.resolve() as ServiceProtocol
 	}
 
 	func getAll(id: Int32) throws -> [MovementArticle] {
 		let fetchRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "movementId == \(id)")
 		
-		return try context.fetch(fetchRequest)
+		return try service.context.fetch(fetchRequest)
 	}
 	
 	func get(id: Int32) throws -> MovementArticle? {
 		let fetchRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "movementArticleId == \(id)")
 		fetchRequest.fetchLimit = 1
-		let object = try context.fetch(fetchRequest)
+		let object = try service.context.fetch(fetchRequest)
 		
 		return object.first
 	}
@@ -38,12 +37,12 @@ class MovementArticleRepository: MovementArticleProtocol {
 		let movementArticleRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
 		movementArticleRequest.predicate = NSPredicate.init(format: "movementId == %@ AND movementArticleBarcode == %@", argumentArray: [movementId, barcode])
 		movementArticleRequest.fetchLimit = 1
-		let movementArticles = try context.fetch(movementArticleRequest)
+		let movementArticles = try service.context.fetch(movementArticleRequest)
 		if movementArticles.count == 0 {
 			let articleRequest: NSFetchRequest<ProductArticle> = ProductArticle.fetchRequest()
 			articleRequest.predicate = NSPredicate.init(format: "articleBarcode == %@", barcode)
 			articleRequest.fetchLimit = 1
-			let articles = try context.fetch(articleRequest)
+			let articles = try service.context.fetch(articleRequest)
 			if articles.count == 0 {
 				return false
 			}
@@ -52,10 +51,10 @@ class MovementArticleRepository: MovementArticleProtocol {
 			let productRequest: NSFetchRequest<Product> = Product.fetchRequest()
 			productRequest.predicate = NSPredicate.init(format: "productId == \(article.productId)")
 			productRequest.fetchLimit = 1
-			let products = try context.fetch(productRequest)
+			let products = try service.context.fetch(productRequest)
 			let product = products.first!
 
-			let movementArticle = MovementArticle(context: context)
+			let movementArticle = MovementArticle(context: service.context)
 			movementArticle.movementId = movementId
 			movementArticle.movementArticleId = try self.newId()
 			movementArticle.movementArticleBarcode = barcode
@@ -67,7 +66,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 			movementArticle.movementArticleQuantity += 1
 		}
 		
-		appDelegate.saveContext()
+		try service.context.save()
 		
 		return true
 	}
@@ -76,13 +75,13 @@ class MovementArticleRepository: MovementArticleProtocol {
 		let current = try self.get(id: id)!
 		current.movementArticleQuantity = item.movementArticleQuantity
 		current.movementArticlePrice = item.movementArticlePrice
-		appDelegate.saveContext()
+		service.saveContext()
 	}
 	
 	func delete(id: Int32) throws {
 		let item = try self.get(id: id)
-		context.delete(item!)
-		appDelegate.saveContext()
+		service.context.delete(item!)
+		try service.context.save()
 	}
 
 	func newId() throws -> Int32 {
@@ -92,7 +91,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "movementArticleId", ascending: false)
 		fetchRequest.sortDescriptors = [idDescriptor]
 		fetchRequest.fetchLimit = 1
-		let results = try context.fetch(fetchRequest)
+		let results = try service.context.fetch(fetchRequest)
 		if(results.count == 1) {
 			newId = results.first!.movementArticleId + 1
 		}
@@ -100,17 +99,27 @@ class MovementArticleRepository: MovementArticleProtocol {
 		return newId
 	}
 
-	func getProducts() throws -> [Product] {
+//	func getProducts() throws -> [Product] {
+//		let request: NSFetchRequest<Product> = Product.fetchRequest()
+//		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "productName", ascending: true)
+//		request.sortDescriptors = [idDescriptor]
+//		
+//		return try context.fetch(request)
+//	}
+	
+	func getProducts(search: String) throws -> [(key:String, value:[Product])] {
 		let request: NSFetchRequest<Product> = Product.fetchRequest()
-//		if !search.isEmpty {
-//			request.predicate = NSPredicate.init(
-//				format: "productCode LIKE[c] %@ OR productName LIKE[c] %@ OR productCategories LIKE[c] %@",
-//				search, search, search)
-//		}
+		if !search.isEmpty {
+			request.predicate = NSPredicate.init(
+				format: "productCode contains %@ OR productName contains %@ OR productCategories contains %@",
+				search, search, search)
+		}
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "productName", ascending: true)
 		request.sortDescriptors = [idDescriptor]
 		
-		return try context.fetch(request)
+		return try service.context.fetch(request)
+			.groupBy { $0.productBrand! }
+			.sorted { $0.key < $1.key }
 	}
 
 	func getArticles(productId: Int32) throws -> [ProductArticle] {
@@ -119,11 +128,11 @@ class MovementArticleRepository: MovementArticleProtocol {
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "articleId", ascending: true)
 		request.sortDescriptors = [idDescriptor]
 		
-		return try context.fetch(request)
+		return try service.context.fetch(request)
 	}
 
-	func updateAmount(item: Movement, amount: Double) {
+	func updateAmount(item: Movement, amount: Double) throws {
 		item.movementAmount = amount
-		appDelegate.saveContext()
+		try service.context.save()
 	}
 }

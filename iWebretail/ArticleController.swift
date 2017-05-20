@@ -19,9 +19,8 @@ class ArticleController: UITableViewController, UISearchBarDelegate {
 	private let repository: MovementArticleProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
-		let delegate = UIApplication.shared.delegate as! AppDelegate
-		repository = delegate.ioCContainer.resolve() as MovementArticleProtocol
 		barcodes = []
+		repository = IoCContainer.shared.resolve() as MovementArticleProtocol
 		
 		super.init(coder: aDecoder)
 	}
@@ -47,7 +46,7 @@ class ArticleController: UITableViewController, UISearchBarDelegate {
 		} else {
 			filtered = articles.filter({ (item) -> Bool in
 				let tmp: ProductArticle = item
-				return tmp.articleAttributes!.contains(searchText)
+				return tmp.articleAttributes!.contains(searchText) || tmp.articleBarcode!.contains(searchText)
 			})
 		}
 		self.tableView.reloadData()
@@ -60,7 +59,7 @@ class ArticleController: UITableViewController, UISearchBarDelegate {
 	}
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return articles.count
+		return filtered.count
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

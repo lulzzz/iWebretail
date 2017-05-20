@@ -11,24 +11,35 @@ import CoreData
 
 class MovementRepository: MovementProtocol {
 	
-	let appDelegate: AppDelegate
-	lazy var context: NSManagedObjectContext = { return self.appDelegate.persistentContainer.viewContext }()
+	private let service: ServiceProtocol
 	
 	init() {
-		appDelegate = UIApplication.shared.delegate as! AppDelegate
+		service = IoCContainer.shared.resolve() as ServiceProtocol
 	}
 
 	func getAll() throws -> [Movement] {
-		let request: NSFetchRequest<Movement> = Movement.fetchRequest()
+		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
+		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "movementId", ascending: true)
+		fetchRequest.sortDescriptors = [idDescriptor]
 		
-		return try context.fetch(request)
+		return try service.context.fetch(fetchRequest)
 	}
 	
+	func getAllGrouped() throws -> [(key:String, value:[Movement])] {
+		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
+		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "movementNumber", ascending: true)
+		fetchRequest.sortDescriptors = [idDescriptor]
+		
+		return try service.context.fetch(fetchRequest)
+			.groupBy { $0.movementDate!.formatDateShort() }
+			.sorted { $0.key > $1.key }
+	}
+
 	func get(id: Int32) throws -> Movement? {
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "movementId == \(id)")
 		fetchRequest.fetchLimit = 1
-		let object = try context.fetch(fetchRequest)
+		let object = try service.context.fetch(fetchRequest)
 		
 		return object.first
 	}
@@ -37,7 +48,7 @@ class MovementRepository: MovementProtocol {
 		let causals = try getCausals();
 		let causal = causals.first(where: { $0.causalIsPos })
 		
-		let movement = Movement(context: context)
+		let movement = Movement(context: service.context)
 		movement.movementId = try self.newId()
 		movement.movementNumber = try self.newNumber(isPos: causal?.causalIsPos ?? false)
 		movement.movementDate = NSDate()
@@ -45,7 +56,7 @@ class MovementRepository: MovementProtocol {
 		movement.movementCausal = causal?.getJSONValues().getJSONString()
 		movement.completed = false
 		movement.synced = false
-		appDelegate.saveContext()
+		try service.context.save()
 		
 		return movement
 	}
@@ -62,21 +73,21 @@ class MovementRepository: MovementProtocol {
 		current.movementNote = item.movementNote
 		current.completed = item.completed
 		
-		appDelegate.saveContext()
+		try service.context.save()
 	}
 	
 	func delete(id: Int32) throws {
 		let item = try self.get(id: id)
-		context.delete(item!)
+		service.context.delete(item!)
 
 		let fetchRequest: NSFetchRequest<MovementArticle> = MovementArticle.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "movementId == \(id)")
-		let rows = try context.fetch(fetchRequest)
+		let rows = try service.context.fetch(fetchRequest)
 		for row in rows {
-			context.delete(row)
+			service.context.delete(row)
 		}
-		
-		appDelegate.saveContext()
+
+		try service.context.save()
 	}
 
 	func newId() throws -> Int32 {
@@ -86,7 +97,7 @@ class MovementRepository: MovementProtocol {
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "movementId", ascending: false)
 		fetchRequest.sortDescriptors = [idDescriptor]
 		fetchRequest.fetchLimit = 1
-		let results = try context.fetch(fetchRequest)
+		let results = try service.context.fetch(fetchRequest)
 		if(results.count == 1) {
 			newId = results.first!.movementId + 1
 		}
@@ -102,7 +113,7 @@ class MovementRepository: MovementProtocol {
 		
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
 		fetchRequest.predicate = self.makeDayPredicate(date: Date())
-		let items = try context.fetch(fetchRequest)
+		let items = try service.context.fetch(fetchRequest)
 		let max = items.max { $0.movementNumber < $1.movementNumber }
 		
 		return max == nil ? 1 : max!.movementNumber + 1
@@ -127,7 +138,7 @@ class MovementRepository: MovementProtocol {
 	func getStore() throws -> Store? {
 		let request: NSFetchRequest<Store> = Store.fetchRequest()
 		request.fetchLimit = 1
-		let results = try context.fetch(request)
+		let results = try service.context.fetch(request)
 		
 		return results.first
 	}
@@ -137,7 +148,7 @@ class MovementRepository: MovementProtocol {
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "causalIsPos", ascending: false)
 		request.sortDescriptors = [idDescriptor]
 
-		return try context.fetch(request)
+		return try service.context.fetch(request)
 	}
 
 	func getPayments() -> [String] {

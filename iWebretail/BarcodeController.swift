@@ -12,11 +12,13 @@ import UIKit
 class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
 	var captureSession: AVCaptureSession!
 	var previewLayer: AVCaptureVideoPreviewLayer!
+
 	private var repository: MovementArticleProtocol
+	private var service: ServiceProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
-		let delegate = UIApplication.shared.delegate as! AppDelegate
-		repository = delegate.ioCContainer.resolve() as MovementArticleProtocol
+		repository = IoCContainer.shared.resolve() as MovementArticleProtocol
+		service = IoCContainer.shared.resolve() as ServiceProtocol
 		
 		super.init(coder: aDecoder)
 	}
@@ -108,8 +110,7 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 	func found(code: String) {
 		do {
 			if try repository.add(barcode: code, movementId: Synchronizer.shared.movement.movementId) == false {
-				let delegate = UIApplication.shared.delegate as! AppDelegate
-				delegate.push(title: "Attention", message: "Barcode \(code) not found!")
+				service.push(title: "Attention", message: "Barcode \(code) not found!")
 			}
 		} catch {
 			self.navigationController?.alert(title: "Error", message: "\(error)")

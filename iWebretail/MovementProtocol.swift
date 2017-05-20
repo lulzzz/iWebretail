@@ -10,6 +10,8 @@ protocol MovementProtocol {
 	
 	func getAll() throws -> [Movement]
 	
+	func getAllGrouped() throws -> [(key:String, value:[Movement])]
+	
 	func get(id: Int32) throws -> Movement?
 	
 	func newNumber(isPos: Bool) throws -> Int32

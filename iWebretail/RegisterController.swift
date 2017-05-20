@@ -28,8 +28,7 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	private let repository: MovementProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
-		let delegate = UIApplication.shared.delegate as! AppDelegate
-		repository = delegate.ioCContainer.resolve() as MovementProtocol
+		repository = IoCContainer.shared.resolve() as MovementProtocol
 
 		store = try! repository.getStore()
 		causals = try! repository.getCausals()

@@ -12,13 +12,11 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 	
 	@IBOutlet weak var searchBar: UISearchBar!
 	
-	var products: [Product]!
-	var filtered: [String: [Product]]!
+	var products = [(key: String, value:[Product])]()
 	private let repository: MovementArticleProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
-		let delegate = UIApplication.shared.delegate as! AppDelegate
-		repository = delegate.ioCContainer.resolve() as MovementArticleProtocol
+		repository = IoCContainer.shared.resolve() as MovementArticleProtocol
 		
 		super.init(coder: aDecoder)
 	}
@@ -28,46 +26,36 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 		self.tableView.contentOffset = CGPoint(x: 0, y: 44)
 		searchBar.delegate = self
 
-		products = try! repository.getProducts()
-		filtered = products.groupBy { $0.productBrand! }
-
+		products = try! repository.getProducts(search: "")
 		self.tableView.reloadData()
 	}
 	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-		if searchText.isEmpty {
-			filtered = products.groupBy { $0.productBrand! }
-		} else {
-			filtered = products.filter({ (item) -> Bool in
-				let tmp: Product = item
-				return tmp.productName!.contains(searchText)
-			}).groupBy { $0.productBrand! }
-		}
+		products = try! repository.getProducts(search: searchBar.text!)
 		self.tableView.reloadData()
 	}
 	
 	// MARK: - Table view data source
 	
 	override func numberOfSections(in tableView: UITableView) -> Int {
-		return filtered.count
+		return products.count
 	}
 	
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		return Array(filtered.keys)[section]
+		return products[section].key
 	}
 
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		let key = Array(filtered.keys)[section]
-		return filtered[key]!.count
+		return products[section].value.count
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "ProductCell", for: indexPath)
 		
-		let key = Array(filtered.keys)[indexPath.section]
-		let product = filtered[key]![indexPath.row]
+		let product = products[indexPath.section].value[indexPath.row]
+		
 		cell.textLabel?.text = product.productName!
-		var text = filtered[key]![indexPath.row].productCategories! + " - " + product.productSelling.formatCurrency()
+		var text = product.productCategories! + " - " + product.productSelling.formatCurrency()
 		if product.productDiscount > 0 {
 			text += " -> " + product.productDiscount.formatCurrency()
 		}
@@ -82,7 +70,6 @@ class ProductController: UITableViewController, UISearchBarDelegate {
 		let articleController: ArticleController = segue.destination as! ArticleController
 		
 		let indexPath = self.tableView?.indexPathForSelectedRow
-		let key = Array(filtered.keys)[indexPath!.section]
-		articleController.product = filtered[key]![indexPath!.row]
+		articleController.product = products[indexPath!.section].value[indexPath!.row]
 	}
 }

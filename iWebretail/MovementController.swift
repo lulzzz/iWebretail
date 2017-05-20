@@ -20,8 +20,7 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 
 	required init?(coder aDecoder: NSCoder) {
 		self.movementArticles = []
-		let delegate = UIApplication.shared.delegate as! AppDelegate
-		repository = delegate.ioCContainer.resolve() as MovementArticleProtocol
+		repository = IoCContainer.shared.resolve() as MovementArticleProtocol
 		
 		super.init(coder: aDecoder)
 	}
@@ -29,9 +28,14 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 	override func viewDidLoad()
 	{
 		super.viewDidLoad()
+		
 		tableView.delegate = self
 		tableView.dataSource = self
 
+		makeRightButton()
+	}
+	
+	func makeRightButton() {
 		// badge label
 		label = UILabel(frame: CGRect(x: -14, y: -10, width: 29, height: 20))
 		label.layer.borderColor = UIColor.clear.cgColor
@@ -41,13 +45,17 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 		label.layer.masksToBounds = true
 		label.font = UIFont.systemFont(ofSize: 12, weight: 600)
 		label.textColor = .darkText
-		label.backgroundColor = Synchronizer.shared.movement.completed ? .lightText : .white
+		if Synchronizer.shared.movement.completed {
+			label.backgroundColor = UIColor(name: "whitesmoke")
+		} else {
+			label.backgroundColor = UIColor(name: "lightgreen")
+		}
 		
 		// button
 		let rightButton = UIButton(frame: CGRect(x: 0, y: 0, width: 29, height: 29))
 		let basket = UIImage(named: "basket")?.withRenderingMode(.alwaysTemplate)
 		rightButton.setImage(basket, for: .normal)
-		rightButton.tintColor = UIColor.white
+		rightButton.tintColor = .white
 		rightButton.addTarget(self, action: #selector(rightButtonTouched), for: .touchUpInside)
 		rightButton.addSubview(label)
 		
@@ -110,7 +118,7 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 			.reduce (0, +)
 		label.text = quantity.description
 
-		repository.updateAmount(item: Synchronizer.shared.movement, amount: amount)
+		try? repository.updateAmount(item: Synchronizer.shared.movement, amount: amount)
 	}
 	
 	// MARK: - Table view data source

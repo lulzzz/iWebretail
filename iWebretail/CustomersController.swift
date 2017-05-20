@@ -12,14 +12,11 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 
 	@IBOutlet weak var searchBar: UISearchBar!
 	
-	var letters: [String]!
-	var customers: [Customer]!
-	var filtered: [Customer]!
+	var customers = [(key: String, value: [Customer])]()
 	private let repository: CustomerProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
-		let delegate = UIApplication.shared.delegate as! AppDelegate
-		repository = delegate.ioCContainer.resolve() as CustomerProtocol
+		repository = IoCContainer.shared.resolve() as CustomerProtocol
 		
 		super.init(coder: aDecoder)
 	}
@@ -32,60 +29,38 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 
 	override func viewWillAppear(_ animated: Bool) {
 		customers = try! repository.getAll(search: "")
-		filtered = customers
-		self.loadLetters()
 		self.tableView.reloadData()
 	}
 	
 	func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-		if searchText.isEmpty {
-			filtered = customers
-		} else {
-			filtered = customers.filter({ (item) -> Bool in
-				let tmp: Customer = item
-				return tmp.customerName!.contains(searchText)
-			})
-		}
-		self.loadLetters()
+		customers = try! repository.getAll(search: searchText)
 		self.tableView.reloadData()
 	}
-	
-	func loadLetters() {
-		letters = filtered.map { (item) -> String in
-			return item.customerName![item.customerName!.startIndex].description
-		}
-	}
 
-	func getCustomers(section: Int) -> [Customer] {
-		return filtered.filter({ (item) -> Bool in
-			let tmp: Customer = item
-			return tmp.customerName!.hasPrefix(self.letters[section])
-		})
-	}
 	// MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return letters.count
+        return customers.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return getCustomers(section: section).count
+        return customers[section].value.count
     }
 
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		return letters[section].description
+		return customers[section].key
 	}
 
 	override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-		return self.letters
+		return customers.map { $0.key }
 	}
 	
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CustomerCell", for: indexPath)
 
-		let items = getCustomers(section: indexPath.section)
-		cell.textLabel?.text = items[indexPath.row].customerName
-		cell.detailTextLabel?.text = items[indexPath.row].customerEmail
+		let item = customers[indexPath.section].value[indexPath.row]
+		cell.textLabel?.text = item.customerName
+		cell.detailTextLabel?.text = item.customerEmail
 
         return cell
     }
@@ -93,8 +68,8 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 		let movement = Synchronizer.shared.movement!
 		if !movement.completed {
-			let items = getCustomers(section: indexPath.section)
-			movement.movementCustomer = items[indexPath.row].getJSONValues().getJSONString()
+			let item = customers[indexPath.section].value[indexPath.row]
+			movement.movementCustomer = item.getJSONValues().getJSONString()
 			navigationController?.popViewController(animated: true)
 		}
 	}
@@ -104,12 +79,11 @@ class CustomersController: UITableViewController, UISearchBarDelegate {
 	}
 
 	override func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-		let items = getCustomers(section: indexPath.section)
-		let item = items[indexPath.row]
+		let item = customers[indexPath.section].value[indexPath.row]
 		let delete = UITableViewRowAction(style: .destructive, title: "Delete") { action, index in
 			do {
 				try self.repository.delete(id: item.customerId)
-				self.filtered.remove(at: self.filtered.index(of: item)!)
+				self.customers[indexPath.section].value.remove(at: indexPath.row)
 				tableView.deleteRows(at: [indexPath], with: .fade)
 			} catch {
 				self.navigationController?.alert(title: "Error", message: "\(error)")

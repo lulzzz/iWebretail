@@ -11,37 +11,38 @@ import CoreData
 
 class CustomerRepository: CustomerProtocol {
 
-	let appDelegate: AppDelegate
-	lazy var context: NSManagedObjectContext = { return self.appDelegate.persistentContainer.viewContext }()
+	private let service: ServiceProtocol
 	
 	init() {
-		appDelegate = UIApplication.shared.delegate as! AppDelegate
+		service = IoCContainer.shared.resolve() as ServiceProtocol
 	}
 	
-	func getAll(search: String) throws -> [Customer] {
+	func getAll(search: String) throws -> [(key: String, value: [Customer])] {
 		let request: NSFetchRequest<Customer> = Customer.fetchRequest()
 		if !search.isEmpty {
-			request.predicate = NSPredicate.init(format: "customerName LIKE[c] %@", search)
+			request.predicate = NSPredicate.init(format: "customerName contains %@", search)
 		}
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "customerName", ascending: true)
 		request.sortDescriptors = [idDescriptor]
 		
-		return try context.fetch(request)
+		return try service.context.fetch(request)
+			.groupBy { $0.customerName![$0.customerName!.startIndex].description }
+			.sorted { $0.key < $1.key }
 	}
 
 	func get(id: Int32) throws -> Customer? {
 		let fetchRequest: NSFetchRequest<Customer> = Customer.fetchRequest()
 		fetchRequest.predicate = NSPredicate.init(format: "customerId == \(id)")
 		fetchRequest.fetchLimit = 1
-		let object = try context.fetch(fetchRequest)
+		let object = try service.context.fetch(fetchRequest)
 		
 		return object.first
 	}
 	
 	func add() throws -> Customer {
-		let customer = Customer(context: context)
+		let customer = Customer(context: service.context)
 		customer.customerId = try self.newId()
-		try context.save()
+		try service.context.save()
 		
 		return customer
 	}
@@ -58,13 +59,13 @@ class CustomerRepository: CustomerProtocol {
 		current.customerFiscalCode = item.customerFiscalCode
 		current.customerVatNumber = item.customerVatNumber
 		current.updatedAt = Int32.now()
-		try context.save()
+		try service.context.save()
 	}
 	
 	func delete(id: Int32) throws {
 		let item = try self.get(id: id)
-		context.delete(item!)
-		try context.save()
+		service.context.delete(item!)
+		try service.context.save()
 	}
 	
 	private func newId() throws -> Int32 {
@@ -74,7 +75,7 @@ class CustomerRepository: CustomerProtocol {
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "customerId", ascending: true)
 		fetchRequest.sortDescriptors = [idDescriptor]
 		fetchRequest.fetchLimit = 1
-		let results = try context.fetch(fetchRequest)
+		let results = try service.context.fetch(fetchRequest)
 		if(results.count == 1) {
 			newId = results.first!.customerId - 1
 		}

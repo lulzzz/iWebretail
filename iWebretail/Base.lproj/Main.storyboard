@@ -611,7 +611,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
-                                    <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="backgroundColor" red="0.90196079019999997" green="0.90196079019999997" blue="0.90196079019999997" alpha="0.5997163955479452" colorSpace="calibratedRGB"/>
                                     <constraints>
                                         <constraint firstItem="Eja-fL-lPY" firstAttribute="leading" secondItem="50e-ST-71k" secondAttribute="leading" constant="15" id="b8P-UU-Znw"/>
                                         <constraint firstItem="Eja-fL-lPY" firstAttribute="top" secondItem="50e-ST-71k" secondAttribute="top" constant="10" id="dad-NY-lhN"/>
@@ -783,7 +783,7 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="search by name or code" id="rmx-mu-KSb">
+                        <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="search by name, code or category" id="rmx-mu-KSb">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <textInputTraits key="textInputTraits"/>
@@ -859,7 +859,7 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                        <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="search by attributes" id="0pH-y9-SGP">
+                        <searchBar key="tableHeaderView" contentMode="redraw" searchBarStyle="minimal" placeholder="search by attributes or barcode" id="0pH-y9-SGP">
                             <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <textInputTraits key="textInputTraits"/>

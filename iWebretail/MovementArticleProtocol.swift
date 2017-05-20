@@ -18,9 +18,9 @@ protocol MovementArticleProtocol {
 	
 	func delete(id: Int32) throws
 
-	func getProducts() throws -> [Product]
+	func getProducts(search: String) throws -> [(key:String, value:[Product])]
 
 	func getArticles(productId: Int32) throws -> [ProductArticle]
 	
-	func updateAmount(item: Movement, amount: Double)
+	func updateAmount(item: Movement, amount: Double) throws
 }

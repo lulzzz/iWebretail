@@ -20,13 +20,12 @@ class MovementsController: UITableViewController {
 	
 	let kProgressViewTag = 10000
 	
-	var filtered = [String: [Movement]]()
+	var filtered = [(key:String, value:[Movement])]()
 	
 	private let repository: MovementProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
-		let delegate = UIApplication.shared.delegate as! AppDelegate
-		repository = delegate.ioCContainer.resolve() as MovementProtocol
+		repository = IoCContainer.shared.resolve() as MovementProtocol
 
 		super.init(coder: aDecoder)
 
@@ -63,7 +62,9 @@ class MovementsController: UITableViewController {
 	
 	func refreshData() {
 		do {
-			filtered = try repository.getAll().groupBy { $0.movementDate!.formatDateShort() }
+			filtered = try repository.getAllGrouped()
+//									 .groupBy { $0.movementDate!.formatDateShort() }
+//									 .sorted { $0.key < $1.key }
 			self.tableView.reloadData()
 		} catch {
 			self.navigationController?.alert(title: "Error", message: "\(error)")
@@ -93,20 +94,17 @@ class MovementsController: UITableViewController {
     }
 
 	override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-		return Array(filtered.keys)[section]
+		return filtered[section].key
 	}
 
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		let key = Array(filtered.keys)[section]
-		return filtered[key]!.count
+		return filtered[section].value.count
 	}
 
 	override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "MovementCell", for: indexPath)
 		
-		let key = Array(filtered.keys)[indexPath.section]
-		let movement = filtered[key]![indexPath.row]
-
+		let movement = filtered[indexPath.section].value[indexPath.row]
 		if movement.synced {
 			cell.imageView?.image = UIImage.init(named: "sync")
 		} else if movement.completed {
@@ -126,9 +124,8 @@ class MovementsController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
 			do {
-				let key = Array(filtered.keys)[indexPath.section]
-				try repository.delete(id: filtered[key]![indexPath.row].movementId)
-				self.filtered[key]!.remove(at: indexPath.row)
+				try repository.delete(id: filtered[indexPath.section].value[indexPath.row].movementId)
+				self.filtered[indexPath.section].value.remove(at: indexPath.row)
 				tableView.deleteRows(at: [indexPath], with: .fade)
 			} catch {
 				self.navigationController?.alert(title: "Error", message: "\(error)")
@@ -149,8 +146,7 @@ class MovementsController: UITableViewController {
 				self.navigationController?.alert(title: "Error", message: "\(error)")
 			}
 		} else {
-			let key = Array(filtered.keys)[indexPath!.section]
-			Synchronizer.shared.movement = filtered[key]![indexPath!.row]
+			Synchronizer.shared.movement = filtered[indexPath!.section].value[indexPath!.row]
 		}
 
 		tabViewController.navigationItem.title = String(Synchronizer.shared.movement.movementNumber)

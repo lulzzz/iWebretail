@@ -24,8 +24,7 @@ class CustomerController: UITableViewController {
 	private let repository: CustomerProtocol
 	
 	required init?(coder aDecoder: NSCoder) {
-		let delegate = UIApplication.shared.delegate as! AppDelegate
-		repository = delegate.ioCContainer.resolve() as CustomerProtocol
+		repository = IoCContainer.shared.resolve() as CustomerProtocol
 		
 		super.init(coder: aDecoder)
 	}
