@@ -27,12 +27,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		// Override point for customization after application launch.
 		
-		UIApplication.shared.statusBarStyle = .lightContent
 		let navigationBarAppearace = UINavigationBar.appearance()
-		let image = UIImage(named: "bar")!
+		//UIApplication.shared.statusBarStyle = .lightContent
+		let image = UIImage(named: "background")!
 		navigationBarAppearace.setBackgroundImage(image.resizableImage(withCapInsets: UIEdgeInsetsMake(0, 0, 0, 0), resizingMode: .stretch), for: .default)
-		navigationBarAppearace.tintColor = UIColor.white
-		navigationBarAppearace.titleTextAttributes = [NSForegroundColorAttributeName:UIColor.white]
+		navigationBarAppearace.tintColor = .darkText
+		navigationBarAppearace.titleTextAttributes = [NSForegroundColorAttributeName: navigationBarAppearace.tintColor]
 
 		UNUserNotificationCenter.current().delegate = self
 		UNUserNotificationCenter.current().requestAuthorization(

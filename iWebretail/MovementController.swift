@@ -32,10 +32,10 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 		tableView.delegate = self
 		tableView.dataSource = self
 
-		makeRightButton()
+		makeBar()
 	}
 	
-	func makeRightButton() {
+	func makeBar() {
 		// badge label
 		label = UILabel(frame: CGRect(x: -14, y: -10, width: 29, height: 20))
 		label.layer.borderColor = UIColor.clear.cgColor
@@ -55,11 +55,12 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 		let rightButton = UIButton(frame: CGRect(x: 0, y: 0, width: 29, height: 29))
 		let basket = UIImage(named: "basket")?.withRenderingMode(.alwaysTemplate)
 		rightButton.setImage(basket, for: .normal)
-		rightButton.tintColor = .white
+		rightButton.tintColor = UINavigationBar.appearance().tintColor
 		rightButton.addTarget(self, action: #selector(rightButtonTouched), for: .touchUpInside)
 		rightButton.addSubview(label)
 		
 		// Bar button item
+		self.tabBarController?.tabBar.tintColor = UINavigationBar.appearance().tintColor
 		self.tabBarController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)
 	}
 	
