@@ -12,6 +12,7 @@ import CloudKit
 
 typealias ServiceResponse = (Data?) -> Void
 let kProgressUpdateNotification = "kProgressUpdateNotification"
+//let kProgressViewTag = 10000
 
 class Synchronizer {
 	
@@ -197,6 +198,7 @@ class Synchronizer {
 		let items = try! service.context.fetch(fetchRequest)
 		let count = items.count
 		if count == 0 {
+			self.notify(total: 0, current: 0)
 			self.isSyncing = false
 			return
 		}
@@ -218,6 +220,8 @@ class Synchronizer {
 
 					self.service.saveContext()
 					
+					self.notify(total: count, current: index + 1)
+
 					self.isSyncing = index + 1 < count
 				}
 			})

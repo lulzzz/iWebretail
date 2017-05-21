@@ -6,11 +6,13 @@
 //  Copyright © 2017 Gerardo Grisolini. All rights reserved.
 //
 
+import CoreData
+
 protocol MovementProtocol {
 	
-	func getAll() throws -> [Movement]
+	//func getAll() throws -> [Movement]
 	
-	func getAllGrouped() throws -> [(key:String, value:[Movement])]
+	func getAllGrouped(date: Date?) throws -> [(key:String, value:[Movement])]
 	
 	func get(id: Int32) throws -> Movement?
 	

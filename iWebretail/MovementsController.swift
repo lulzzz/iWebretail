@@ -17,9 +17,9 @@ class ProgressNotification {
 class MovementsController: UITableViewController {
 
 	@IBOutlet weak var progressView: UIProgressView!
+	@IBOutlet weak var datePickerButton: UIBarButtonItem!
 	
-	let kProgressViewTag = 10000
-	
+	var datePickerView: UIDatePicker!
 	var filtered = [(key:String, value:[Movement])]()
 	
 	private let repository: MovementProtocol
@@ -28,18 +28,25 @@ class MovementsController: UITableViewController {
 		repository = IoCContainer.shared.resolve() as MovementProtocol
 
 		super.init(coder: aDecoder)
-
-		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveNotification(notification:)), name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: nil)
 	}
 	
 	override func viewDidLoad() {
         super.viewDidLoad()
 
+		datePickerView = UIDatePicker()
+		datePickerView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 200)
+		datePickerView.backgroundColor = UIColor.init(name: "lightgray")
+		datePickerView.datePickerMode = UIDatePickerMode.date
+		datePickerView.timeZone = TimeZone(abbreviation: "UTC")
+		datePickerView.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
+
+		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveNotification(notification:)), name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: nil)
+
 		self.refreshControl?.addTarget(self, action: #selector(synchronize), for: UIControlEvents.valueChanged)
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
-		refreshData()
+		refreshData(date: nil)
  	}
 	
 	func synchronize(sender:AnyObject)
@@ -55,20 +62,37 @@ class MovementsController: UITableViewController {
 			
 			DispatchQueue.main.async {
 				self.refreshControl?.endRefreshing()
-				self.refreshData()
+				self.refreshData(date: nil)
 			}
 		}
 	}
 	
-	func refreshData() {
+	func refreshData(date: Date?) {
 		do {
-			filtered = try repository.getAllGrouped()
-//									 .groupBy { $0.movementDate!.formatDateShort() }
-//									 .sorted { $0.key < $1.key }
+			filtered = try repository.getAllGrouped(date: date)
 			self.tableView.reloadData()
 		} catch {
 			self.navigationController?.alert(title: "Error", message: "\(error)")
 		}
+	}
+	
+	@IBAction func dateChange(_ sender: UIBarButtonItem) {
+		if datePickerButton.title == "Date" {
+			datePickerButton.title = "Cancel"
+			self.view.addSubview(datePickerView)
+		} else {
+			if datePickerButton.title == "Cancel" {
+				refreshData(date: nil)
+			} else {
+				refreshData(date: datePickerView.date)
+			}
+			datePickerButton.title = "Date"
+			datePickerView.removeFromSuperview()
+		}
+	}
+
+	func datePickerValueChanged(sender: UIDatePicker) {
+		datePickerButton.title = "Done"
 	}
 	
 	func didReceiveNotification(notification:NSNotification) {

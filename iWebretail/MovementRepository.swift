@@ -17,16 +17,19 @@ class MovementRepository: MovementProtocol {
 		service = IoCContainer.shared.resolve() as ServiceProtocol
 	}
 
-	func getAll() throws -> [Movement] {
-		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
-		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "movementId", ascending: true)
-		fetchRequest.sortDescriptors = [idDescriptor]
-		
-		return try service.context.fetch(fetchRequest)
-	}
+//	func getAll() throws -> [Movement] {
+//		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
+//		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "movementId", ascending: true)
+//		fetchRequest.sortDescriptors = [idDescriptor]
+//		
+//		return try service.context.fetch(fetchRequest)
+//	}
 	
-	func getAllGrouped() throws -> [(key:String, value:[Movement])] {
+	func getAllGrouped(date: Date?) throws -> [(key:String, value:[Movement])] {
 		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
+		if date != nil {
+			fetchRequest.predicate = self.makeDayPredicate(date: date!)
+		}
 		let idDescriptor: NSSortDescriptor = NSSortDescriptor(key: "movementNumber", ascending: true)
 		fetchRequest.sortDescriptors = [idDescriptor]
 		

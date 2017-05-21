@@ -100,8 +100,9 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 	@IBAction func dateFieldEditing(_ sender: UITextField) {
 		let datePickerView = UIDatePicker()
 		datePickerView.datePickerMode = UIDatePickerMode.date
+		datePickerView.timeZone = TimeZone(abbreviation: "UTC")
 		sender.inputView = datePickerView
-		datePickerView.addTarget(self, action: #selector(RegisterController.datePickerValueChanged), for: UIControlEvents.valueChanged)
+		datePickerView.addTarget(self, action: #selector(datePickerValueChanged), for: UIControlEvents.valueChanged)
 	}
 	
 	@IBAction func causalFieldEditing(_ sender: UITextField) {
