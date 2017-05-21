@@ -68,6 +68,10 @@ class Synchronizer {
 
 			self.syncCausals()
 		})
+		
+		while isSyncing {
+			usleep(1000000)
+		}
 	}
 
 	internal func syncCausals() {

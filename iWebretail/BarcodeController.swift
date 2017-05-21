@@ -73,11 +73,7 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 		
-//		if Synchronizer.shared.movement.completed {
-//			self.tabBarController?.navigationItem.rightBarButtonItem?.isEnabled = false
-//		} else {
-			read()
-//		}
+		read()
 	}
 	
 	override func viewWillDisappear(_ animated: Bool) {
@@ -102,8 +98,13 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 	}
 	
 	func read() {
-		if (captureSession?.isRunning == false) {
-			captureSession.startRunning();
+		if (captureSession?.isRunning == true) {
+			captureSession.stopRunning();
+		}
+		DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+			if (self.captureSession?.isRunning == false) {
+				self.captureSession.startRunning();
+			}
 		}
 	}
 	
@@ -113,11 +114,9 @@ class BarcodeController: UIViewController, AVCaptureMetadataOutputObjectsDelegat
 				service.push(title: "Attention", message: "Barcode \(code) not found!")
 			}
 		} catch {
-			self.navigationController?.alert(title: "Error", message: "\(error)")
+			service.push(title: "Error", message: error.localizedDescription)
 		}
 		
-		DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-			self.read()
-		}
+		read()
 	}
 }

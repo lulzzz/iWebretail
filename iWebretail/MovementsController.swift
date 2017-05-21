@@ -39,18 +39,22 @@ class MovementsController: UITableViewController {
 		datePickerView.timeZone = TimeZone(abbreviation: "UTC")
 		datePickerView.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
 
-		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveNotification(notification:)), name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: nil)
-
 		self.refreshControl?.addTarget(self, action: #selector(synchronize), for: UIControlEvents.valueChanged)
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
+		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveNotification(notification:)), name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: nil)
+
 		if datePickerButton?.title != "Date" {
 			refreshData(date: datePickerButton.title?.toDateShort())
 		} else {
 			refreshData(date: nil)
 		}
  	}
+	
+	override func viewDidDisappear(_ animated: Bool) {
+		NotificationCenter.default.removeObserver(name: NSNotification.Name(rawValue: kProgressUpdateNotification))
+	}
 	
 	func synchronize(sender:AnyObject)
 	{
@@ -59,11 +63,6 @@ class MovementsController: UITableViewController {
 			
 			Synchronizer.shared.syncronize()
 
-			while Synchronizer.shared.isSyncing {
-				//print(Synchronizer.shared.isSyncing)
-			}
-			//(IoCContainer.shared.resolve() as ServiceProtocol).saveContext()
-			
 			DispatchQueue.main.async {				
 				self.datePickerButton.title = "Date"
 				self.refreshData(date: nil)
