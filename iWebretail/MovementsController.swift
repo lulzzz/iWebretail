@@ -34,7 +34,6 @@ class MovementsController: UITableViewController {
         super.viewDidLoad()
 
 		datePickerView = UIDatePicker()
-		datePickerView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 200)
 		datePickerView.backgroundColor = UIColor.init(name: "lightgray")
 		datePickerView.datePickerMode = UIDatePickerMode.date
 		datePickerView.timeZone = TimeZone(abbreviation: "UTC")
@@ -87,6 +86,7 @@ class MovementsController: UITableViewController {
 			datePickerView.removeFromSuperview()
 		} else {
 			datePickerButton.title = "Cancel"
+			datePickerView.frame = CGRect(x: 0, y: 0, width: self.view.bounds.width, height: 200)
 			self.view.addSubview(datePickerView)
 		}
 	}
