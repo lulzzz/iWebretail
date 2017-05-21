@@ -45,7 +45,12 @@ class MovementsController: UITableViewController {
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
-		refreshData(date: nil)
+		print(datePickerButton?.title ?? "")
+		if datePickerButton?.title != "Date" {
+			refreshData(date: datePickerButton.title?.toDateShort())
+		} else {
+			refreshData(date: nil)
+		}
  	}
 	
 	func synchronize(sender:AnyObject)

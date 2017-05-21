@@ -126,7 +126,7 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 			let movement = Synchronizer.shared.movement!
 
 			movement.movementNumber = Int32(numberTextField.text!)!
-			movement.movementDate = dateTextField.text!.toDateInput()
+			movement.movementDate = dateTextField.text!.toDateInput() as NSDate
 			movement.movementNote = noteTextView.text
 			movement.movementDevice = UIDevice.current.name
 			movement.completed = true

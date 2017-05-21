@@ -35,12 +35,19 @@ extension Double {
 }
 
 extension String {
-	func toDateInput() -> NSDate {
+	func toDateInput() -> Date {
 		let formatter = DateFormatter()
 		formatter.dateStyle = .medium
 		formatter.timeStyle = .none
 		formatter.timeZone = TimeZone(abbreviation: "UTC")
-		return formatter.date(from: self)! as NSDate
+		return formatter.date(from: self)!
+	}
+	
+	func toDateShort(format: String = "yyyy-MM-dd") -> Date {
+		let formatter = DateFormatter()
+		formatter.dateFormat = format
+		formatter.timeZone = TimeZone(abbreviation: "UTC")
+		return formatter.date(from: self)!
 	}
 	
 	func getJSONValues() -> NSDictionary {
