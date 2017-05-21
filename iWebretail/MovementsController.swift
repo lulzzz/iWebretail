@@ -77,17 +77,17 @@ class MovementsController: UITableViewController {
 	}
 	
 	@IBAction func dateChange(_ sender: UIBarButtonItem) {
-		if datePickerButton.title == "Date" {
+		if datePickerButton.title == "Cancel" {
+			datePickerButton.title = "Date"
+			refreshData(date: nil)
+			datePickerView.removeFromSuperview()
+		} else if datePickerButton.title == "Done" {
+			datePickerButton.title = (datePickerView.date as NSDate).formatDateShort()
+			refreshData(date: datePickerView.date)
+			datePickerView.removeFromSuperview()
+		} else {
 			datePickerButton.title = "Cancel"
 			self.view.addSubview(datePickerView)
-		} else {
-			if datePickerButton.title == "Cancel" {
-				refreshData(date: nil)
-			} else {
-				refreshData(date: datePickerView.date)
-			}
-			datePickerButton.title = "Date"
-			datePickerView.removeFromSuperview()
 		}
 	}
 
