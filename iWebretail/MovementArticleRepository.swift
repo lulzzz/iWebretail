@@ -75,7 +75,7 @@ class MovementArticleRepository: MovementArticleProtocol {
 		let current = try self.get(id: id)!
 		current.movementArticleQuantity = item.movementArticleQuantity
 		current.movementArticlePrice = item.movementArticlePrice
-		service.saveContext()
+		try service.context.save()
 	}
 	
 	func delete(id: Int32) throws {
@@ -132,6 +132,14 @@ class MovementArticleRepository: MovementArticleProtocol {
 	}
 
 	func updateAmount(item: Movement, amount: Double) throws {
+		/*
+		let fetchRequest: NSFetchRequest<Movement> = Movement.fetchRequest()
+		fetchRequest.predicate = NSPredicate.init(format: "movementId == \(movementId)")
+		fetchRequest.fetchLimit = 1
+		let objects = try service.context.fetch(fetchRequest)
+		let object = objects.first!
+		object.movementAmount = amount
+		*/
 		item.movementAmount = amount
 		try service.context.save()
 	}

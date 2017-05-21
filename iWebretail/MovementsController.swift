@@ -45,7 +45,6 @@ class MovementsController: UITableViewController {
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
-		print(datePickerButton?.title ?? "")
 		if datePickerButton?.title != "Date" {
 			refreshData(date: datePickerButton.title?.toDateShort())
 		} else {
@@ -63,10 +62,12 @@ class MovementsController: UITableViewController {
 			while Synchronizer.shared.isSyncing {
 				//print(Synchronizer.shared.isSyncing)
 			}
+			//(IoCContainer.shared.resolve() as ServiceProtocol).saveContext()
 			
-			DispatchQueue.main.async {
-				self.refreshControl?.endRefreshing()
+			DispatchQueue.main.async {				
+				self.datePickerButton.title = "Date"
 				self.refreshData(date: nil)
+				self.refreshControl?.endRefreshing()
 			}
 		}
 	}

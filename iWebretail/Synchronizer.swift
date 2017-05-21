@@ -58,7 +58,7 @@ class Synchronizer {
 							let store = results.count == 1 ? results.first! : Store(context: self.service.context)
 							store.setJSONValues(json: item["store"] as! NSDictionary)
 							store.updatedAt = item["updatedAt"] as! Int32
-							self.service.saveContext()
+							self.service.save()
 						}
 					}
 				} catch {
@@ -97,7 +97,7 @@ class Synchronizer {
 					self.service.push(title: "Error on sync causal", message: error.localizedDescription)
 				}
 				
-				self.service.saveContext()
+				self.service.save()
 			}
 			
 			self.syncCustomers()
@@ -134,7 +134,7 @@ class Synchronizer {
 					self.service.push(title: "Error on sync customer", message: error.localizedDescription)
 				}
 
-				self.service.saveContext()
+				self.service.save()
 			}
 
 			self.syncProducts()
@@ -185,7 +185,7 @@ class Synchronizer {
 					self.service.push(title: "Error on sync product", message: error.localizedDescription)
 				}
 
-				self.service.saveContext()
+				self.service.save()
 			}
 
 			self.syncMovement()
@@ -218,11 +218,12 @@ class Synchronizer {
 						self.service.push(title: "Error on sync movement", message: error.localizedDescription)
 					}
 
-					self.service.saveContext()
-					
-					self.notify(total: count, current: index + 1)
+					if index + 1 == count {
+						self.isSyncing = false
+						self.service.save()
+					}
 
-					self.isSyncing = index + 1 < count
+					self.notify(total: count, current: index + 1)
 				}
 			})
 		}

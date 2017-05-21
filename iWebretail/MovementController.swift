@@ -119,7 +119,9 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 			.reduce (0, +)
 		label.text = quantity.description
 
-		try? repository.updateAmount(item: Synchronizer.shared.movement, amount: amount)
+		if Synchronizer.shared.movement.movementAmount != amount {
+			try! repository.updateAmount(item: Synchronizer.shared.movement, amount: amount)
+		}
 	}
 	
 	// MARK: - Table view data source

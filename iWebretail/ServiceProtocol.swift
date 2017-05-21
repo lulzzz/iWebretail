@@ -13,5 +13,5 @@ protocol ServiceProtocol {
 
 	var context: NSManagedObjectContext { get }
 	
-	func saveContext ()
+	func save ()
 }
