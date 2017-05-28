@@ -37,13 +37,13 @@ class MovementsController: UITableViewController {
 		datePickerView.backgroundColor = UIColor.init(name: "lightgray")
 		datePickerView.datePickerMode = UIDatePickerMode.date
 		datePickerView.timeZone = TimeZone(abbreviation: "UTC")
-		datePickerView.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
+        datePickerView.addTarget(self, action: #selector(datePickerValueChanged), for: .valueChanged)
 
 		self.refreshControl?.addTarget(self, action: #selector(synchronize), for: UIControlEvents.valueChanged)
 	}
 
 	override func viewDidAppear(_ animated: Bool) {
-		NotificationCenter.default.addObserver(self, selector: #selector(didReceiveNotification(notification:)), name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(didReceiveNotification(notification:)), name: NSNotification.Name(rawValue: kProgressUpdateNotification), object: nil)
 
 		if datePickerButton?.title != "Date" {
 			refreshData(date: datePickerButton.title?.toDateShort())
@@ -53,10 +53,10 @@ class MovementsController: UITableViewController {
  	}
 	
 	override func viewDidDisappear(_ animated: Bool) {
-		NotificationCenter.default.removeObserver(name: NSNotification.Name(rawValue: kProgressUpdateNotification))
+		NotificationCenter.default.removeObserver(NSNotification.Name(rawValue: kProgressUpdateNotification))
 	}
 	
-	func synchronize(sender:AnyObject)
+	@objc func synchronize(sender:AnyObject)
 	{
 		//TODO: make this awaitable
 		DispatchQueue.global(qos: .background).async {
@@ -96,11 +96,11 @@ class MovementsController: UITableViewController {
 		}
 	}
 
-	func datePickerValueChanged(sender: UIDatePicker) {
+	@objc func datePickerValueChanged(sender: UIDatePicker) {
 		datePickerButton.title = "Done"
 	}
 	
-	func didReceiveNotification(notification:NSNotification) {
+	@objc func didReceiveNotification(notification:NSNotification) {
 		if let progress = notification.object as? ProgressNotification {
 			if progress.current == progress.total {
 				DispatchQueue.main.async {

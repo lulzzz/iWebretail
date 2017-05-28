@@ -139,13 +139,13 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 		navigationController?.popToRootViewController(animated: true)
 	}
 
-	func datePickerValueChanged(sender:UIDatePicker) {
+	@objc func datePickerValueChanged(sender:UIDatePicker) {
 		dateTextField.text = (sender.date as NSDate).formatDateInput()
 	}
 	
 	// MARK: - Keyboard
 	
-	func keyboardWillShow(notification: NSNotification) {
+	@objc func keyboardWillShow(notification: NSNotification) {
 		if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
 			var frame: CGRect
 			if numberTextField.isFirstResponder {
@@ -170,7 +170,7 @@ class RegisterController: UIViewController, UIPickerViewDataSource, UIPickerView
 		}
 	}
 	
-	func keyboardWillHide(notification: NSNotification) {
+	@objc func keyboardWillHide(notification: NSNotification) {
 		let contentInsets = UIEdgeInsets.zero
 		self.scrollView.contentInset = contentInsets
 		self.scrollView.scrollIndicatorInsets = contentInsets

@@ -64,7 +64,7 @@ class MovementController: UIViewController, UITableViewDataSource, UITableViewDe
 		self.tabBarController?.navigationItem.rightBarButtonItem = UIBarButtonItem(customView: rightButton)
 	}
 	
-	func rightButtonTouched(sender: UIButton) {
+	@objc func rightButtonTouched(sender: UIButton) {
 		let storyboard = UIStoryboard(name: "Main", bundle: nil)
 		let vc = storyboard.instantiateViewController(withIdentifier: "RegisterView") as! RegisterController
 		self.navigationController!.pushViewController(vc, animated: true)
